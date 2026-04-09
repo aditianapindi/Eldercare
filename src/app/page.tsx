@@ -1,0 +1,100 @@
+import Link from "next/link";
+
+export default function Home() {
+  return (
+    <main className="min-h-dvh relative overflow-hidden">
+      {/* Warm decorative background shapes */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        {/* Large soft circle — top right */}
+        <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-sage/[0.06]" />
+        {/* Small warm circle — bottom left */}
+        <div className="absolute bottom-[10%] -left-[100px] w-[300px] h-[300px] rounded-full bg-terracotta/[0.04]" />
+        {/* Subtle warm wash — mid page */}
+        <div className="absolute top-[60%] right-[10%] w-[400px] h-[400px] rounded-full bg-mustard/[0.04] blur-3xl" />
+      </div>
+
+      <div className="relative px-6 py-12 md:px-12 lg:px-24 flex flex-col min-h-dvh">
+        {/* Header */}
+        <header className="mb-16 flex items-center gap-3">
+          <LeafIcon />
+          <p className="font-[family-name:var(--font-body)] text-[15px] tracking-wide text-ink-tertiary uppercase">
+            GetSukoon
+          </p>
+        </header>
+
+        {/* Hero + Stats — side by side on desktop */}
+        <div className="flex-1 flex flex-col lg:flex-row lg:items-center lg:gap-16 xl:gap-24">
+          {/* Hero */}
+          <section className="max-w-[680px] lg:flex-1 flex flex-col justify-center">
+            <h1 className="font-[family-name:var(--font-display)] text-[clamp(32px,6vw,52px)] leading-[1.15] font-light text-ink tracking-tight mb-6">
+              Taking care of your parents starts with five questions most
+              families never talk about.
+            </h1>
+            <p className="text-xl text-ink-secondary leading-relaxed max-w-[540px] mb-10">
+              Take a 2-minute assessment. Find out where your family stands —
+              and what small steps can make a big difference.
+            </p>
+            <div className="flex items-center gap-4 flex-wrap">
+              <Link
+                href="/assess"
+                className="inline-flex items-center justify-center px-8 py-4 bg-sage text-white text-lg font-medium rounded-[10px] hover:opacity-90 transition-opacity min-h-[52px]"
+              >
+                Take the assessment
+              </Link>
+              <span className="text-ink-tertiary text-base">Free · 2 minutes · No login</span>
+            </div>
+          </section>
+
+          {/* Stats — stacked cards on the right on desktop */}
+          <section className="mt-16 lg:mt-0 lg:w-[340px] xl:w-[380px] shrink-0">
+            <p className="text-ink-tertiary text-sm uppercase tracking-wide mb-5">Why this matters</p>
+            <div className="flex flex-row lg:flex-col gap-4 overflow-x-auto lg:overflow-visible">
+              <StatCard number="6–12" label="institutions hold a typical parent's finances — with no single view" />
+              <StatCard number="75%" label="of Indian seniors manage at least one chronic condition" />
+              <StatCard number="83%" label="of Indian seniors have no health insurance" />
+            </div>
+            <p className="mt-4 text-xs text-ink-tertiary">
+              Sources: RBI, LASI Wave 1, Outlook Money
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function StatCard({ number, label }: { number: string; label: string }) {
+  return (
+    <div className="bg-surface/80 border border-border-subtle rounded-[12px] p-5 min-w-[220px] lg:min-w-0">
+      <p className="font-[family-name:var(--font-display)] text-[26px] font-semibold text-ink leading-tight mb-1">
+        {number}
+      </p>
+      <p className="text-[15px] text-ink-secondary leading-snug">{label}</p>
+    </div>
+  );
+}
+
+/* ─── Warm SVG icons ─── */
+
+function LeafIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-sage">
+      <path
+        d="M4 16C4 16 6 10 12 6C12 6 14 4 16 4C16 4 16 8 14 12C10 14 4 16 4 16Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="currentColor"
+        fillOpacity="0.12"
+      />
+      <path
+        d="M10 10L4 16"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+

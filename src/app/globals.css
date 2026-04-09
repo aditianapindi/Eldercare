@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Base warm neutrals */
+  --color-cream: #FAF7F2;
+  --color-surface: #FBF8F3;
+  --color-sand: #F5EFE6;
+  --color-border-subtle: #EAE2D4;
+  --color-border: #D6CCB8;
+
+  /* Text */
+  --color-ink: #2A2520;
+  --color-ink-secondary: #5C5448;
+  --color-ink-tertiary: #8A8170;
+
+  /* Accents */
+  --color-sage: #7A8B6F;
+  --color-sage-light: #E8EDE5;
+  --color-terracotta: #B8643F;
+  --color-terracotta-light: #F5E6DE;
+  --color-blue: #6B82A0;
+  --color-blue-light: #E4EAF0;
+  --color-mustard: #C9A14A;
+  --color-mustard-light: #F5EDD4;
+
+  /* Fonts */
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-dm-sans);
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+/* Smooth page transitions */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove default focus styles, add accessible custom ones */
+*:focus-visible {
+  outline: 2px solid var(--color-sage);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Gentle fade-in for reassurance text */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
