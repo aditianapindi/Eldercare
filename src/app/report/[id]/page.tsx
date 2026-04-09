@@ -82,218 +82,144 @@ function ReportView({ report }: { report: CareReport }) {
   const scoreLabel = getScoreLabel(report.score);
   const scoreSubtext = getScoreSubtext(report.score);
   const shareText = `I just checked how prepared my family is for my parents' care with GetSukoon. It opened my eyes to things I hadn't thought about. Try it — takes 2 minutes.`;
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   return (
     <main className="min-h-dvh relative overflow-hidden">
-      {/* Background warmth */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute -top-[100px] right-[10%] w-[400px] h-[400px] rounded-full bg-sage/[0.05] blur-xl" />
-        <div className="absolute top-[40%] -left-[100px] w-[300px] h-[300px] rounded-full bg-mustard/[0.03] blur-xl" />
       </div>
 
-      <div className="relative px-6 py-12 md:px-12 lg:px-24">
-      {/* Header */}
-      <header className="mb-8 flex items-center gap-3">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-sage">
-          <path d="M4 16C4 16 6 10 12 6C12 6 14 4 16 4C16 4 16 8 14 12C10 14 4 16 4 16Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.12" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M10 10L4 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-        <p className="text-[15px] tracking-wide text-ink-tertiary uppercase">GetSukoon</p>
-      </header>
+      <div className="relative px-6 py-8 md:px-12 lg:px-24 max-w-[900px] mx-auto">
+        {/* Header */}
+        <header className="mb-6 flex items-center gap-2">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" className="text-sage">
+            <path d="M4 16C4 16 6 10 12 6C12 6 14 4 16 4C16 4 16 8 14 12C10 14 4 16 4 16Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.12" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M10 10L4 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          <p className="text-sm tracking-wide text-ink-tertiary uppercase">GetSukoon</p>
+        </header>
 
-      {/* ─── Hero card (the screenshot unit) ─── */}
-      <section className="max-w-[600px] mx-auto mb-12 animate-[fadeIn_0.5s_ease]">
-        <div className="bg-surface/90 backdrop-blur-sm border border-border-subtle rounded-[16px] p-8 text-center shadow-[0_2px_24px_rgba(42,37,32,0.04)]">
-          {/* Warm lead-in */}
-          <p className="text-ink-secondary text-base mb-6">
-            Your family&apos;s care readiness
-          </p>
-
-          {/* Score circle with soft glow */}
-          <div className="relative mx-auto w-[150px] h-[150px] mb-5">
-            <div className="absolute inset-0 rounded-full border-2 border-sage/15 scale-[1.2]" />
-            <div className="w-full h-full rounded-full border-[5px] border-sage bg-cream flex items-center justify-center shadow-[0_4px_20px_rgba(122,139,111,0.1)]">
-              <div>
-                <span className="font-[family-name:var(--font-display)] text-[48px] font-bold text-ink leading-none">
-                  {report.score}
-                </span>
-                <span className="text-ink-tertiary text-lg">/10</span>
+        {/* ─── Score hero + Vault CTA side by side on desktop ─── */}
+        <div className="md:flex md:gap-6 mb-8">
+          {/* Score card */}
+          <div className="bg-surface/90 backdrop-blur-sm border border-border-subtle rounded-[16px] p-6 md:p-8 text-center shadow-[0_2px_24px_rgba(42,37,32,0.04)] md:flex-1 mb-4 md:mb-0 animate-[fadeIn_0.5s_ease]">
+            <p className="text-ink-secondary text-sm mb-4">Your family&apos;s care readiness</p>
+            <div className="relative mx-auto w-[120px] h-[120px] md:w-[140px] md:h-[140px] mb-4">
+              <div className="absolute inset-0 rounded-full border-2 border-sage/15 scale-[1.15]" />
+              <div className="w-full h-full rounded-full border-[5px] border-sage bg-cream flex items-center justify-center">
+                <div>
+                  <span className="font-[family-name:var(--font-display)] text-[40px] md:text-[48px] font-bold text-ink leading-none">{report.score}</span>
+                  <span className="text-ink-tertiary text-base">/10</span>
+                </div>
               </div>
             </div>
-          </div>
-          <p className="text-xl font-semibold text-sage mb-2">{scoreLabel}</p>
-          <p className="text-ink-secondary text-base leading-relaxed max-w-[340px] mx-auto mb-6">
-            {scoreSubtext}
-          </p>
+            <p className="text-lg font-semibold text-sage mb-1">{scoreLabel}</p>
+            <p className="text-ink-secondary text-sm max-w-[300px] mx-auto mb-4">{scoreSubtext}</p>
 
-          {/* Areas to explore */}
-          {report.blindSpotCount > 0 && (
-            <div className="bg-sage-light/60 rounded-[12px] px-5 py-4 text-left border border-sage/10">
-              <div className="flex items-center gap-2 mb-1">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-sage shrink-0">
-                  <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M8 5.5V8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <circle cx="8" cy="11" r="0.6" fill="currentColor" />
-                </svg>
-                <p className="font-semibold text-ink text-base">
-                  {report.blindSpotCount} area{report.blindSpotCount > 1 ? "s" : ""} to explore together
-                </p>
-              </div>
-              <p className="text-ink-tertiary text-sm mb-3 ml-[24px]">
-                These are the things most families discover they need to talk about.
-              </p>
-              <div className="flex flex-wrap gap-2 ml-[24px]">
+            {/* Blind spots as pills */}
+            {report.blindSpotCount > 0 && (
+              <div className="flex flex-wrap justify-center gap-1.5 mb-4">
                 {report.blindSpotAreas.map((area) => (
-                  <span
-                    key={area}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/70 rounded-full text-sm text-ink-secondary border border-sage/10"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-sage" />
+                  <span key={area} className="px-2.5 py-1 bg-sage-light/60 rounded-full text-xs text-sage font-medium border border-sage/10">
                     {area}
                   </span>
                 ))}
               </div>
+            )}
+
+            <p className="text-ink-tertiary text-xs">{report.comparativeContext}</p>
+
+            {/* Share */}
+            <div className="flex gap-2 mt-4 justify-center">
+              <button
+                onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
+                className="px-4 py-2 bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
+              >
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/></svg>
+                Share
+              </button>
+              <button
+                onClick={() => navigator.clipboard?.writeText(shareUrl)}
+                className="px-4 py-2 border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
+              >
+                Copy link
+              </button>
+            </div>
+          </div>
+
+          {/* Vault CTA — prominent, right next to score */}
+          <div className="bg-sand rounded-[16px] p-6 md:w-[320px] shrink-0">
+            <p className="font-[family-name:var(--font-display)] text-lg font-medium text-ink mb-1">
+              Save &amp; track your care
+            </p>
+            <p className="text-ink-secondary text-sm mb-4">
+              Doctors, medicines, expenses, daily check-ins — all in one place.
+            </p>
+            <VaultCTA reportId={report.id} sessionId={report.sessionId} />
+          </div>
+        </div>
+
+        {/* ─── Compact details grid ─── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {/* Personalized insight */}
+          {report.personalizedInsight && (
+            <div className="bg-surface border border-border-subtle rounded-[12px] p-4 md:col-span-2">
+              <p className="text-ink-secondary text-sm leading-relaxed">
+                <span className="font-semibold text-ink">What we noticed: </span>
+                {report.personalizedInsight}
+              </p>
             </div>
           )}
 
-          {/* Comparative context */}
-          <p className="text-ink-tertiary text-sm mt-5">{report.comparativeContext}</p>
-        </div>
+          {/* Cost estimate */}
+          <div className="bg-surface border border-border-subtle rounded-[12px] p-4">
+            <p className="text-ink-tertiary text-xs font-medium uppercase tracking-wide mb-1">Monthly cost estimate</p>
+            <p className="font-[family-name:var(--font-display)] text-xl md:text-2xl font-bold text-ink">
+              ₹{(report.monthlyCostEstimate.low / 1000).toFixed(0)}K – ₹{(report.monthlyCostEstimate.high / 1000).toFixed(0)}K
+            </p>
+            <p className="text-ink-tertiary text-xs mt-1">Grows 10-15% yearly</p>
+          </div>
 
-        {/* Share buttons */}
-        <div className="flex gap-3 mt-4">
-          <button
-            onClick={() => {
-              const url = typeof window !== "undefined" ? window.location.href : "";
-              window.open(
-                `https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + url)}`,
-                "_blank"
-              );
-            }}
-            className="flex-1 px-5 py-3 bg-surface border-2 border-border text-ink font-medium rounded-[10px] text-base min-h-[48px] hover:border-ink-tertiary transition-colors flex items-center justify-center gap-2"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="shrink-0">
-              <path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/>
-              <path d="M14.2 12.1c-.2-.1-1.3-.6-1.5-.7-.2-.1-.4-.1-.5.1-.2.2-.6.7-.7.9-.1.1-.3.2-.5.1-.2-.1-1-.4-1.8-1.2-.7-.6-1.1-1.4-1.3-1.6-.1-.2 0-.3.1-.5.1-.1.2-.3.3-.4.1-.1.1-.2.2-.4 0-.1 0-.3-.1-.4-.1-.1-.5-1.2-.7-1.7-.2-.4-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.3c.1.2 1.6 2.4 3.8 3.4.5.2.9.4 1.3.5.5.2 1 .1 1.4.1.4-.1 1.3-.5 1.4-1 .2-.5.2-.9.1-1-.1-.1-.2-.2-.5-.3z" fill="white"/>
-            </svg>
-            Share on WhatsApp
-          </button>
-          <button
-            onClick={() => {
-              if (typeof navigator !== "undefined" && navigator.clipboard) {
-                navigator.clipboard.writeText(window.location.href);
-              }
-            }}
-            className="px-5 py-3 border-2 border-border text-ink font-medium rounded-[10px] text-base min-h-[48px] hover:border-ink-tertiary transition-colors"
-          >
-            Copy link
-          </button>
-        </div>
-      </section>
+          {/* Coordination */}
+          {report.siblingSplitView && (
+            <div className="bg-surface border border-border-subtle rounded-[12px] p-4">
+              <p className="text-ink-tertiary text-xs font-medium uppercase tracking-wide mb-1">Family coordination</p>
+              <p className="text-ink-secondary text-sm leading-relaxed">{report.siblingSplitView}</p>
+            </div>
+          )}
 
-      {/* ─── Report sections — all open, no collapsing ─── */}
-      <div className="max-w-[600px] mx-auto space-y-5">
-        {/* Personalized insight */}
-        {report.personalizedInsight && (
-          <div className="bg-surface/90 border border-border-subtle rounded-[14px] p-5">
-            <div className="flex items-start gap-3">
-              <svg width="20" height="20" viewBox="0 0 22 22" fill="none" className="text-sage mt-0.5 shrink-0">
-                <path d="M11 3C11 3 7 7 7 11C7 15 11 19 11 19C11 19 15 15 15 11C15 7 11 3 11 3Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.1" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <div>
-                <p className="font-semibold text-ink text-base mb-1">What we noticed</p>
-                <p className="text-ink-secondary text-sm md:text-base leading-relaxed">{report.personalizedInsight}</p>
-              </div>
+          {/* Risk alerts — compact list */}
+          <div className="bg-surface border border-border-subtle rounded-[12px] p-4">
+            <p className="text-ink-tertiary text-xs font-medium uppercase tracking-wide mb-2">Things worth knowing</p>
+            <div className="space-y-2">
+              {report.riskAlerts.map((alert, i) => (
+                <div key={i}>
+                  <p className="text-ink text-sm font-medium">{alert.title}</p>
+                  <p className="text-mustard text-xs">{alert.stat}</p>
+                </div>
+              ))}
             </div>
           </div>
-        )}
 
-        {/* Monthly cost estimate */}
-        <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
-          <p className="font-semibold text-ink text-base mb-2">What care might cost</p>
-          <div className="flex items-baseline gap-2 mb-2">
-            <span className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-ink">
-              ₹{report.monthlyCostEstimate.low.toLocaleString("en-IN")}
-            </span>
-            <span className="text-ink-tertiary">to</span>
-            <span className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-ink">
-              ₹{report.monthlyCostEstimate.high.toLocaleString("en-IN")}
-            </span>
-            <span className="text-ink-tertiary text-sm">/month</span>
-          </div>
-          <p className="text-ink-tertiary text-sm">
-            Based on city, ages, and health. Costs typically grow 10-15% each year.
-          </p>
-        </div>
-
-        {/* Sibling coordination */}
-        {report.siblingSplitView && (
-          <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
-            <p className="font-semibold text-ink text-base mb-2">How your family coordinates</p>
-            <p className="text-ink-secondary text-sm md:text-base leading-relaxed">{report.siblingSplitView}</p>
-          </div>
-        )}
-
-        {/* Things worth knowing */}
-        <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
-          <p className="font-semibold text-ink text-base mb-3">Things worth knowing</p>
-          <div className="space-y-4">
-            {report.riskAlerts.map((alert, i) => (
-              <div key={i} className="pb-4 last:pb-0 border-b border-border-subtle last:border-0">
-                <p className="font-medium text-ink text-sm md:text-base mb-0.5">{alert.title}</p>
-                <p className="text-mustard text-xs md:text-sm font-medium mb-1">{alert.stat}</p>
-                <p className="text-ink-secondary text-sm leading-relaxed">{alert.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Steps you can take together */}
-        <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
-          <p className="font-semibold text-ink text-base mb-3">Steps you can take together</p>
-          <div className="space-y-4">
-            {report.priorityActions.map((action, i) => {
-              const urgencyLabel: Record<string, string> = { high: "Start here", medium: "When you're ready", low: "Good to know" };
-              const urgencyStyle: Record<string, string> = { high: "bg-sage-light text-sage", medium: "bg-sand text-ink-secondary", low: "bg-sand text-ink-tertiary" };
-              return (
-                <div key={i} className="pb-4 last:pb-0 border-b border-border-subtle last:border-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-ink text-sm md:text-base">{i + 1}. {action.title}</span>
-                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${urgencyStyle[action.urgency]}`}>
-                      {urgencyLabel[action.urgency]}
+          {/* Action items — checklist */}
+          <div className="bg-surface border border-border-subtle rounded-[12px] p-4">
+            <p className="text-ink-tertiary text-xs font-medium uppercase tracking-wide mb-2">Next steps</p>
+            <div className="space-y-2">
+              {report.priorityActions.map((action, i) => {
+                const urgencyStyle: Record<string, string> = { high: "bg-sage text-white", medium: "bg-mustard-light text-mustard", low: "bg-sand text-ink-tertiary" };
+                return (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full mt-0.5 shrink-0 ${urgencyStyle[action.urgency]}`}>
+                      {i + 1}
                     </span>
+                    <p className="text-ink text-sm">{action.title}</p>
                   </div>
-                  <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* ─── Enrichment: optional deeper sections ─── */}
-      <EnrichmentPanel reportId={report.id} />
-
-      {/* ─── Bottom CTA ─── */}
-      <div className="max-w-[600px] mx-auto mt-10 pt-8 border-t border-border-subtle">
-        <div className="bg-sand rounded-[12px] p-6">
-          <p className="font-[family-name:var(--font-display)] text-xl font-medium text-ink mb-2">
-            Save this to your Family Vault
-          </p>
-          <p className="text-ink-secondary text-base mb-4">
-            Track your parents&apos; doctors, medicines, and daily check-ins — all in one place. Free, private, and always accessible.
-          </p>
-          <VaultCTA reportId={report.id} sessionId={report.sessionId} />
-        </div>
-      </div>
-
-      {/* Closing note */}
-      <div className="max-w-[600px] mx-auto mt-8 text-center">
-        <p className="text-ink-tertiary text-sm">
-          Caring for aging parents is one of the most important things you&apos;ll ever do.
-          The fact that you&apos;re here means your family is in good hands.
-        </p>
-      </div>
       </div>
     </main>
   );
@@ -453,103 +379,6 @@ function VaultCTA({ reportId, sessionId }: { reportId: string; sessionId: string
         </button>
       </div>
     </form>
-  );
-}
-
-/* ─── Vault progress panel — replaces old enrichment forms ─── */
-
-function EnrichmentPanel({ reportId }: { reportId: string }) {
-  void reportId; // kept for API compatibility
-
-  const vaultSections = [
-    {
-      title: "Doctors & Health",
-      description: "Track your parents' doctors, conditions, and specialists",
-      href: "/vault/doctors",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-sage">
-          <rect x="4" y="2" width="16" height="20" rx="3" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M12 8V16M8 12H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      ),
-    },
-    {
-      title: "Medicines",
-      description: "Daily medication schedule with dosage and timing",
-      href: "/vault/medicines",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-sage">
-          <rect x="6" y="3" width="12" height="18" rx="4" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M6 11H18" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      ),
-    },
-    {
-      title: "Expenses",
-      description: "Monthly costs — recurring and one-time",
-      href: "/vault/expenses",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-sage">
-          <rect x="3" y="6" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M3 11H21" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      ),
-    },
-    {
-      title: "Financial Assets",
-      description: "Bank accounts, insurance, property, investments",
-      href: "/vault/assets",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-sage">
-          <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M7 7V5C7 3.89543 7.89543 3 9 3H15C16.1046 3 17 3.89543 17 5V7" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="12" cy="14" r="2" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      ),
-    },
-    {
-      title: "Emergency Contacts",
-      description: "Neighbors, helpers, family — the people your parents rely on",
-      href: "/vault/contacts",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-sage">
-          <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M5 20C5 16.6863 8.13401 14 12 14C15.866 14 19 16.6863 19 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      ),
-    },
-  ];
-
-  return (
-    <div className="max-w-[600px] mx-auto mt-10 pt-8 border-t border-border-subtle">
-      <p className="font-[family-name:var(--font-display)] text-xl font-medium text-ink mb-1">
-        Build your Family Vault
-      </p>
-      <p className="text-ink-tertiary text-base mb-5">
-        The more you add, the better your care plan gets. Sign in to save everything securely.
-      </p>
-
-      <div className="space-y-2">
-        {vaultSections.map((section) => (
-          <a
-            key={section.href}
-            href={section.href}
-            className="flex items-center gap-4 bg-surface border border-border-subtle rounded-[12px] px-5 py-4 min-h-[56px] hover:border-sage/40 transition-colors group"
-          >
-            <div className="w-9 h-9 rounded-full bg-sage-light flex items-center justify-center shrink-0">
-              {section.icon}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium text-ink text-base group-hover:text-sage transition-colors">{section.title}</p>
-              <p className="text-ink-tertiary text-sm">{section.description}</p>
-            </div>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-ink-tertiary shrink-0 group-hover:text-sage transition-colors">
-              <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </a>
-        ))}
-      </div>
-    </div>
   );
 }
 
