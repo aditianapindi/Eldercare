@@ -284,7 +284,7 @@ function DoctorRow({
         {doctor.phone && (
           <a
             href={`tel:${doctor.phone}`}
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-sage-light text-sage hover:bg-sage hover:text-white transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-sage-light text-sage hover:bg-sage hover:text-white transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path
@@ -298,7 +298,7 @@ function DoctorRow({
         )}
         <button
           onClick={onDelete}
-          className="flex items-center justify-center w-8 h-8 rounded-full text-ink-tertiary opacity-0 group-hover:opacity-100 hover:bg-terracotta-light hover:text-terracotta transition-all"
+          className="flex items-center justify-center w-9 h-9 rounded-full text-ink-tertiary opacity-0 group-hover:opacity-100 hover:bg-terracotta-light hover:text-terracotta transition-all"
         >
           <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
             <path d="M2 4H12M5 4V2H9V4M5 7V11M9 7V11M3 4L4 13H10L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

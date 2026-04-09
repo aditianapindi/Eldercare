@@ -65,7 +65,7 @@ export default function Home() {
 
 function StatCard({ number, label }: { number: string; label: string }) {
   return (
-    <div className="bg-surface/80 border border-border-subtle rounded-[12px] p-5 min-w-[220px] lg:min-w-0">
+    <div className="bg-surface/80 border border-border-subtle rounded-[12px] p-5 min-w-[180px] sm:min-w-[220px] lg:min-w-0">
       <p className="font-[family-name:var(--font-display)] text-[26px] font-semibold text-ink leading-tight mb-1">
         {number}
       </p>

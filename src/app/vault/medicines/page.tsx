@@ -528,13 +528,13 @@ function ConditionEditor({
           onChange={(e) => setCustomInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustom())}
           placeholder="Other condition..."
-          className="flex-1 px-3 py-1.5 bg-white border border-border rounded-[6px] text-xs text-ink focus:border-sage focus:outline-none min-h-[30px]"
+          className="flex-1 px-3 py-1.5 bg-white border border-border rounded-[6px] text-xs text-ink focus:border-sage focus:outline-none min-h-[36px]"
         />
         <button
           type="button"
           onClick={addCustom}
           disabled={!customInput.trim()}
-          className="px-3 py-1.5 text-sage text-xs font-medium hover:bg-sage-light rounded-[6px] transition-colors disabled:opacity-40"
+          className="px-3 py-1.5 min-h-[36px] text-sage text-xs font-medium hover:bg-sage-light rounded-[6px] transition-colors disabled:opacity-40"
         >
           + Add
         </button>

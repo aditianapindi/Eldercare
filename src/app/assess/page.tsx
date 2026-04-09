@@ -141,7 +141,7 @@ export default function AssessPage() {
               <p className="text-ink text-sm md:text-base font-medium mb-2">Who are you caring for?</p>
               <div className="space-y-2">
                 {dependents.map((dep, i) => (
-                  <div key={i} className="flex gap-2 items-center">
+                  <div key={i} className="flex gap-2 items-center min-w-0">
                     <input
                       value={dep.label}
                       onChange={(e) => {
@@ -167,7 +167,7 @@ export default function AssessPage() {
                       <button
                         type="button"
                         onClick={() => setDependents(dependents.filter((_, j) => j !== i))}
-                        className="w-8 h-8 rounded-full text-ink-tertiary hover:bg-terracotta-light hover:text-terracotta transition-colors shrink-0 flex items-center justify-center"
+                        className="w-9 h-9 min-h-[36px] rounded-full text-ink-tertiary hover:bg-terracotta-light hover:text-terracotta transition-colors shrink-0 flex items-center justify-center"
                       >
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                           <path d="M2 2L10 10M10 2L2 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

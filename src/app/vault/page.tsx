@@ -159,7 +159,7 @@ function VaultDashboard() {
 
       {/* 2. Assessment — compact inline bar */}
       {report && report.id && (
-        <div className="flex items-center gap-3 bg-surface border border-border-subtle rounded-[10px] px-4 py-2.5 mb-5">
+        <div className="flex items-center gap-3 bg-surface border border-border-subtle rounded-[10px] px-4 py-2.5 min-h-[48px] mb-5">
           <div className="w-9 h-9 rounded-full border-2 border-sage bg-cream flex items-center justify-center shrink-0">
             <span className="font-[family-name:var(--font-display)] text-sm font-bold text-ink">{report.score}</span>
           </div>
@@ -173,14 +173,14 @@ function VaultDashboard() {
           <div className="flex items-center gap-1.5 shrink-0">
             <a
               href={`/report/${report.id}`}
-              className="px-3 py-1.5 bg-sage text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity"
+              className="px-3 py-2 min-h-[36px] bg-sage text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity"
             >
               Report
             </a>
             <button
               onClick={handleRegenerate}
               disabled={regenerating}
-              className="p-1.5 text-sage hover:bg-sage-light rounded-full transition-colors disabled:opacity-50"
+              className="p-2 min-h-[36px] text-sage hover:bg-sage-light rounded-full transition-colors disabled:opacity-50"
               title="Update report with vault data"
             >
               {regenerating ? (

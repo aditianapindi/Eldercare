@@ -59,7 +59,7 @@ export default function VaultLayout({ children }: { children: React.ReactNode })
               <Link
                 key={tab.href}
                 href={tab.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-medium transition-colors ${
                   active ? "bg-sage-light text-sage" : "text-ink-secondary hover:bg-sand"
                 }`}
               >
@@ -77,7 +77,7 @@ export default function VaultLayout({ children }: { children: React.ReactNode })
       </div>
 
       {/* Mobile bottom tabs */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-20 bg-cream/95 backdrop-blur-md border-t border-border-subtle flex">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-20 bg-cream/95 backdrop-blur-md border-t border-border-subtle flex pb-[env(safe-area-inset-bottom)]">
         {tabs.map((tab) => {
           const active = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href);
           return (
@@ -108,7 +108,7 @@ function UserMenu() {
         await signOut();
         router.replace("/");
       }}
-      className="text-xs text-ink-tertiary hover:text-ink transition-colors px-3 py-1.5 rounded-lg hover:bg-sand"
+      className="text-xs text-ink-tertiary hover:text-ink transition-colors px-3 py-2 min-h-[44px] rounded-lg hover:bg-sand"
       title={user?.email || ""}
     >
       Sign out
