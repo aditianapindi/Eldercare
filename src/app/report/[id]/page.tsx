@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import type { CareReport } from "@/lib/types";
+import { Logo } from "@/lib/logo";
 import { getScoreLabel, getScoreSubtext } from "@/lib/scoring";
 
 export default function ReportPage() {
@@ -92,12 +93,8 @@ function ReportView({ report }: { report: CareReport }) {
 
       <div className="relative px-6 py-8 md:px-12 lg:px-24 max-w-[900px] mx-auto">
         {/* Header */}
-        <header className="mb-6 flex items-center gap-2">
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" className="text-sage">
-            <path d="M4 16C4 16 6 10 12 6C12 6 14 4 16 4C16 4 16 8 14 12C10 14 4 16 4 16Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.12" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M10 10L4 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          <p className="text-sm tracking-wide text-ink-tertiary uppercase">GetSukoon</p>
+        <header className="mb-6">
+          <Logo />
         </header>
 
         {/* ─── Score hero + Vault CTA side by side on desktop ─── */}

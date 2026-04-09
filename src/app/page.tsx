@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/lib/logo";
 
 export default function Home() {
   return (
@@ -15,11 +16,8 @@ export default function Home() {
 
       <div className="relative px-6 py-12 md:px-12 lg:px-24 flex flex-col min-h-dvh">
         {/* Header */}
-        <header className="mb-16 flex items-center gap-3">
-          <LeafIcon />
-          <p className="font-[family-name:var(--font-body)] text-[15px] tracking-wide text-ink-tertiary uppercase">
-            GetSukoon
-          </p>
+        <header className="mb-16">
+          <Logo size="large" />
         </header>
 
         {/* Hero + Stats — side by side on desktop */}

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
+import { Logo } from "@/lib/logo";
 
 export default function VaultLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -39,13 +40,7 @@ export default function VaultLayout({ children }: { children: React.ReactNode })
     <div className="min-h-dvh pb-[80px] md:pb-0">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-cream/90 backdrop-blur-md border-b border-border-subtle px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" className="text-sage">
-            <path d="M4 16C4 16 6 10 12 6C12 6 14 4 16 4C16 4 16 8 14 12C10 14 4 16 4 16Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.12" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M10 10L4 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          <span className="text-sm tracking-wide text-ink-tertiary uppercase">GetSukoon</span>
-        </div>
+        <Logo size="small" />
         <UserMenu />
       </header>
 

@@ -6,6 +6,7 @@ import { diagnosticQuestions } from "@/lib/questions";
 import { calculateDiagnosticScore } from "@/lib/scoring";
 import type { DiagnosticAnswer, ConcernInfo } from "@/lib/types";
 import { CityInput } from "@/lib/city-input";
+import { Logo } from "@/lib/logo";
 
 const reassurances: Record<string, string> = {
   health: "Most families piece this together over time.",
@@ -78,11 +79,8 @@ export default function AssessPage() {
 
       <div className="relative px-6 py-10 md:px-12 md:py-16 max-w-[640px] mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-2 mb-2">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-sage">
-            <path d="M3 13C3 13 5 8 9 5C9 5 11 3 13 3C13 3 13 6 11 9C8 11 3 13 3 13Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.12" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <p className="text-ink-tertiary text-sm uppercase tracking-wide">GetSukoon</p>
+        <div className="mb-2">
+          <Logo size="small" />
         </div>
         <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl leading-[1.2] font-medium text-ink mb-1">
           Five questions most families never discuss
