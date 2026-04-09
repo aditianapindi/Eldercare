@@ -44,12 +44,11 @@ export async function GET(req: NextRequest) {
     doctors: doctors.length,
     monthlyExpenses: 0,
   };
-  // @ts-expect-error — extending stats with extra fields for checklist
-  stats["_meta"].emergencyContacts = contactRows.filter((c) => c.role === "emergency").length;
-  // @ts-expect-error
-  stats["_meta"].totalContacts = contactRows.length;
-  // @ts-expect-error
-  stats["_meta"].totalAssets = assetRows.length;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const meta = stats["_meta"] as any;
+  meta.emergencyContacts = contactRows.filter((c) => c.role === "emergency").length;
+  meta.totalContacts = contactRows.length;
+  meta.totalAssets = assetRows.length;
 
   return NextResponse.json(stats);
 }

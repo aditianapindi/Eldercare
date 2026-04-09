@@ -313,7 +313,7 @@ function ExpenseForm({
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [isRecurring, setIsRecurring] = useState(true);
-  const [frequency, setFrequency] = useState("monthly");
+  const [frequency] = useState("monthly");
   const [date, setDate] = useState("");
   const [parentId, setParentId] = useState<string>("shared");
   const [notes, setNotes] = useState("");

@@ -802,27 +802,7 @@ function AddDependentForm({ onSubmit, onCancel }: { onSubmit: (label: string) =>
 
 /* ─── Helpers ─── */
 
-function getStreak(checkins: Checkin[]): number {
-  if (checkins.length === 0) return 0;
-  const sorted = [...checkins].sort((a, b) => new Date(b.checked_at).getTime() - new Date(a.checked_at).getTime());
-  let streak = 1;
-  for (let i = 1; i < sorted.length; i++) {
-    const diff = (new Date(sorted[i - 1].checked_at).getTime() - new Date(sorted[i].checked_at).getTime()) / (1000 * 60 * 60 * 24);
-    if (diff <= 1.5) streak++;
-    else break;
-  }
-  return streak;
-}
-
 /** Returns YYYY-MM-DD in the user's local timezone */
 function localDate(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function formatDate(dateStr: string): string {
-  const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
-  if (diff === 0) return "today";
-  if (diff === 1) return "yesterday";
-  if (diff < 7) return `${diff}d ago`;
-  return new Date(dateStr).toLocaleDateString("en-IN", { month: "short", day: "numeric" });
 }
