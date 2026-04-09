@@ -81,17 +81,6 @@ export default function ReportPage() {
 function ReportView({ report }: { report: CareReport }) {
   const scoreLabel = getScoreLabel(report.score);
   const scoreSubtext = getScoreSubtext(report.score);
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
-
-  const toggle = (section: string) => {
-    setExpandedSections((prev) => {
-      const next = new Set(prev);
-      if (next.has(section)) next.delete(section);
-      else next.add(section);
-      return next;
-    });
-  };
-
   const shareText = `I just checked how prepared my family is for my parents' care with GetSukoon. It opened my eyes to things I hadn't thought about. Try it — takes 2 minutes.`;
 
   return (
@@ -202,117 +191,84 @@ function ReportView({ report }: { report: CareReport }) {
         </div>
       </section>
 
-      {/* ─── Expandable sections ─── */}
-      <div className="max-w-[600px] mx-auto space-y-3">
-        {/* Personalized insight — always open, warm tone */}
+      {/* ─── Report sections — all open, no collapsing ─── */}
+      <div className="max-w-[600px] mx-auto space-y-5">
+        {/* Personalized insight */}
         {report.personalizedInsight && (
-          <div className="bg-surface/90 border border-border-subtle rounded-[14px] p-6">
+          <div className="bg-surface/90 border border-border-subtle rounded-[14px] p-5">
             <div className="flex items-start gap-3">
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" className="text-sage mt-0.5 shrink-0">
+              <svg width="20" height="20" viewBox="0 0 22 22" fill="none" className="text-sage mt-0.5 shrink-0">
                 <path d="M11 3C11 3 7 7 7 11C7 15 11 19 11 19C11 19 15 15 15 11C15 7 11 3 11 3Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.1" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <div>
-                <p className="font-[family-name:var(--font-display)] text-lg font-medium text-ink mb-2">
-                  What we noticed
-                </p>
-                <p className="text-ink-secondary text-base leading-relaxed">
-                  {report.personalizedInsight}
-                </p>
+                <p className="font-semibold text-ink text-base mb-1">What we noticed</p>
+                <p className="text-ink-secondary text-sm md:text-base leading-relaxed">{report.personalizedInsight}</p>
               </div>
             </div>
           </div>
         )}
 
         {/* Monthly cost estimate */}
-        <CollapsibleSection
-          title="What care might cost"
-          summary={`₹${(report.monthlyCostEstimate.low / 1000).toFixed(0)}K – ₹${(report.monthlyCostEstimate.high / 1000).toFixed(0)}K / month`}
-          isOpen={expandedSections.has("costs")}
-          onToggle={() => toggle("costs")}
-        >
-          <div className="flex items-end gap-2 mb-3">
-            <span className="font-[family-name:var(--font-display)] text-3xl font-bold text-ink">
+        <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+          <p className="font-semibold text-ink text-base mb-2">What care might cost</p>
+          <div className="flex items-baseline gap-2 mb-2">
+            <span className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-ink">
               ₹{report.monthlyCostEstimate.low.toLocaleString("en-IN")}
             </span>
-            <span className="text-ink-tertiary text-lg mb-0.5">to</span>
-            <span className="font-[family-name:var(--font-display)] text-3xl font-bold text-ink">
+            <span className="text-ink-tertiary">to</span>
+            <span className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-ink">
               ₹{report.monthlyCostEstimate.high.toLocaleString("en-IN")}
             </span>
+            <span className="text-ink-tertiary text-sm">/month</span>
           </div>
-          <p className="text-ink-secondary text-base">
-            This is an estimate based on your parents&apos; city, ages, and health. It covers routine expenses, medical costs, and premiums. These costs typically grow 10-15% each year — planning ahead helps.
+          <p className="text-ink-tertiary text-sm">
+            Based on city, ages, and health. Costs typically grow 10-15% each year.
           </p>
-        </CollapsibleSection>
+        </div>
 
-        {/* Sibling split view */}
+        {/* Sibling coordination */}
         {report.siblingSplitView && (
-          <CollapsibleSection
-            title="How your family coordinates"
-            summary="Current care arrangement"
-            isOpen={expandedSections.has("siblings")}
-            onToggle={() => toggle("siblings")}
-          >
-            <p className="text-ink-secondary text-base leading-relaxed">
-              {report.siblingSplitView}
-            </p>
-          </CollapsibleSection>
+          <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+            <p className="font-semibold text-ink text-base mb-2">How your family coordinates</p>
+            <p className="text-ink-secondary text-sm md:text-base leading-relaxed">{report.siblingSplitView}</p>
+          </div>
         )}
 
-        {/* Things worth knowing — not "risk alerts" */}
-        <CollapsibleSection
-          title="Things worth knowing"
-          summary={`${report.riskAlerts.length} things to be aware of`}
-          isOpen={expandedSections.has("risks")}
-          onToggle={() => toggle("risks")}
-        >
-          <div className="space-y-5">
+        {/* Things worth knowing */}
+        <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+          <p className="font-semibold text-ink text-base mb-3">Things worth knowing</p>
+          <div className="space-y-4">
             {report.riskAlerts.map((alert, i) => (
-              <div key={i}>
-                <p className="font-semibold text-ink text-base mb-1">{alert.title}</p>
-                <p className="text-mustard text-sm font-medium mb-1.5">{alert.stat}</p>
-                <p className="text-ink-secondary text-base leading-relaxed">
-                  {alert.description}
-                </p>
+              <div key={i} className="pb-4 last:pb-0 border-b border-border-subtle last:border-0">
+                <p className="font-medium text-ink text-sm md:text-base mb-0.5">{alert.title}</p>
+                <p className="text-mustard text-xs md:text-sm font-medium mb-1">{alert.stat}</p>
+                <p className="text-ink-secondary text-sm leading-relaxed">{alert.description}</p>
               </div>
             ))}
           </div>
-        </CollapsibleSection>
+        </div>
 
-        {/* Steps you can take together — not "priority actions" */}
-        <CollapsibleSection
-          title="Steps you can take together"
-          summary={`${report.priorityActions.length} practical next steps`}
-          isOpen={expandedSections.has("actions")}
-          onToggle={() => toggle("actions")}
-        >
-          <div className="space-y-5">
+        {/* Steps you can take together */}
+        <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+          <p className="font-semibold text-ink text-base mb-3">Steps you can take together</p>
+          <div className="space-y-4">
             {report.priorityActions.map((action, i) => {
-              const urgencyLabel = {
-                high: "Start here",
-                medium: "When you're ready",
-                low: "Good to know",
-              };
-              const urgencyStyle = {
-                high: "bg-sage-light text-sage",
-                medium: "bg-sand text-ink-secondary",
-                low: "bg-sand text-ink-tertiary",
-              };
+              const urgencyLabel: Record<string, string> = { high: "Start here", medium: "When you're ready", low: "Good to know" };
+              const urgencyStyle: Record<string, string> = { high: "bg-sage-light text-sage", medium: "bg-sand text-ink-secondary", low: "bg-sand text-ink-tertiary" };
               return (
-                <div key={i}>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="font-semibold text-ink text-base">{i + 1}. {action.title}</span>
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${urgencyStyle[action.urgency]}`}>
+                <div key={i} className="pb-4 last:pb-0 border-b border-border-subtle last:border-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-medium text-ink text-sm md:text-base">{i + 1}. {action.title}</span>
+                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${urgencyStyle[action.urgency]}`}>
                       {urgencyLabel[action.urgency]}
                     </span>
                   </div>
-                  <p className="text-ink-secondary text-base leading-relaxed">
-                    {action.description}
-                  </p>
+                  <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
                 </div>
               );
             })}
           </div>
-        </CollapsibleSection>
+        </div>
       </div>
 
       {/* ─── Enrichment: optional deeper sections ─── */}
@@ -340,45 +296,6 @@ function ReportView({ report }: { report: CareReport }) {
       </div>
       </div>
     </main>
-  );
-}
-
-/* ─── Collapsible section ─── */
-
-function CollapsibleSection({
-  title,
-  summary,
-  isOpen,
-  onToggle,
-  children,
-}: {
-  title: string;
-  summary: string;
-  isOpen: boolean;
-  onToggle: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="bg-surface border border-border-subtle rounded-[12px] overflow-hidden">
-      <button
-        onClick={onToggle}
-        className="w-full flex items-center justify-between px-6 py-5 text-left min-h-[56px]"
-      >
-        <div>
-          <p className="font-semibold text-ink text-base">{title}</p>
-          <p className="text-ink-tertiary text-sm">{summary}</p>
-        </div>
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          className={`text-ink-tertiary shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
-        >
-          <path d="M5 8L10 13L15 8" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
-        </svg>
-      </button>
-      {isOpen && <div className="px-6 pb-6">{children}</div>}
-    </div>
   );
 }
 

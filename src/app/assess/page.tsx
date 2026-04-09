@@ -18,9 +18,8 @@ const reassurances: Record<string, string> = {
 export default function AssessPage() {
   const router = useRouter();
   const [answers, setAnswers] = useState<Record<string, DiagnosticAnswer>>({});
+  const [dependents, setDependents] = useState([{ label: "Mother", age: "" }, { label: "Father", age: "" }]);
   const [location, setLocation] = useState("");
-  const [parent1Age, setParent1Age] = useState("");
-  const [parent2Age, setParent2Age] = useState("");
   const [livingSituation, setLivingSituation] = useState("");
   const [siblingCount, setSiblingCount] = useState("");
   const [concern, setConcern] = useState<ConcernInfo>({ openText: "" });
@@ -39,9 +38,10 @@ export default function AssessPage() {
       diagnosticScore: score,
       parents: {
         location,
-        parent1Age,
-        parent2Age,
+        parent1Age: dependents[0]?.age || "",
+        parent2Age: dependents[1]?.age || "",
         livingSituation,
+        dependents,
       },
       siblings: { count: siblingCount },
       concern,
@@ -136,29 +136,63 @@ export default function AssessPage() {
         {/* Compact personalization — no section header, just a natural continuation */}
         {answeredAll && (
           <div className="animate-[fadeIn_0.3s_ease] border-t border-border-subtle pt-6 space-y-4 mb-6">
-            {/* Row 1: City + Ages */}
-            <div className="flex gap-2">
-              <CityInput
-                value={location}
-                onChange={setLocation}
-                placeholder="Parents' city"
-                className="flex-1 min-w-0 px-3 py-2.5 bg-surface border-2 border-border rounded-[10px] text-ink text-sm md:text-base focus:border-sage focus:outline-none min-h-[44px] md:min-h-[48px]"
-              />
-              <input
-                type="number"
-                value={parent1Age}
-                onChange={(e) => setParent1Age(e.target.value)}
-                placeholder="Age"
-                className="w-[72px] md:w-[80px] px-3 py-2.5 bg-surface border-2 border-border rounded-[10px] text-ink text-sm md:text-base focus:border-sage focus:outline-none min-h-[44px] md:min-h-[48px]"
-              />
-              <input
-                type="number"
-                value={parent2Age}
-                onChange={(e) => setParent2Age(e.target.value)}
-                placeholder="Age"
-                className="w-[72px] md:w-[80px] px-3 py-2.5 bg-surface border-2 border-border rounded-[10px] text-ink text-sm md:text-base focus:border-sage focus:outline-none min-h-[44px] md:min-h-[48px]"
-              />
+            {/* Who are you caring for? */}
+            <div>
+              <p className="text-ink text-sm md:text-base font-medium mb-2">Who are you caring for?</p>
+              <div className="space-y-2">
+                {dependents.map((dep, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <input
+                      value={dep.label}
+                      onChange={(e) => {
+                        const next = [...dependents];
+                        next[i] = { ...next[i], label: e.target.value };
+                        setDependents(next);
+                      }}
+                      placeholder="e.g. Mother, Father-in-law"
+                      className="flex-1 min-w-0 px-3 py-2.5 bg-surface border-2 border-border rounded-[10px] text-ink text-sm md:text-base focus:border-sage focus:outline-none min-h-[44px] md:min-h-[48px]"
+                    />
+                    <input
+                      type="number"
+                      value={dep.age}
+                      onChange={(e) => {
+                        const next = [...dependents];
+                        next[i] = { ...next[i], age: e.target.value };
+                        setDependents(next);
+                      }}
+                      placeholder="Age"
+                      className="w-[72px] md:w-[80px] px-3 py-2.5 bg-surface border-2 border-border rounded-[10px] text-ink text-sm md:text-base focus:border-sage focus:outline-none min-h-[44px] md:min-h-[48px]"
+                    />
+                    {dependents.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setDependents(dependents.filter((_, j) => j !== i))}
+                        className="w-8 h-8 rounded-full text-ink-tertiary hover:bg-terracotta-light hover:text-terracotta transition-colors shrink-0 flex items-center justify-center"
+                      >
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                          <path d="M2 2L10 10M10 2L2 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setDependents([...dependents, { label: "", age: "" }])}
+                  className="text-sage text-xs md:text-sm font-medium hover:underline"
+                >
+                  + Add another person
+                </button>
+              </div>
             </div>
+
+            {/* City */}
+            <CityInput
+              value={location}
+              onChange={setLocation}
+              placeholder="Where do they live?"
+              className="w-full px-3 py-2.5 bg-surface border-2 border-border rounded-[10px] text-ink text-sm md:text-base focus:border-sage focus:outline-none min-h-[44px] md:min-h-[48px]"
+            />
 
             {/* Row 2: Living situation pills */}
             <div className="flex flex-wrap gap-1.5">
