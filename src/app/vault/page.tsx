@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import type { Parent, Checkin } from "@/lib/vault-types";
+import { CityInput } from "@/lib/city-input";
 
 type ParentStats = Record<string, { medicines: number; doctors: number; monthlyExpenses: number }>;
 
@@ -569,9 +570,9 @@ function EditParentCard({
           placeholder="Age"
           className="px-3 py-2 border-2 border-border rounded-[8px] text-ink text-sm bg-white focus:border-sage focus:outline-none min-h-[40px]"
         />
-        <input
+        <CityInput
           value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          onChange={setLocation}
           placeholder="City"
           className="px-3 py-2 border-2 border-border rounded-[8px] text-ink text-sm bg-white focus:border-sage focus:outline-none min-h-[40px]"
         />

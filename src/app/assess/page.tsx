@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { diagnosticQuestions } from "@/lib/questions";
 import { calculateDiagnosticScore } from "@/lib/scoring";
 import type { DiagnosticAnswer, ConcernInfo } from "@/lib/types";
+import { CityInput } from "@/lib/city-input";
 
 const reassurances: Record<string, string> = {
   health: "Most families piece this together over time.",
@@ -137,10 +138,9 @@ export default function AssessPage() {
           <div className="animate-[fadeIn_0.3s_ease] border-t border-border-subtle pt-6 space-y-4 mb-6">
             {/* Row 1: City + Ages */}
             <div className="flex gap-2">
-              <input
-                type="text"
+              <CityInput
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={setLocation}
                 placeholder="Parents' city"
                 className="flex-1 min-w-0 px-3 py-2.5 bg-surface border-2 border-border rounded-[10px] text-ink text-sm md:text-base focus:border-sage focus:outline-none min-h-[44px] md:min-h-[48px]"
               />
