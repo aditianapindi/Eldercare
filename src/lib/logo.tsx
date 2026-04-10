@@ -15,7 +15,7 @@ export function Logo({ size = "default" }: { size?: "small" | "default" | "large
         alt=""
         width={iconSize}
         height={iconSize}
-        className="rounded-[6px]"
+        className=""
         priority
       />
       <span className={`font-[family-name:var(--font-display)] ${textClass} font-light tracking-tight text-ink`}>
