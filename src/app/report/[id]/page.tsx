@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import type { CareReport } from "@/lib/types";
 import { Logo } from "@/lib/logo";
 import { Watermark } from "@/lib/watermark";
@@ -89,147 +90,158 @@ function ReportView({ report }: { report: CareReport }) {
   return (
     <main className="min-h-dvh relative overflow-hidden">
       <Watermark />
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute -top-[100px] right-[10%] w-[400px] h-[400px] rounded-full bg-sage/[0.05] blur-xl" />
-      </div>
 
-      <div className="relative px-6 pt-6 pb-8 md:px-12 lg:px-24 md:pt-8">
-        {/* Header */}
-        <header className="mb-8">
-          <Logo />
-        </header>
+      {/* Header — left aligned */}
+      <header className="relative px-6 pt-6 md:px-12 lg:px-24 md:pt-8">
+        <Logo />
+      </header>
 
-        <div className="max-w-[700px]">
-          {/* ─── Score section — left aligned ─── */}
-          <div className="mb-10 animate-[fadeIn_0.5s_ease]">
-            <p className="text-ink-tertiary text-sm mb-4">Your family&apos;s care readiness</p>
-            <div className="flex items-center gap-6 mb-4">
-              {/* Score circle */}
-              <div className="relative w-[100px] h-[100px] md:w-[120px] md:h-[120px] shrink-0">
-                <div className="absolute inset-0 rounded-full border-2 border-sage/15 scale-[1.12]" />
-                <div className="w-full h-full rounded-full border-[4px] border-sage bg-cream flex items-center justify-center">
-                  <div>
-                    <span className="font-[family-name:var(--font-display)] text-[36px] md:text-[44px] font-bold text-ink leading-none">{report.score}</span>
-                    <span className="text-ink-tertiary text-sm">/10</span>
-                  </div>
-                </div>
-              </div>
-              {/* Score text */}
-              <div>
-                <p className="text-xl md:text-2xl font-semibold text-sage mb-1">{scoreLabel}</p>
-                <p className="text-ink-secondary text-sm md:text-base">{scoreSubtext}</p>
-              </div>
-            </div>
+      {/* Centered content column */}
+      <div className="relative max-w-[720px] mx-auto px-6 pt-8 pb-12 md:pt-10">
 
-            {/* Blind spots */}
-            {report.blindSpotCount > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {report.blindSpotAreas.map((area) => (
-                  <span key={area} className="px-2.5 py-1 bg-sage-light/60 rounded-full text-xs text-sage font-medium border border-sage/10">
-                    {area}
-                  </span>
-                ))}
-              </div>
-            )}
+        {/* ─── Score hero with leaf watermark ─── */}
+        <section className="text-center mb-8 animate-[fadeIn_0.5s_ease]">
+          <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-6">
+            Your family&apos;s care readiness
+          </p>
 
-            <p className="text-ink-tertiary text-xs mb-4">{report.comparativeContext}</p>
-
-            {/* Share */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
-                className="px-4 py-2.5 min-h-[44px] bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
-              >
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/></svg>
-                Share
-              </button>
-              <button
-                onClick={() => navigator.clipboard?.writeText(shareUrl)}
-                className="px-4 py-2.5 min-h-[44px] border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
-              >
-                Copy link
-              </button>
-            </div>
-          </div>
-
-          {/* ─── Vault CTA — full width, prominent ─── */}
-          <div className="bg-sand rounded-[14px] p-5 md:p-6 mb-10">
-            <div className="md:flex md:items-center md:gap-6">
-              <div className="md:flex-1 mb-4 md:mb-0">
-                <p className="font-[family-name:var(--font-display)] text-lg font-medium text-ink mb-1">
-                  Save &amp; track your care
-                </p>
-                <p className="text-ink-secondary text-sm">
-                  Doctors, medicines, expenses, daily check-ins — all in one place.
-                </p>
-              </div>
-              <div className="md:w-[280px] shrink-0">
-                <VaultCTA reportId={report.id} sessionId={report.sessionId} />
+          {/* Score with leaf behind it */}
+          <div className="relative inline-block mb-5">
+            <Image
+              src="/logo-icon.png"
+              alt=""
+              width={180}
+              height={180}
+              className="absolute inset-0 w-full h-full opacity-[0.12] scale-110"
+              aria-hidden="true"
+            />
+            <div className="relative w-[160px] h-[160px] md:w-[180px] md:h-[180px] rounded-full flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-sage-light/40 to-cream border-[3px] border-sage/30 shadow-[0_8px_32px_rgba(122,139,111,0.15)]" />
+              <div className="relative">
+                <span className="font-[family-name:var(--font-display)] text-[72px] md:text-[84px] font-bold text-ink leading-none">
+                  {report.score}
+                </span>
+                <span className="text-ink-tertiary text-xl">/10</span>
               </div>
             </div>
           </div>
 
-          {/* ─── Compact details ─── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          {/* Personalized insight */}
-          {report.personalizedInsight && (
-            <div className="bg-surface border border-border-subtle rounded-[12px] p-4 md:col-span-2">
-              <p className="text-ink-secondary text-sm leading-relaxed">
-                <span className="font-semibold text-ink">What we noticed: </span>
-                {report.personalizedInsight}
-              </p>
+          <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-light text-sage mb-2">
+            {scoreLabel}
+          </h1>
+          <p className="text-ink-secondary text-sm md:text-base max-w-[440px] mx-auto mb-4">
+            {scoreSubtext}
+          </p>
+
+          {/* Blind spot pills */}
+          {report.blindSpotCount > 0 && (
+            <div className="flex flex-wrap justify-center gap-1.5 mb-4">
+              {report.blindSpotAreas.map((area) => (
+                <span key={area} className="px-3 py-1 bg-sage-light/60 rounded-full text-xs text-sage font-medium border border-sage/10">
+                  {area}
+                </span>
+              ))}
             </div>
           )}
 
-          {/* Cost estimate */}
-          <div className="bg-surface border border-border-subtle rounded-[12px] p-4">
-            <p className="text-ink-tertiary text-xs font-medium uppercase tracking-wide mb-1">Monthly cost estimate</p>
-            <p className="font-[family-name:var(--font-display)] text-xl md:text-2xl font-bold text-ink">
+          <p className="text-ink-tertiary text-xs mb-5">{report.comparativeContext}</p>
+
+          {/* Share buttons */}
+          <div className="flex gap-2 justify-center">
+            <button
+              onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
+              className="px-4 py-2.5 min-h-[44px] bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
+            >
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/></svg>
+              Share
+            </button>
+            <button
+              onClick={() => navigator.clipboard?.writeText(shareUrl)}
+              className="px-4 py-2.5 min-h-[44px] border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
+            >
+              Copy link
+            </button>
+          </div>
+        </section>
+
+        {/* ─── Vault CTA — stacked below score ─── */}
+        <section className="bg-sand rounded-[14px] p-5 md:p-6 mb-8">
+          <p className="font-semibold text-ink text-base md:text-lg mb-1">
+            Save &amp; track your care
+          </p>
+          <p className="text-ink-secondary text-sm mb-4">
+            Doctors, medicines, expenses, daily check-ins — all in one place.
+          </p>
+          <VaultCTA reportId={report.id} sessionId={report.sessionId} />
+        </section>
+
+        {/* ─── What we noticed ─── */}
+        {report.personalizedInsight && (
+          <section className="mb-8">
+            <p className="text-ink-secondary text-sm md:text-base italic leading-relaxed">
+              <span className="font-[family-name:var(--font-display)] text-ink not-italic font-medium">What we noticed — </span>
+              {report.personalizedInsight}
+            </p>
+          </section>
+        )}
+
+        {/* ─── Cost + Coordination (2 cols on desktop) ─── */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
+            <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Monthly cost estimate</p>
+            <p className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-ink mb-1">
               ₹{(report.monthlyCostEstimate.low / 1000).toFixed(0)}K – ₹{(report.monthlyCostEstimate.high / 1000).toFixed(0)}K
             </p>
-            <p className="text-ink-tertiary text-xs mt-1">Grows 10-15% yearly</p>
+            <p className="text-xs text-ink-tertiary">Per month · grows 10-15% yearly</p>
           </div>
-
-          {/* Coordination */}
           {report.siblingSplitView && (
-            <div className="bg-surface border border-border-subtle rounded-[12px] p-4">
-              <p className="text-ink-tertiary text-xs font-medium uppercase tracking-wide mb-1">Family coordination</p>
+            <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
+              <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Family coordination</p>
               <p className="text-ink-secondary text-sm leading-relaxed">{report.siblingSplitView}</p>
             </div>
           )}
+        </section>
 
-          {/* Risk alerts — compact list */}
-          <div className="bg-surface border border-border-subtle rounded-[12px] p-4">
-            <p className="text-ink-tertiary text-xs font-medium uppercase tracking-wide mb-2">Things worth knowing</p>
-            <div className="space-y-2">
-              {report.riskAlerts.map((alert, i) => (
-                <div key={i}>
-                  <p className="text-ink text-sm font-medium">{alert.title}</p>
-                  <p className="text-mustard text-xs">{alert.stat}</p>
-                </div>
-              ))}
-            </div>
+        {/* ─── Things worth knowing ─── */}
+        <section className="mb-8">
+          <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Things worth knowing</h2>
+          <div className="bg-surface border border-border-subtle rounded-[14px] divide-y divide-border-subtle">
+            {report.riskAlerts.map((alert, i) => (
+              <div key={i} className="p-5">
+                <p className="font-semibold text-ink text-sm md:text-base mb-0.5">{alert.title}</p>
+                <p className="text-mustard text-xs md:text-sm font-medium mb-1.5">{alert.stat}</p>
+                <p className="text-ink-secondary text-sm leading-relaxed">{alert.description}</p>
+              </div>
+            ))}
           </div>
+        </section>
 
-          {/* Action items — checklist */}
-          <div className="bg-surface border border-border-subtle rounded-[12px] p-4">
-            <p className="text-ink-tertiary text-xs font-medium uppercase tracking-wide mb-2">Next steps</p>
-            <div className="space-y-2">
-              {report.priorityActions.map((action, i) => {
-                const urgencyStyle: Record<string, string> = { high: "bg-sage text-white", medium: "bg-mustard-light text-mustard", low: "bg-sand text-ink-tertiary" };
-                return (
-                  <div key={i} className="flex items-start gap-2">
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full mt-0.5 shrink-0 ${urgencyStyle[action.urgency]}`}>
-                      {i + 1}
-                    </span>
-                    <p className="text-ink text-sm">{action.title}</p>
+        {/* ─── Next steps ─── */}
+        <section className="mb-4">
+          <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Steps you can take together</h2>
+          <div className="space-y-3">
+            {report.priorityActions.map((action, i) => {
+              const urgencyLabel: Record<string, string> = { high: "Start here", medium: "When you're ready", low: "Good to know" };
+              const urgencyStyle: Record<string, string> = { high: "bg-sage text-white", medium: "bg-mustard-light text-mustard", low: "bg-sand text-ink-tertiary" };
+              return (
+                <div key={i} className="bg-surface border border-border-subtle rounded-[12px] p-4 md:p-5 flex items-start gap-3">
+                  <span className="w-7 h-7 rounded-full bg-sage-light text-sage font-semibold text-sm flex items-center justify-center shrink-0">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <p className="font-semibold text-ink text-sm md:text-base">{action.title}</p>
+                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${urgencyStyle[action.urgency]}`}>
+                        {urgencyLabel[action.urgency]}
+                      </span>
+                    </div>
+                    <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
-        </div>
+        </section>
       </div>
     </main>
   );
