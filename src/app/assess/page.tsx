@@ -86,22 +86,22 @@ export default function AssessPage() {
         </header>
 
         <div className="max-w-[720px]">
-          <h1 className="font-[family-name:var(--font-display)] text-xl md:text-2xl leading-[1.2] font-light text-ink mb-1">
+          <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl leading-[1.2] font-light text-ink mb-2">
             Five questions most families never discuss
           </h1>
-          <p className="text-ink-secondary text-xs md:text-sm mb-5">
+          <p className="text-ink-secondary text-sm md:text-base mb-7">
             Answer honestly — no wrong answers. This helps us find where to focus.
           </p>
 
-          {/* All 5 diagnostic questions — compact */}
-          <div className="space-y-4 md:space-y-5 mb-6">
+          {/* All 5 diagnostic questions */}
+          <div className="space-y-5 md:space-y-6 mb-8">
             {diagnosticQuestions.map((question, qi) => {
               const selected = answers[question.id];
               const showReassurance = selected && (selected === "low" || selected === "mid");
 
               return (
                 <div key={question.id}>
-                  <p className="text-ink text-sm md:text-[15px] mb-2 leading-snug">
+                  <p className="text-ink text-base md:text-[17px] mb-2.5 leading-snug">
                     <span className="text-ink-tertiary font-[family-name:var(--font-display)] mr-1.5">{qi + 1}.</span>
                     {question.question}
                   </p>
@@ -114,7 +114,7 @@ export default function AssessPage() {
                           onClick={() =>
                             setAnswers((prev) => ({ ...prev, [question.id]: option.value }))
                           }
-                          className={`px-3.5 py-2 rounded-[8px] text-xs md:text-sm font-medium transition-all border min-h-[36px] md:min-h-[40px] ${
+                          className={`px-4 py-2.5 rounded-[10px] text-sm md:text-base font-medium transition-all border-2 min-h-[40px] md:min-h-[44px] ${
                             isSelected
                               ? "bg-sage text-white border-sage shadow-sm"
                               : "bg-surface border-border text-ink hover:border-sage/50"
@@ -126,7 +126,7 @@ export default function AssessPage() {
                     })}
                   </div>
                   {showReassurance && (
-                    <p className="mt-1.5 text-ink-tertiary text-xs italic animate-[fadeIn_0.3s_ease]">
+                    <p className="mt-2 text-ink-tertiary text-xs md:text-sm italic animate-[fadeIn_0.3s_ease]">
                       {reassurances[question.id]}
                     </p>
                   )}
