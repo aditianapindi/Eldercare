@@ -93,32 +93,37 @@ function ReportView({ report }: { report: CareReport }) {
         <div className="absolute -top-[100px] right-[10%] w-[400px] h-[400px] rounded-full bg-sage/[0.05] blur-xl" />
       </div>
 
-      <div className="relative px-6 py-8 md:px-12 lg:px-24 max-w-[900px] mx-auto">
+      <div className="relative px-6 py-8 md:px-12 lg:px-24">
         {/* Header */}
-        <header className="mb-6">
+        <header className="mb-10">
           <Logo />
         </header>
 
-        {/* ─── Score hero + Vault CTA side by side on desktop ─── */}
-        <div className="md:flex md:gap-6 mb-8">
-          {/* Score card */}
-          <div className="bg-surface/90 backdrop-blur-sm border border-border-subtle rounded-[16px] p-6 md:p-8 text-center shadow-[0_2px_24px_rgba(42,37,32,0.04)] md:flex-1 mb-4 md:mb-0 animate-[fadeIn_0.5s_ease]">
-            <p className="text-ink-secondary text-sm mb-4">Your family&apos;s care readiness</p>
-            <div className="relative mx-auto w-[120px] h-[120px] md:w-[140px] md:h-[140px] mb-4">
-              <div className="absolute inset-0 rounded-full border-2 border-sage/15 scale-[1.15]" />
-              <div className="w-full h-full rounded-full border-[5px] border-sage bg-cream flex items-center justify-center">
-                <div>
-                  <span className="font-[family-name:var(--font-display)] text-[40px] md:text-[48px] font-bold text-ink leading-none">{report.score}</span>
-                  <span className="text-ink-tertiary text-base">/10</span>
+        <div className="max-w-[700px]">
+          {/* ─── Score section — left aligned ─── */}
+          <div className="mb-10 animate-[fadeIn_0.5s_ease]">
+            <p className="text-ink-tertiary text-sm mb-4">Your family&apos;s care readiness</p>
+            <div className="flex items-center gap-6 mb-4">
+              {/* Score circle */}
+              <div className="relative w-[100px] h-[100px] md:w-[120px] md:h-[120px] shrink-0">
+                <div className="absolute inset-0 rounded-full border-2 border-sage/15 scale-[1.12]" />
+                <div className="w-full h-full rounded-full border-[4px] border-sage bg-cream flex items-center justify-center">
+                  <div>
+                    <span className="font-[family-name:var(--font-display)] text-[36px] md:text-[44px] font-bold text-ink leading-none">{report.score}</span>
+                    <span className="text-ink-tertiary text-sm">/10</span>
+                  </div>
                 </div>
               </div>
+              {/* Score text */}
+              <div>
+                <p className="text-xl md:text-2xl font-semibold text-sage mb-1">{scoreLabel}</p>
+                <p className="text-ink-secondary text-sm md:text-base">{scoreSubtext}</p>
+              </div>
             </div>
-            <p className="text-lg font-semibold text-sage mb-1">{scoreLabel}</p>
-            <p className="text-ink-secondary text-sm max-w-[300px] mx-auto mb-4">{scoreSubtext}</p>
 
-            {/* Blind spots as pills */}
+            {/* Blind spots */}
             {report.blindSpotCount > 0 && (
-              <div className="flex flex-wrap justify-center gap-1.5 mb-4">
+              <div className="flex flex-wrap gap-1.5 mb-4">
                 {report.blindSpotAreas.map((area) => (
                   <span key={area} className="px-2.5 py-1 bg-sage-light/60 rounded-full text-xs text-sage font-medium border border-sage/10">
                     {area}
@@ -127,10 +132,10 @@ function ReportView({ report }: { report: CareReport }) {
               </div>
             )}
 
-            <p className="text-ink-tertiary text-xs">{report.comparativeContext}</p>
+            <p className="text-ink-tertiary text-xs mb-4">{report.comparativeContext}</p>
 
             {/* Share */}
-            <div className="flex gap-2 mt-4 justify-center">
+            <div className="flex gap-2">
               <button
                 onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
                 className="px-4 py-2.5 min-h-[44px] bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
@@ -147,20 +152,25 @@ function ReportView({ report }: { report: CareReport }) {
             </div>
           </div>
 
-          {/* Vault CTA — prominent, right next to score */}
-          <div className="bg-sand rounded-[16px] p-6 md:w-[320px] shrink-0">
-            <p className="font-[family-name:var(--font-display)] text-lg font-medium text-ink mb-1">
-              Save &amp; track your care
-            </p>
-            <p className="text-ink-secondary text-sm mb-4">
-              Doctors, medicines, expenses, daily check-ins — all in one place.
-            </p>
-            <VaultCTA reportId={report.id} sessionId={report.sessionId} />
+          {/* ─── Vault CTA — full width, prominent ─── */}
+          <div className="bg-sand rounded-[14px] p-5 md:p-6 mb-10">
+            <div className="md:flex md:items-center md:gap-6">
+              <div className="md:flex-1 mb-4 md:mb-0">
+                <p className="font-[family-name:var(--font-display)] text-lg font-medium text-ink mb-1">
+                  Save &amp; track your care
+                </p>
+                <p className="text-ink-secondary text-sm">
+                  Doctors, medicines, expenses, daily check-ins — all in one place.
+                </p>
+              </div>
+              <div className="md:w-[280px] shrink-0">
+                <VaultCTA reportId={report.id} sessionId={report.sessionId} />
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* ─── Compact details grid ─── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {/* ─── Compact details ─── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {/* Personalized insight */}
           {report.personalizedInsight && (
             <div className="bg-surface border border-border-subtle rounded-[12px] p-4 md:col-span-2">
