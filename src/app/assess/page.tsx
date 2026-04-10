@@ -79,17 +79,17 @@ export default function AssessPage() {
         <div className="absolute bottom-[20%] -left-[100px] w-[300px] h-[300px] rounded-full bg-mustard/[0.03]" />
       </div>
 
-      <div className="relative px-6 py-10 md:px-12 lg:px-24 md:py-14">
+      <div className="relative px-6 pt-6 pb-10 md:px-12 lg:px-24 md:pt-8 md:pb-14">
         {/* Header */}
-        <header className="mb-10">
+        <header className="mb-8">
           <Logo />
         </header>
 
         <div className="max-w-[700px]">
-          <h1 className="font-[family-name:var(--font-display)] text-[clamp(26px,5vw,40px)] leading-[1.15] font-light text-ink mb-3">
+          <h1 className="font-[family-name:var(--font-display)] text-[clamp(24px,4vw,32px)] leading-[1.2] font-light text-ink mb-2">
             Five questions most families never discuss
           </h1>
-          <p className="text-ink-secondary text-base md:text-lg mb-10">
+          <p className="text-ink-secondary text-sm md:text-base mb-8">
             Answer honestly — no wrong answers. This helps us find where to focus.
           </p>
 

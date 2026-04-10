@@ -93,9 +93,9 @@ function ReportView({ report }: { report: CareReport }) {
         <div className="absolute -top-[100px] right-[10%] w-[400px] h-[400px] rounded-full bg-sage/[0.05] blur-xl" />
       </div>
 
-      <div className="relative px-6 py-8 md:px-12 lg:px-24">
+      <div className="relative px-6 pt-6 pb-8 md:px-12 lg:px-24 md:pt-8">
         {/* Header */}
-        <header className="mb-10">
+        <header className="mb-8">
           <Logo />
         </header>
 

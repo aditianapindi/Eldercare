@@ -16,9 +16,9 @@ export default function Home() {
         <div className="absolute top-[60%] right-[10%] w-[400px] h-[400px] rounded-full bg-mustard/[0.04] blur-3xl" />
       </div>
 
-      <div className="relative px-6 py-12 md:px-12 lg:px-24 flex flex-col min-h-dvh">
+      <div className="relative px-6 pt-6 pb-12 md:px-12 lg:px-24 md:pt-8 flex flex-col min-h-dvh">
         {/* Header */}
-        <header className="mb-16">
+        <header className="mb-12">
           <Logo />
         </header>
 
