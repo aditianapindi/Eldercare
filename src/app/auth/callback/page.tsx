@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { getSupabase } from "@/lib/supabase-browser";
 
 export default function AuthCallbackPage() {
@@ -23,25 +23,60 @@ export default function AuthCallbackPage() {
 
 function AuthCallbackInner() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const code = searchParams.get("code");
-    if (!code) {
-      setError("No authorization code received.");
-      return;
-    }
-
     const supabase = getSupabase();
-    supabase.auth.exchangeCodeForSession(code).then(({ error: authError }) => {
-      if (authError) {
-        setError(authError.message);
+    let handled = false;
+
+    const handleSession = (redirectTo: string) => {
+      if (handled) return;
+      handled = true;
+      router.replace(redirectTo);
+    };
+
+    // First, check if a session already exists (from URL hash detection)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        handleSession("/vault?setup=true");
         return;
       }
-      router.replace("/vault?setup=true");
+
+      // Try PKCE code exchange (if code is in query params)
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+
+      if (code) {
+        supabase.auth.exchangeCodeForSession(code).then(({ data, error: authError }) => {
+          if (data?.session) {
+            handleSession("/vault?setup=true");
+          } else if (authError) {
+            setError(authError.message);
+          }
+        });
+        return;
+      }
+
+      // No code and no session — wait briefly for onAuthStateChange (implicit flow detection)
+      const timeout = setTimeout(() => {
+        if (!handled) {
+          setError("Sign-in didn't complete. Please try again.");
+        }
+      }, 3000);
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN" && session) {
+          clearTimeout(timeout);
+          handleSession("/vault?setup=true");
+        }
+      });
+
+      return () => {
+        clearTimeout(timeout);
+        subscription.unsubscribe();
+      };
     });
-  }, [searchParams, router]);
+  }, [router]);
 
   if (error) {
     return (
