@@ -8,7 +8,7 @@ export function Watermark() {
         alt=""
         width={500}
         height={500}
-        className="absolute bottom-[-5%] right-[-5%] opacity-[0.03] select-none"
+        className="absolute bottom-[-5%] right-[-5%] opacity-[0.08] select-none"
       />
     </div>
   );
