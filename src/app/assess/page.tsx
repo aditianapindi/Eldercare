@@ -79,33 +79,33 @@ export default function AssessPage() {
         <div className="absolute bottom-[20%] -left-[100px] w-[300px] h-[300px] rounded-full bg-mustard/[0.03]" />
       </div>
 
-      <div className="relative px-6 pt-6 pb-10 md:px-12 lg:px-24 md:pt-8 md:pb-14">
+      <div className="relative px-6 pt-4 pb-10 md:px-12 lg:px-24 md:pt-6 md:pb-12">
         {/* Header */}
-        <header className="mb-8">
+        <header className="mb-5">
           <Logo />
         </header>
 
-        <div className="max-w-[700px]">
-          <h1 className="font-[family-name:var(--font-display)] text-[clamp(24px,4vw,32px)] leading-[1.2] font-light text-ink mb-2">
+        <div className="max-w-[720px]">
+          <h1 className="font-[family-name:var(--font-display)] text-xl md:text-2xl leading-[1.2] font-light text-ink mb-1">
             Five questions most families never discuss
           </h1>
-          <p className="text-ink-secondary text-sm md:text-base mb-8">
+          <p className="text-ink-secondary text-xs md:text-sm mb-5">
             Answer honestly — no wrong answers. This helps us find where to focus.
           </p>
 
-          {/* All 5 diagnostic questions */}
-          <div className="space-y-8 mb-10">
+          {/* All 5 diagnostic questions — compact */}
+          <div className="space-y-4 md:space-y-5 mb-6">
             {diagnosticQuestions.map((question, qi) => {
               const selected = answers[question.id];
               const showReassurance = selected && (selected === "low" || selected === "mid");
 
               return (
                 <div key={question.id}>
-                  <p className="text-ink text-base md:text-lg mb-3 leading-snug">
-                    <span className="text-ink-tertiary font-[family-name:var(--font-display)] mr-2">{qi + 1}.</span>
+                  <p className="text-ink text-sm md:text-[15px] mb-2 leading-snug">
+                    <span className="text-ink-tertiary font-[family-name:var(--font-display)] mr-1.5">{qi + 1}.</span>
                     {question.question}
                   </p>
-                  <div className="flex flex-wrap gap-2.5">
+                  <div className="flex flex-wrap gap-2">
                     {question.options.map((option) => {
                       const isSelected = selected === option.value;
                       return (
@@ -114,7 +114,7 @@ export default function AssessPage() {
                           onClick={() =>
                             setAnswers((prev) => ({ ...prev, [question.id]: option.value }))
                           }
-                          className={`px-5 py-3 rounded-[10px] text-sm md:text-base font-medium transition-all border-2 min-h-[44px] md:min-h-[48px] ${
+                          className={`px-3.5 py-2 rounded-[8px] text-xs md:text-sm font-medium transition-all border min-h-[36px] md:min-h-[40px] ${
                             isSelected
                               ? "bg-sage text-white border-sage shadow-sm"
                               : "bg-surface border-border text-ink hover:border-sage/50"
@@ -126,7 +126,7 @@ export default function AssessPage() {
                     })}
                   </div>
                   {showReassurance && (
-                    <p className="mt-2.5 text-ink-tertiary text-sm italic animate-[fadeIn_0.3s_ease]">
+                    <p className="mt-1.5 text-ink-tertiary text-xs italic animate-[fadeIn_0.3s_ease]">
                       {reassurances[question.id]}
                     </p>
                   )}
