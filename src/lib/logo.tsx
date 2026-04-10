@@ -1,24 +1,25 @@
 import Image from "next/image";
 
 export function Logo({ size = "default" }: { size?: "small" | "default" | "large" }) {
-  const iconSize = size === "small" ? 24 : size === "large" ? 40 : 30;
+  const iconSize = size === "small" ? 28 : size === "large" ? 44 : 34;
   const textClass = size === "small"
-    ? "text-sm"
+    ? "text-[15px]"
     : size === "large"
-    ? "text-xl"
-    : "text-base";
+    ? "text-xl md:text-2xl"
+    : "text-base md:text-lg";
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2.5">
       <Image
         src="/logo-icon.png"
-        alt="GetSukoon"
+        alt=""
         width={iconSize}
         height={iconSize}
-        className=""
+        className="rounded-[6px]"
+        priority
       />
-      <span className={`font-[family-name:var(--font-display)] ${textClass} font-medium tracking-wide text-ink`}>
-        GetSukoon
+      <span className={`font-[family-name:var(--font-display)] ${textClass} font-light tracking-tight text-ink`}>
+        get<span className="font-medium">sukoon</span>
       </span>
     </div>
   );
