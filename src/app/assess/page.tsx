@@ -79,63 +79,66 @@ export default function AssessPage() {
         <div className="absolute bottom-[20%] -left-[100px] w-[300px] h-[300px] rounded-full bg-mustard/[0.03]" />
       </div>
 
-      <div className="relative px-6 py-10 md:px-12 md:py-16 max-w-[640px] mx-auto">
+      <div className="relative px-6 py-10 md:px-12 lg:px-24 md:py-14">
         {/* Header */}
-        <div className="mb-2">
-          <Logo size="small" />
-        </div>
-        <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl leading-[1.2] font-medium text-ink mb-1">
-          Five questions most families never discuss
-        </h1>
-        <p className="text-ink-secondary text-sm md:text-base mb-8">
-          Answer honestly — no wrong answers. This helps us find where to focus.
-        </p>
+        <header className="mb-10">
+          <Logo />
+        </header>
 
-        {/* All 5 diagnostic questions — compact with horizontal pills */}
-        <div className="space-y-6 mb-8">
-          {diagnosticQuestions.map((question, qi) => {
-            const selected = answers[question.id];
-            const showReassurance = selected && (selected === "low" || selected === "mid");
+        <div className="max-w-[700px]">
+          <h1 className="font-[family-name:var(--font-display)] text-[clamp(26px,5vw,40px)] leading-[1.15] font-light text-ink mb-3">
+            Five questions most families never discuss
+          </h1>
+          <p className="text-ink-secondary text-base md:text-lg mb-10">
+            Answer honestly — no wrong answers. This helps us find where to focus.
+          </p>
 
-            return (
-              <div key={question.id}>
-                <p className="text-ink font-medium text-base md:text-lg mb-2.5 leading-snug">
-                  <span className="text-ink-tertiary mr-1.5">{qi + 1}.</span>
-                  {question.question}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {question.options.map((option) => {
-                    const isSelected = selected === option.value;
-                    return (
-                      <button
-                        key={option.value}
-                        onClick={() =>
-                          setAnswers((prev) => ({ ...prev, [question.id]: option.value }))
-                        }
-                        className={`px-4 py-2.5 rounded-[10px] text-sm md:text-base font-medium transition-all border-2 min-h-[40px] md:min-h-[44px] ${
-                          isSelected
-                            ? "bg-sage text-white border-sage"
-                            : "bg-surface border-border text-ink-secondary hover:border-sage/50"
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-                {showReassurance && (
-                  <p className="mt-2 text-ink-tertiary text-xs italic pl-1 animate-[fadeIn_0.3s_ease]">
-                    {reassurances[question.id]}
+          {/* All 5 diagnostic questions */}
+          <div className="space-y-8 mb-10">
+            {diagnosticQuestions.map((question, qi) => {
+              const selected = answers[question.id];
+              const showReassurance = selected && (selected === "low" || selected === "mid");
+
+              return (
+                <div key={question.id}>
+                  <p className="text-ink text-base md:text-lg mb-3 leading-snug">
+                    <span className="text-ink-tertiary font-[family-name:var(--font-display)] mr-2">{qi + 1}.</span>
+                    {question.question}
                   </p>
-                )}
-              </div>
-            );
-          })}
+                  <div className="flex flex-wrap gap-2.5">
+                    {question.options.map((option) => {
+                      const isSelected = selected === option.value;
+                      return (
+                        <button
+                          key={option.value}
+                          onClick={() =>
+                            setAnswers((prev) => ({ ...prev, [question.id]: option.value }))
+                          }
+                          className={`px-5 py-3 rounded-[10px] text-sm md:text-base font-medium transition-all border-2 min-h-[44px] md:min-h-[48px] ${
+                            isSelected
+                              ? "bg-sage text-white border-sage shadow-sm"
+                              : "bg-surface border-border text-ink hover:border-sage/50"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {showReassurance && (
+                    <p className="mt-2.5 text-ink-tertiary text-sm italic animate-[fadeIn_0.3s_ease]">
+                      {reassurances[question.id]}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Compact personalization — no section header, just a natural continuation */}
+        {/* Compact personalization */}
         {answeredAll && (
-          <div className="animate-[fadeIn_0.3s_ease] border-t border-border-subtle pt-6 space-y-4 mb-6">
+          <div className="max-w-[700px] animate-[fadeIn_0.3s_ease] border-t border-border-subtle pt-8 space-y-5 mb-6">
             {/* Who are you caring for? */}
             <div>
               <p className="text-ink text-sm md:text-base font-medium mb-2">Who are you caring for?</p>
@@ -267,7 +270,7 @@ export default function AssessPage() {
 
         {/* Prompt to answer all questions */}
         {!answeredAll && (
-          <div className="text-center py-4 border-t border-border-subtle">
+          <div className="max-w-[700px] py-4 border-t border-border-subtle">
             <p className="text-ink-tertiary text-sm md:text-base">
               Answer all 5 questions to get your care plan.
             </p>
