@@ -229,6 +229,7 @@ function ReportView({ report }: { report: CareReport }) {
             </div>
           </div>
         </div>
+        </div>
       </div>
     </main>
   );
