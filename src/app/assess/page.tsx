@@ -7,6 +7,7 @@ import { calculateDiagnosticScore } from "@/lib/scoring";
 import type { DiagnosticAnswer, ConcernInfo } from "@/lib/types";
 import { CityInput } from "@/lib/city-input";
 import { Logo } from "@/lib/logo";
+import { Watermark } from "@/lib/watermark";
 
 const reassurances: Record<string, string> = {
   health: "Most families piece this together over time.",
@@ -71,6 +72,7 @@ export default function AssessPage() {
 
   return (
     <main className="min-h-dvh relative overflow-hidden">
+      <Watermark />
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute -top-[150px] -right-[150px] w-[400px] h-[400px] rounded-full bg-sage/[0.05]" />

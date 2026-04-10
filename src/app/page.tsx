@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Logo } from "@/lib/logo";
+import { Watermark } from "@/lib/watermark";
 
 export default function Home() {
   return (
     <main className="min-h-dvh relative overflow-hidden">
+      <Watermark />
       {/* Warm decorative background shapes */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         {/* Large soft circle — top right */}

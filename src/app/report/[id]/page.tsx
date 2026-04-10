@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import type { CareReport } from "@/lib/types";
 import { Logo } from "@/lib/logo";
+import { Watermark } from "@/lib/watermark";
 import { getScoreLabel, getScoreSubtext } from "@/lib/scoring";
 
 export default function ReportPage() {
@@ -87,6 +88,7 @@ function ReportView({ report }: { report: CareReport }) {
 
   return (
     <main className="min-h-dvh relative overflow-hidden">
+      <Watermark />
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute -top-[100px] right-[10%] w-[400px] h-[400px] rounded-full bg-sage/[0.05] blur-xl" />
       </div>
