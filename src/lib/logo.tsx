@@ -9,7 +9,7 @@ export function Logo({ size = "default" }: { size?: "small" | "default" | "large
     : "text-base md:text-lg";
 
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-1.5">
       <Image
         src="/logo-icon.png"
         alt=""
