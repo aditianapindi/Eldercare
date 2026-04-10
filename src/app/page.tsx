@@ -19,7 +19,7 @@ export default function Home() {
       <div className="relative px-6 py-12 md:px-12 lg:px-24 flex flex-col min-h-dvh">
         {/* Header */}
         <header className="mb-16">
-          <Logo size="large" />
+          <Logo />
         </header>
 
         {/* Hero + Stats — side by side on desktop */}
