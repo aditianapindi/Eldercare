@@ -79,23 +79,15 @@ Things we deliberately deferred to ship for April 15. Revisit after the first ba
 
 ---
 
-## Session 10 additions
+## Session 10 additions (updated Session 12)
 
-### Auth-aware public pages (BUG — should fix before launch)
+### Auth-aware public pages — PARTIALLY FIXED (Session 12)
 
-- `/safety` and `/fraudguard` are reachable from both anonymous LinkedIn traffic AND the Safety tab in the authenticated vault sidebar
-- Currently the CTAs and sticky bars on both pages are auth-blind — a signed-in user clicking Safety from the vault sees "Start your free vault" and is funneled back to `/assess`, which starts a brand-new assessment session
-- **Fix:** extract auth-dependent bits into client subcomponents that call `useAuth()` — anonymous shows current CTAs, authenticated shows "Back to my vault → /vault"
-- Applies to: hero CTA row, sticky bottom bar, header logo link (should route signed-in users to `/vault`)
-- **Why deferred:** caught it at 11pm on session 10, user was going to sleep — flagged as the first thing to fix tomorrow
-
-### Login affordance for returning users who land on a public page first
-
-- No "Sign in" link anywhere on the public surface (`/`, `/safety`, `/fraudguard`)
-- A returning user who's logged out and lands on `/safety` from LinkedIn has no way to get back into their vault — they'd have to know to type `/vault` into the URL bar, which redirects to `/` (which still has no sign-in option)
-- This affects anyone who's been signed out, not just first-time users
-- **Fix:** add a "Sign in" link in the header of public pages that routes to an auth-aware landing (either `/join` without a token, which already handles login, or a new `/login` route)
-- **Why deferred:** raised right before bed — small but needs a decision on whether to reuse `/join` or create a dedicated `/login` page
+- Auth branching logic exists in `safety-client.tsx` and `fraudguard-client.tsx` — CTAs correctly show "Back to my vault" for signed-in users
+- **Remaining issue:** SSR always renders anonymous CTAs, then client hydration switches after ~200ms. Cosmetic flash, not functional.
+- Sign-in link added to all public page headers as a bordered pill button (Session 12)
+- Logo link is auth-aware via `LogoWithAuthLink` component
+- Safety tab removed from vault (Session 12) so the "navigates outside vault" issue is resolved
 
 ### FraudGuard signed APK release
 
@@ -109,26 +101,18 @@ Things we deliberately deferred to ship for April 15. Revisit after the first ba
 - When the teammate provides real overlay/warning screenshots, add them to the "When it triggers, three things happen at once" section
 - **Why deferred:** blocked on teammate providing assets
 
-### `?source=` query param tracking
+### `?source=` query param tracking — DONE (Session 12)
 
-- Every CTA on `/safety`, `/fraudguard`, and the home signpost appends `?source=safety` / `?source=fraudguard`
-- `/api/generate-report` doesn't read it into the `assessments` row yet
-- **Fix:** single-line addition to the POST handler — read `assessment.source` or `searchParams.get('source')` and write to a new `source text` column (or reuse an existing column)
-- **Why deferred:** need this before the LinkedIn launch to measure which framing converts best, but not urgent tonight
+- Assess page reads `?source=` from URL, includes in payload
+- API writes to `assessments.source` column (migration run on prod)
 
-### Mobile vault tab strip at 8 tabs
+### Mobile vault tab strip — RESOLVED (Session 12)
 
-- Adding the Safety tab pushed the tab strip from 7 → 8
-- On a 375px phone each tab gets ~47px at `flex-1` — functional but tight for "Contacts" and "Expenses" labels
-- **Options if cramped:** (a) consolidate Doctors+Health into one "Care" tab, (b) move something into a "More" overflow menu, (c) use icon-only on the narrowest screens
-- **Why deferred:** need to actually walk it on a real phone before picking a fix
+- Safety tab removed from vault. Now 7 tabs. No more cramping.
 
-### `/safety` logo link for signed-in users
+### `/safety` logo link — RESOLVED (Session 12)
 
-- Currently the logo on `/safety` always links to `/` (public home)
-- A signed-in user clicking Safety from the vault → then clicking the logo → lands on the public home page instead of their vault
-- **Fix:** 5-line conditional in the header — if `user` is present, link to `/vault`; else link to `/`
-- **Why deferred:** part of the larger auth-aware public pages fix above
+- `LogoWithAuthLink` component handles this. Signed-in → `/vault`, anonymous → `/`.
 
 ### ₹22,495 Cr stat verification
 
@@ -136,6 +120,41 @@ Things we deliberately deferred to ship for April 15. Revisit after the first ba
 - Sourced from the FraudGuard README, not yet verified against I4C / MHA primary sources
 - **Fix:** ask teammate where the number is sourced; if it's from a press release or I4C report, cite it; if it's unverifiable, round it or soften to "hundreds of crores"
 - **Why deferred:** not blocking; acceptable risk for the current low-traffic state. Fix before LinkedIn launch
+
+---
+
+## Session 12 additions
+
+### Admin Insights Dashboard — BUILD NEXT SESSION
+
+**Route:** `/admin/insights` (hardcoded email check for access)
+
+**Already trackable from existing tables (no schema changes):**
+- Total signups + growth over time (`auth.users`, needs service-role key)
+- Assessment completions + scores + sources + care_worries (`assessments`)
+- Assessment → signup conversion rate (`assessments` where `user_id IS NOT NULL` / total)
+- Vault item counts by type (doctors/medicines/expenses/contacts/documents/assets `created_at`)
+- Check-in streaks (`checkins`)
+- Shares sent / claimed / expired rates (`vault_shares`)
+- Waitlist signups (`waitlist` + `abha_waitlist`)
+
+**Needs new table — `page_views`:**
+- Track: landing page visits, `/assess` opens, `/safety` visits, `/report/[id]` views
+- Schema: `(id, session_id, user_id nullable, page text, referrer text, created_at)`
+- New API route: `POST /api/track` (lightweight, no auth required)
+- Client-side: `usePageView()` hook that fires on navigation
+- This enables the full funnel: **landing → assess start → assess complete → report view → signup → vault action**
+
+**Needs new tracking — assessment starts vs completions:**
+- Currently only completions are tracked (row inserted on report generation)
+- Option: fire a `page_view` for `/assess` on load = "started", then the `assessments` row = "completed"
+- Drop-off = page_views for `/assess` minus `assessments` rows in same time window
+
+**Architecture:**
+- One admin API route: `GET /api/admin/insights` using Supabase service-role key
+- Returns all metrics in a single JSON response
+- One page: `/admin/insights` with the dashboard UI
+- Email whitelist check for access (your email only)
 
 ### Scam incidents log (reconfirmed NOT building)
 
