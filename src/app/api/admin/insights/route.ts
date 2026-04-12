@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
 
   const supabaseAdmin = getSupabaseAdmin();
 
+  try {
   const [
     usersRes,
     assessmentsRes,
@@ -145,7 +146,13 @@ export async function GET(req: NextRequest) {
   };
 
   return NextResponse.json({
-    signups: { total: users.length, byDay: signupsByDay },
+    signups: {
+      total: users.length,
+      byDay: signupsByDay,
+      emails: users
+        .sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? ""))
+        .map((u) => ({ email: u.email ?? "—", date: u.created_at?.slice(0, 10) ?? "unknown" })),
+    },
     assessments: {
       total: assessments.length,
       byDay: assessmentsByDay,
@@ -166,4 +173,8 @@ export async function GET(req: NextRequest) {
     funnel,
     vault,
   });
+  } catch (e) {
+    console.error("Insights API error:", e);
+    return NextResponse.json({ error: String(e) }, { status: 500 });
+  }
 }

@@ -7,7 +7,7 @@ import { Card, Stat, Bar, Empty, PageShell } from "@/lib/ui";
 const ADMIN_EMAILS = ["aditianapindi@gmail.com", "aditi@test.com"];
 
 interface InsightsData {
-  signups: { total: number; byDay: Record<string, number> };
+  signups: { total: number; byDay: Record<string, number>; emails: { email: string; date: string }[] };
   assessments: {
     total: number;
     byDay: Record<string, number>;
@@ -146,6 +146,22 @@ export default function InsightsPage() {
         <Card title="Avg Score"><Stat label="Diagnostic" value={data.assessments.avgScore} /></Card>
         <Card title="Page Views"><Stat label="Total" value={data.pageViews.total} /></Card>
       </div>
+
+      {/* User emails */}
+      <Card title={`Signed-up Users (${data.signups.total})`}>
+        {data.signups.emails.length === 0 ? (
+          <Empty />
+        ) : (
+          <div className="space-y-1.5 max-h-64 overflow-y-auto">
+            {data.signups.emails.map((u, i) => (
+              <div key={i} className="flex justify-between text-sm">
+                <span className="text-ink">{u.email}</span>
+                <span className="text-ink-tertiary shrink-0 ml-4">{u.date}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
 
       {/* Sources */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
