@@ -44,16 +44,21 @@ export default function ExpensesPage() {
       const newExpense = await res.json();
       setExpenses((prev) => [newExpense, ...prev]);
       setShowForm(false);
+    } else {
+      alert("Couldn't save. Please try again.");
     }
   };
 
   const handleDelete = async (id: string) => {
+    if (!confirm("Delete this expense? This cannot be undone.")) return;
     const res = await authFetch("/api/vault/expenses", {
       method: "DELETE",
       body: JSON.stringify({ id }),
     });
     if (res.ok) {
       setExpenses((prev) => prev.filter((e) => e.id !== id));
+    } else {
+      alert("Something went wrong. Please try again.");
     }
   };
 

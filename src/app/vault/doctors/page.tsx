@@ -32,6 +32,8 @@ export default function DoctorsPage() {
       const newDoctor = await res.json();
       setDoctors((prev) => [newDoctor, ...prev]);
       setShowForm(false);
+    } else {
+      alert("Couldn't save. Please try again.");
     }
   };
 
@@ -44,16 +46,21 @@ export default function DoctorsPage() {
       const updated = await res.json();
       setDoctors((prev) => prev.map((d) => (d.id === id ? updated : d)));
       setEditingDoctor(null);
+    } else {
+      alert("Couldn't save. Please try again.");
     }
   };
 
   const handleDelete = async (id: string) => {
+    if (!confirm("Remove this doctor? This cannot be undone.")) return;
     const res = await authFetch("/api/vault/doctors", {
       method: "DELETE",
       body: JSON.stringify({ id }),
     });
     if (res.ok) {
       setDoctors((prev) => prev.filter((d) => d.id !== id));
+    } else {
+      alert("Something went wrong. Please try again.");
     }
   };
 

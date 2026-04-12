@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { diagnosticQuestions } from "@/lib/questions";
 import { calculateDiagnosticScore } from "@/lib/scoring";
@@ -8,6 +8,7 @@ import type { DiagnosticAnswer, ConcernInfo } from "@/lib/types";
 import { CityInput } from "@/lib/city-input";
 import { Logo } from "@/lib/logo";
 import { Watermark } from "@/lib/watermark";
+import { useSearchParams } from "next/navigation";
 
 const reassurances: Record<string, string> = {
   health: "Most families piece this together over time.",
@@ -18,7 +19,17 @@ const reassurances: Record<string, string> = {
 };
 
 export default function AssessPage() {
+  return (
+    <Suspense>
+      <AssessInner />
+    </Suspense>
+  );
+}
+
+function AssessInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const source = searchParams.get("source") || "direct";
   const [answers, setAnswers] = useState<Record<string, DiagnosticAnswer>>({});
   const [dependents, setDependents] = useState([{ label: "Mother", age: "" }, { label: "Father", age: "" }]);
   const [location, setLocation] = useState("");
@@ -49,6 +60,7 @@ export default function AssessPage() {
       siblings: { count: siblingCount },
       concern,
       careWorries,
+      source,
       createdAt: new Date().toISOString(),
     };
 

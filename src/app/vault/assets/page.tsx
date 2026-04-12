@@ -60,16 +60,21 @@ export default function AssetsPage() {
       const newAsset = await res.json();
       setAssets((prev) => [newAsset, ...prev]);
       setShowForm(false);
+    } else {
+      alert("Couldn't save. Please try again.");
     }
   };
 
   const handleDelete = async (id: string) => {
+    if (!confirm("Remove this asset? This cannot be undone.")) return;
     const res = await authFetch("/api/vault/assets", {
       method: "DELETE",
       body: JSON.stringify({ id }),
     });
     if (res.ok) {
       setAssets((prev) => prev.filter((a) => a.id !== id));
+    } else {
+      alert("Something went wrong. Please try again.");
     }
   };
 
@@ -335,7 +340,7 @@ function AssetRow({
       </div>
       <button
         onClick={onDelete}
-        className="flex items-center justify-center w-8 h-8 rounded-full text-ink-tertiary opacity-0 group-hover:opacity-100 hover:bg-terracotta-light hover:text-terracotta transition-all shrink-0"
+        className="flex items-center justify-center w-8 h-8 rounded-full text-ink-tertiary md:opacity-0 md:group-hover:opacity-100 hover:bg-terracotta-light hover:text-terracotta transition-all shrink-0"
       >
         <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
           <path d="M2 4H12M5 4V2H9V4M5 7V11M9 7V11M3 4L4 13H10L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

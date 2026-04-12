@@ -18,18 +18,24 @@ export default function ReportPage() {
     async function loadReport() {
       // Try sessionStorage first (most reliable — survives HMR and server restarts)
       if (typeof window !== "undefined") {
-        const storedReport = sessionStorage.getItem(`report-${id}`);
-        if (storedReport) {
-          setReport(JSON.parse(storedReport));
-          setLoading(false);
-          return;
-        }
+        try {
+          const storedReport = sessionStorage.getItem(`report-${id}`);
+          if (storedReport) {
+            setReport(JSON.parse(storedReport));
+            setLoading(false);
+            return;
+          }
 
-        const storedAssessment = sessionStorage.getItem(`assessment-${id}`);
-        if (storedAssessment) {
-          setReport(generateClientReport(JSON.parse(storedAssessment), id));
-          setLoading(false);
-          return;
+          const storedAssessment = sessionStorage.getItem(`assessment-${id}`);
+          if (storedAssessment) {
+            setReport(generateClientReport(JSON.parse(storedAssessment), id));
+            setLoading(false);
+            return;
+          }
+        } catch {
+          // Corrupt sessionStorage — fall through to server API
+          sessionStorage.removeItem(`report-${id}`);
+          sessionStorage.removeItem(`assessment-${id}`);
         }
       }
 

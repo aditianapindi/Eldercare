@@ -46,6 +46,8 @@ export default function ContactsPage() {
       const c = await res.json();
       setContacts((prev) => [c, ...prev]);
       setShowForm(false);
+    } else {
+      alert("Couldn't save. Please try again.");
     }
   };
 
@@ -57,6 +59,8 @@ export default function ContactsPage() {
     if (res.ok) {
       const updated = await res.json();
       setContacts((prev) => prev.map((c) => (c.id === id ? updated : c)));
+    } else {
+      alert("Couldn't save. Please try again.");
     }
     setEditingId(null);
   };
@@ -67,7 +71,11 @@ export default function ContactsPage() {
       method: "DELETE",
       body: JSON.stringify({ id }),
     });
-    if (res.ok) setContacts((prev) => prev.filter((c) => c.id !== id));
+    if (res.ok) {
+      setContacts((prev) => prev.filter((c) => c.id !== id));
+    } else {
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   // Group by parent_id

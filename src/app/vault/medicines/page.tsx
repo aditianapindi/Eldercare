@@ -97,10 +97,13 @@ export default function HealthPage() {
       const newMed = await res.json();
       setMedicines((prev) => [newMed, ...prev]);
       setShowMedicineForm(false);
+    } else {
+      alert("Couldn't save. Please try again.");
     }
   };
 
   const handleDeleteMedicine = async (id: string) => {
+    if (!confirm("Remove this medicine? This cannot be undone.")) return;
     const res = await authFetch("/api/vault/medicines", {
       method: "DELETE",
       body: JSON.stringify({ id }),
@@ -109,6 +112,8 @@ export default function HealthPage() {
       setMedicines((prev) =>
         prev.map((m) => (m.id === id ? { ...m, active: false } : m))
       );
+    } else {
+      alert("Something went wrong. Please try again.");
     }
   };
 

@@ -29,10 +29,19 @@ function AuthCallbackInner() {
     const supabase = getSupabase();
     let handled = false;
 
-    const handleSession = (redirectTo: string) => {
+    const handleSession = (defaultRedirect: string) => {
       if (handled) return;
       handled = true;
-      router.replace(redirectTo);
+
+      // If there's a pending join token, redirect back to /join with it
+      const joinToken = typeof window !== "undefined" ? sessionStorage.getItem("vault_join_token") : null;
+      if (joinToken) {
+        sessionStorage.removeItem("vault_join_token");
+        router.replace(`/join?token=${encodeURIComponent(joinToken)}`);
+        return;
+      }
+
+      router.replace(defaultRedirect);
     };
 
     // First, check if a session already exists (from URL hash detection)
@@ -84,7 +93,7 @@ function AuthCallbackInner() {
         <div className="text-center max-w-[400px]">
           <p className="text-ink text-lg font-medium mb-2">Sign-in failed</p>
           <p className="text-ink-secondary mb-6">{error}</p>
-          <a href="/assess" className="text-sage underline text-lg">
+          <a href="/join" className="text-sage underline text-lg">
             Try again
           </a>
         </div>

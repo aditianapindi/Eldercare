@@ -18,11 +18,21 @@ export const metadata: Metadata = {
   title: "GetSukoon — How prepared is your family?",
   description:
     "A 2-minute assessment that reveals blind spots in your aging parents' care. Get your family's Care Preparedness Score.",
+  icons: {
+    icon: "/logo-icon.png",
+    apple: "/logo-icon.png",
+  },
   openGraph: {
     title: "GetSukoon — How prepared is your family?",
     description:
       "Most Indian families can't answer 5 basic questions about their parents' care. Take the free assessment.",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GetSukoon — How prepared is your family?",
+    description:
+      "Most Indian families can't answer 5 basic questions about their parents' care. Take the free assessment.",
   },
 };
 

@@ -341,7 +341,7 @@ function DocRow({
       </button>
       <button
         onClick={onDelete}
-        className="flex items-center justify-center w-9 h-9 rounded-full text-ink-tertiary opacity-0 group-hover:opacity-100 hover:bg-terracotta-light hover:text-terracotta transition-all"
+        className="flex items-center justify-center w-9 h-9 rounded-full text-ink-tertiary md:opacity-0 md:group-hover:opacity-100 hover:bg-terracotta-light hover:text-terracotta transition-all"
       >
         <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
           <path d="M2 4H12M5 4V2H9V4M5 7V11M9 7V11M3 4L4 13H10L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

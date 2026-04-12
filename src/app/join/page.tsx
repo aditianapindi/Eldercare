@@ -122,7 +122,10 @@ function JoinInner() {
                 : "Welcome back to GetSukoon."}
             </p>
             <button
-              onClick={() => signInWithGoogle()}
+              onClick={() => {
+                if (token) sessionStorage.setItem("vault_join_token", token);
+                signInWithGoogle();
+              }}
               className="w-full min-h-[48px] px-5 py-3 bg-ink text-cream font-medium rounded-[10px] text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mb-3"
             >
               <GoogleIcon />
