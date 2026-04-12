@@ -189,6 +189,8 @@ export default function ContactsPage() {
           ))}
         </div>
       )}
+
+      <EmergencyHelplines />
     </div>
   );
 }
@@ -498,6 +500,42 @@ function ContactForm({
             Cancel
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* --- Emergency helplines (always visible, callable) --- */
+
+function EmergencyHelplines() {
+  const lines = [
+    { number: "112", label: "Emergency", detail: "Police / Ambulance / Fire", color: "bg-terracotta-light text-terracotta" },
+    { number: "1930", label: "Cybercrime", detail: "National Cybercrime Helpline", color: "bg-mustard-light text-mustard" },
+    { number: "108", label: "Ambulance", detail: "Free ambulance service", color: "bg-sage-light text-sage" },
+    { number: "100", label: "Police", detail: "Police control room", color: "bg-blue-light text-blue" },
+  ];
+
+  return (
+    <div className="mt-8">
+      <p className="text-sm font-semibold text-ink-tertiary uppercase tracking-wide mb-3">Emergency helplines</p>
+      <div className="grid grid-cols-2 gap-2 md:gap-3">
+        {lines.map((l) => (
+          <a
+            key={l.number}
+            href={`tel:${l.number}`}
+            className="bg-surface border border-border-subtle rounded-[12px] p-4 hover:border-ink-tertiary transition-colors group"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-full ${l.color}`}>
+                {l.label}
+              </span>
+            </div>
+            <p className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-medium text-ink group-hover:text-sage transition-colors">
+              {l.number}
+            </p>
+            <p className="text-ink-tertiary text-xs mt-1">{l.detail}</p>
+          </a>
+        ))}
       </div>
     </div>
   );

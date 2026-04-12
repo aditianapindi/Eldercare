@@ -11,28 +11,33 @@ export const metadata = {
 const SCAMS = [
   {
     name: "Digital arrest",
-    how: "A fake CBI or RBI officer on a video call claims your parent's name is in a money laundering case and asks them to transfer to a \"safe account.\"",
-    flag: "No real Indian agency arrests anyone over a video call. Ever.",
+    icon: "📹",
+    how: "Fake CBI officer on video call — \"transfer to a safe account.\"",
+    flag: "No agency arrests anyone over a video call.",
   },
   {
     name: "KYC update",
-    how: "An SMS or call from \"your bank\" says KYC has expired and the account will be frozen in 24 hours — with a phishing link or an AnyDesk install.",
-    flag: "Real banks never ask for OTP, PIN or remote screen access.",
+    icon: "🏦",
+    how: "\"Your bank KYC expired.\" Phishing link or AnyDesk follows.",
+    flag: "Banks never ask for OTP or remote access.",
   },
   {
-    name: "Courier / FedEx",
-    how: "A caller claims a package in your parent's name was found with contraband and transfers them to fake \"Mumbai customs\" or \"Mumbai police.\"",
-    flag: "No courier company has authority to call anyone about contraband.",
+    name: "Courier scam",
+    icon: "📦",
+    how: "\"A package in your name has contraband\" — fake police on the line.",
+    flag: "Couriers don't call about contraband.",
   },
   {
     name: "Family emergency",
-    how: "\"Aunty, your son met with an accident — please send money to this hospital.\" Sometimes uses a voice cloned from a few seconds of social audio.",
-    flag: "Always call your child directly on their known number first.",
+    icon: "📞",
+    how: "\"Your son had an accident — send money.\" Sometimes AI-cloned voice.",
+    flag: "Call your child on their real number first.",
   },
   {
-    name: "Lottery or refund",
-    how: "\"You've won ₹25 lakh in KBC / an income tax refund / SBI rewards. Pay a small processing fee to claim.\"",
-    flag: "You cannot win a lottery you didn't enter. Refunds never need processing fees.",
+    name: "Lottery / refund",
+    icon: "🎰",
+    how: "\"You've won ₹25 lakh — pay a small processing fee.\"",
+    flag: "Can't win a lottery you didn't enter.",
   },
 ];
 
@@ -74,27 +79,28 @@ export default function SafetyPage() {
             The 5 scams targeting Indian parents right now.
           </h2>
 
-          <div className="grid gap-4 md:gap-5 md:grid-cols-2">
-            {SCAMS.map((scam, idx) => (
+          <div className="grid gap-3 md:gap-4 md:grid-cols-2">
+            {SCAMS.map((scam) => (
               <div
                 key={scam.name}
-                className="bg-surface border border-border-subtle rounded-[14px] p-5 md:p-6"
+                className="bg-surface border border-border-subtle rounded-[14px] overflow-hidden"
               >
-                <div className="flex items-center gap-3 mb-2.5">
-                  <span className="shrink-0 w-6 h-6 rounded-full bg-terracotta-light text-terracotta flex items-center justify-center font-semibold text-xs font-[family-name:var(--font-display)]">
-                    {idx + 1}
-                  </span>
-                  <h3 className="font-[family-name:var(--font-display)] text-lg md:text-xl font-medium text-ink leading-snug">
-                    {scam.name}
-                  </h3>
+                <div className="p-4 md:p-5">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-2xl" aria-hidden="true">{scam.icon}</span>
+                    <h3 className="font-[family-name:var(--font-display)] text-base md:text-lg font-medium text-ink leading-snug">
+                      {scam.name}
+                    </h3>
+                  </div>
+                  <p className="text-ink-secondary text-sm leading-relaxed">
+                    {scam.how}
+                  </p>
                 </div>
-                <p className="text-ink-secondary text-[15px] leading-relaxed mb-3">
-                  {scam.how}
-                </p>
-                <p className="text-ink text-[15px] leading-snug">
-                  <span className="text-mustard font-semibold">Red flag — </span>
-                  {scam.flag}
-                </p>
+                <div className="bg-mustard-light/50 px-4 py-2.5 md:px-5 border-t border-mustard/10">
+                  <p className="text-ink text-xs md:text-sm font-medium">
+                    <span className="text-mustard">⚑</span> {scam.flag}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
