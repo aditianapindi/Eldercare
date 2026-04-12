@@ -106,7 +106,7 @@ function UserMenu() {
         await signOut();
         router.replace("/");
       }}
-      className="text-xs text-ink-tertiary hover:text-ink transition-colors px-3 py-2 min-h-[44px] rounded-lg hover:bg-sand"
+      className="inline-flex items-center justify-center px-4 py-2 min-h-[44px] text-sm font-medium text-ink border border-border rounded-full hover:border-ink-tertiary transition-colors"
       title={user?.email || ""}
     >
       Sign out

@@ -200,36 +200,35 @@ export default function SafetyPage() {
             </a>
           </div>
 
-          {/* Setup steps */}
-          <h3 className="font-[family-name:var(--font-display)] text-xl md:text-2xl font-light text-ink leading-tight mb-2">
-            First-time setup
+          {/* Setup — condensed into 3 visual steps */}
+          <h3 className="font-[family-name:var(--font-display)] text-xl md:text-2xl font-light text-ink leading-tight mb-5">
+            Setup in 5 minutes
           </h3>
-          <p className="text-ink-secondary text-base leading-relaxed mb-5">
-            After install, the app walks you through each step. Takes about 5 minutes.
-          </p>
-          <div className="bg-surface border border-border-subtle rounded-[16px] divide-y divide-border-subtle overflow-hidden">
-            {[
-              { title: "Grant runtime permissions", detail: "Phone, call log, contacts, SMS, notifications. The app walks you through each one." },
-              { title: "Enable Usage Access", detail: "Settings → Special app access → Usage access → FraudGuard. Lets it see which app is open during a call." },
-              { title: "Enable Overlay permission", detail: "Settings → Special app access → Display over other apps → FraudGuard. Needed for the warning screen." },
-              { title: "Disable battery restrictions", detail: "Varies by phone maker — Xiaomi, Samsung and Oppo each have extra steps. See the repo for OEM guides." },
-              { title: "Enable Notification Access", detail: "Settings → Special app access → Notification access → FraudGuard. Needed for WhatsApp call detection." },
-              { title: "Enter your phone number as the guardian", detail: "This is the number that receives the SMS alert when a scam pattern is detected." },
-              { title: "Tap Start Protection", detail: "The app runs quietly in the background from here. Nothing else to do." },
-            ].map((step, idx) => (
-              <div key={step.title} className="flex gap-4 p-5 md:p-6">
-                <span className="shrink-0 w-7 h-7 rounded-full bg-sage-light text-sage flex items-center justify-center font-semibold text-xs font-[family-name:var(--font-display)] mt-0.5">
-                  {idx + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-ink text-[15px] md:text-base mb-1">{step.title}</p>
-                  <p className="text-ink-secondary text-sm md:text-[15px] leading-relaxed">{step.detail}</p>
-                </div>
-              </div>
-            ))}
+          <div className="grid gap-3 md:gap-4 md:grid-cols-3">
+            <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-sage-light text-sage mb-3 text-xl">📲</span>
+              <h4 className="font-semibold text-ink text-[15px] mb-1.5">Install from source</h4>
+              <p className="text-ink-secondary text-sm leading-relaxed">
+                Build the APK from GitHub and install on the parent&apos;s Android phone. Signed APK coming soon.
+              </p>
+            </div>
+            <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-sage-light text-sage mb-3 text-xl">⚙️</span>
+              <h4 className="font-semibold text-ink text-[15px] mb-1.5">Grant 5 permissions</h4>
+              <p className="text-ink-secondary text-sm leading-relaxed">
+                The app walks you through each one — usage access, overlay, notifications, phone, and battery.
+              </p>
+            </div>
+            <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-sage-light text-sage mb-3 text-xl">▶️</span>
+              <h4 className="font-semibold text-ink text-[15px] mb-1.5">Enter your number, tap Start</h4>
+              <p className="text-ink-secondary text-sm leading-relaxed">
+                Your number receives the SMS alert. The app runs quietly in the background from here.
+              </p>
+            </div>
           </div>
-          <p className="mt-4 text-ink-tertiary text-xs md:text-sm">
-            Requires Android 8.0 or later. Physical device only.
+          <p className="mt-3 text-ink-tertiary text-xs">
+            Requires Android 8.0+. Full step-by-step instructions on the GitHub repo.
           </p>
         </section>
 

@@ -213,9 +213,7 @@ export default function HealthPage() {
             const isEditing = editingConditionsForParent === parent.id;
             return (
               <div key={parent.id} className="mb-3 last:mb-0">
-                {parents.length > 1 && (
-                  <p className="text-xs text-ink-tertiary font-medium mb-1.5">{parent.label}</p>
-                )}
+                <p className="text-xs text-ink-tertiary font-medium mb-1.5">{parent.label}</p>
                 {isEditing ? (
                   <ConditionEditor
                     conditions={editConditions}
