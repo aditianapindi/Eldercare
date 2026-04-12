@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+.next/
+.vercel/
+
+# Build output
+out/
+build/
+dist/
+
+# Package lock (huge files, rarely useful to read)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Environment (secrets — Claude shouldn't read these)
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

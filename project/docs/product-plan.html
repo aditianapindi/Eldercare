@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z Buildathon — Product Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #FAFAF9;
+    --surface: #FFFFFF;
+    --border: #E7E5E4;
+    --text: #1C1917;
+    --text-secondary: #57534E;
+    --text-muted: #A8A29E;
+    --accent: #DC2626;
+    --accent-light: #FEF2F2;
+    --accent-dark: #991B1B;
+    --blue: #2563EB;
+    --blue-light: #EFF6FF;
+    --green: #16A34A;
+    --green-light: #F0FDF4;
+    --amber: #D97706;
+    --amber-light: #FFFBEB;
+    --purple: #7C3AED;
+    --purple-light: #F5F3FF;
+    --teal: #0D9488;
+    --teal-light: #F0FDFA;
+    --rose: #E11D48;
+    --rose-light: #FFF1F2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── Hero ─── */
+  .hero {
+    background: linear-gradient(135deg, #1C1917 0%, #292524 50%, #44403C 100%);
+    color: white;
+    padding: 80px 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(220,38,38,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(220,38,38,0.2);
+    color: #FCA5A5;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: #EF4444; }
+  .hero p {
+    font-size: 18px;
+    color: #A8A29E;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .hero-meta-item .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #78716C;
+  }
+  .hero-meta-item .value {
+    font-size: 15px;
+    font-weight: 600;
+    color: #D6D3D1;
+  }
+
+  /* ─── Layout ─── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ─── Section ─── */
+  section {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  section:last-of-type { border-bottom: none; }
+
+  .section-number {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 32px;
+    line-height: 1.2;
+  }
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    margin-top: 40px;
+    color: var(--text);
+  }
+  h3:first-of-type { margin-top: 0; }
+  h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    margin-top: 24px;
+    color: var(--text);
+  }
+
+  p { margin-bottom: 16px; color: var(--text-secondary); }
+  strong { color: var(--text); font-weight: 600; }
+
+  /* ─── Big Stats Row ─── */
+  .big-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 40px 0;
+  }
+  .big-stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+  }
+  .big-stat .number {
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .big-stat .number.red { color: var(--accent); }
+  .big-stat .number.blue { color: var(--blue); }
+  .big-stat .number.green { color: var(--green); }
+  .big-stat .number.amber { color: var(--amber); }
+  .big-stat .label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .big-stat .sublabel {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* ─── Pain Ranking Table ─── */
+  .pain-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+  .pain-table thead th {
+    background: #F5F5F4;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+  }
+  .pain-table thead th:first-child { border-radius: 8px 0 0 0; }
+  .pain-table thead th:last-child { border-radius: 0 8px 0 0; }
+  .pain-table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+  .pain-table tbody tr:last-child td { border-bottom: none; }
+  .pain-table tbody tr.top-pain td {
+    background: var(--accent-light);
+    font-weight: 500;
+    color: var(--text);
+  }
+  .pain-table .rank {
+    font-weight: 800;
+    color: var(--accent);
+    font-size: 16px;
+  }
+  .pain-table tbody tr.top-pain .rank {
+    color: var(--accent-dark);
+  }
+  .pain-table tbody tr.dimmed td {
+    color: var(--text-muted);
+  }
+
+  /* ─── Feature Cards ─── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: box-shadow 0.2s;
+  }
+  .feature-card:hover {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+  .feature-card.span-2 {
+    grid-column: 1 / -1;
+  }
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 14px;
+  }
+  .feature-icon.red { background: var(--accent-light); }
+  .feature-icon.blue { background: var(--blue-light); }
+  .feature-icon.green { background: var(--green-light); }
+  .feature-icon.amber { background: var(--amber-light); }
+  .feature-icon.purple { background: var(--purple-light); }
+  .feature-icon.teal { background: var(--teal-light); }
+  .feature-icon.rose { background: var(--rose-light); }
+  .feature-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: var(--text);
+  }
+  .feature-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .feature-card .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-top: 12px;
+  }
+  .tag.core { background: var(--green-light); color: var(--green); }
+  .tag.stretch { background: var(--amber-light); color: var(--amber); }
+
+  /* ─── Flow Steps ─── */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 24px 0;
+    position: relative;
+  }
+  .flow-step {
+    display: flex;
+    gap: 20px;
+    position: relative;
+    padding-bottom: 32px;
+  }
+  .flow-step:last-child { padding-bottom: 0; }
+  .flow-step::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 40px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .flow-step:last-child::before { display: none; }
+  .flow-number {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    position: relative;
+    z-index: 1;
+  }
+  .flow-content {
+    flex: 1;
+    padding-top: 6px;
+  }
+  .flow-content h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+  }
+  .flow-content p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .flow-content .questions {
+    margin-top: 12px;
+    padding: 16px;
+    background: #F5F5F4;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  .flow-content .questions li {
+    padding: 6px 0;
+    color: var(--text-secondary);
+  }
+  .flow-content .questions li::before {
+    content: '→';
+    margin-right: 8px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ─── Bullet lists ─── */
+  ul {
+    list-style: none;
+    margin: 16px 0;
+  }
+  ul li {
+    padding: 8px 0 8px 24px;
+    position: relative;
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+  ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 16px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+  ul.check li::before {
+    content: '✓';
+    background: none;
+    opacity: 1;
+    color: var(--green);
+    font-weight: 700;
+    font-size: 14px;
+    top: 8px;
+  }
+  ul.x li::before {
+    content: '✗';
+    background: none;
+    opacity: 1;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    top: 8px;
+  }
+
+  /* ─── Callout ─── */
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 24px;
+    margin: 24px 0;
+  }
+  .callout.blue { border-left-color: var(--blue); }
+  .callout.green { border-left-color: var(--green); }
+  .callout.amber { border-left-color: var(--amber); }
+  .callout.purple { border-left-color: var(--purple); }
+  .callout .callout-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .callout p {
+    font-size: 14px;
+    margin: 0;
+    color: var(--text-secondary);
+  }
+
+  /* ─── Timeline ─── */
+  .timeline {
+    margin: 32px 0;
+  }
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 200px;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .timeline-row:last-child { border-bottom: none; }
+  .timeline-day {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-top: 2px;
+  }
+  .timeline-what h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    color: var(--text);
+  }
+  .timeline-what p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .timeline-deliverable {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    background: var(--green-light);
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  /* ─── Two-path ─── */
+  .two-paths {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .path-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .path-card .path-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .path-card.local .path-label { color: var(--blue); }
+  .path-card.nri .path-label { color: var(--purple); }
+  .path-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+  }
+  .path-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ─── User metric ─── */
+  .metric-box {
+    background: linear-gradient(135deg, #1C1917 0%, #292524 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin: 32px 0;
+    text-align: center;
+  }
+  .metric-box .metric-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #78716C;
+    margin-bottom: 12px;
+  }
+  .metric-box .metric-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #FAFAF9;
+  }
+  .metric-box .metric-value span {
+    color: #EF4444;
+  }
+
+  /* ─── Stack badges ─── */
+  .stack-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 24px 0;
+  }
+  .stack-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .stack-badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .dot.next { background: #000; }
+  .dot.supabase { background: #3ECF8E; }
+  .dot.vercel { background: #000; }
+  .dot.tailwind { background: #38BDF8; }
+  .dot.gemini { background: #4285F4; }
+
+  /* ─── Open decisions ─── */
+  .decisions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .decision-card {
+    background: var(--amber-light);
+    border: 1px solid #FDE68A;
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .decision-card .decision-num {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--amber);
+    margin-bottom: 8px;
+  }
+  .decision-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+  }
+  .decision-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  /* ─── Verification checklist ─── */
+  .checklist {
+    margin: 24px 0;
+    columns: 2;
+    column-gap: 24px;
+  }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    break-inside: avoid;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .check-box {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 5px;
+    margin-top: 1px;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 700px) {
+    .hero { padding: 48px 24px 40px; }
+    .big-stats { grid-template-columns: 1fr 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .two-paths { grid-template-columns: 1fr; }
+    .decisions-grid { grid-template-columns: 1fr; }
+    .checklist { columns: 1; }
+    .timeline-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .timeline-deliverable { text-align: left; }
+    .hero-meta { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ HERO ═══ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Z Buildathon — Product Plan</div>
+    <h1>The family care layer<br>that <span>doesn't exist yet</span></h1>
+    <p>An empathy-driven assessment that reveals the invisible reality of caring for aging parents — funneling into a family coordination circle for ongoing use.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="label">Deadline</span>
+        <span class="value">April 15, 10 PM IST</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">Team</span>
+        <span class="value">4 PMs + Claude Code</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">Goal</span>
+        <span class="value">Live MVP + 100 Real Users</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">ICP</span>
+        <span class="value">Adult Children, Not Parents</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════ 01 — CONTEXT ═══════════════════════ -->
+<section>
+  <div class="section-number">01 — Context</div>
+  <h2>The pain is validated. The market is empty.</h2>
+
+  <p>3 sessions of discovery confirmed the aging parent care space for <strong>adult children</strong>. Every existing product builds for the parent — nobody builds for the adult child's pain. The wedge: <strong>sibling coordination</strong> (expenses + tasks + visibility).</p>
+
+  <div class="big-stats">
+    <div class="big-stat">
+      <div class="number red">₹1.84L Cr</div>
+      <div class="label">Unclaimed assets</div>
+      <div class="sublabel">Families don't know what exists</div>
+    </div>
+    <div class="big-stat">
+      <div class="number blue">53%</div>
+      <div class="label">LIC policies lapse</div>
+      <div class="sublabel">Nobody tracks renewal dates</div>
+    </div>
+    <div class="big-stat">
+      <div class="number amber">66%</div>
+      <div class="label">Civil cases = property</div>
+      <div class="sublabel">Siblings fighting over assets</div>
+    </div>
+    <div class="big-stat">
+      <div class="number green">78%</div>
+      <div class="label">Caregivers near collapse</div>
+      <div class="sublabel">Invisible, uncompensated labor</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">Key Insight</div>
+    <p><strong>Chronic pain</strong> (monthly coordination, 7/10) drives recurring engagement. <strong>Acute pain</strong> (hospital admission, parent death, 10/10) drives urgency and sharing. The product must serve both.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 02 — PAIN RANKING ═══════════════════════ -->
+<section>
+  <div class="section-number">02 — Pain Points</div>
+  <h2>Ranked for a 10-day buildathon</h2>
+
+  <table class="pain-table">
+    <thead>
+      <tr>
+        <th style="width: 60px">Rank</th>
+        <th>Pain</th>
+        <th>Why This Rank</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="top-pain">
+        <td class="rank">#1</td>
+        <td><strong>Sibling coordination chaos</strong><br>Expenses + tasks + visibility</td>
+        <td>Recurring, zero competition, no parent needed, naturally viral</td>
+      </tr>
+      <tr class="top-pain">
+        <td class="rank">#2</td>
+        <td><strong>Caregiver invisibility</strong><br>"Nobody sees what I do"</td>
+        <td>Highest shareability, emotional punch, the quiz entry point</td>
+      </tr>
+      <tr class="top-pain">
+        <td class="rank">#3</td>
+        <td><strong>Financial chaos</strong><br>"Nobody knows where anything is"</td>
+        <td>Strongest stats, but crisis-only + needs parent cooperation</td>
+      </tr>
+      <tr class="dimmed">
+        <td class="rank">#4</td>
+        <td>Parent hides / info asymmetry</td>
+        <td>Real but hard to productize</td>
+      </tr>
+      <tr class="dimmed">
+        <td class="rank">#5</td>
+        <td>Emergency unpreparedness</td>
+        <td>Intense but rare</td>
+      </tr>
+      <tr class="dimmed">
+        <td class="rank">#6</td>
+        <td>Caregiver burnout</td>
+        <td>Deep but needs more than tech</td>
+      </tr>
+      <tr class="dimmed">
+        <td class="rank">#7</td>
+        <td>Role reversal grief</td>
+        <td>No product can solve</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════ 03 — LAYER 1: QUIZ ═══════════════════════ -->
+<section>
+  <div class="section-number">03 — Layer 1: Entry</div>
+  <h2>"The Family Care Check"</h2>
+
+  <p>An empathy-first assessment. Not "you're failing" — more <strong>"let's see where your family stands."</strong></p>
+
+  <div class="callout blue">
+    <div class="callout-title">Tone</div>
+    <p>Warm, validating, eye-opening. Like a friend who gently shows you what you've been carrying without judgment.</p>
+  </div>
+
+  <h3>Quiz Flow</h3>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-number">1</div>
+      <div class="flow-content">
+        <h4>"Who are you?"</h4>
+        <p>Two paths — <strong>"I live near my parents"</strong> (local caregiver) or <strong>"I live far from my parents"</strong> (NRI). This single question shapes the entire experience.</p>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-number">2</div>
+      <div class="flow-content">
+        <h4>8–10 empathetic questions</h4>
+        <p>Covering coordination, caregiving load, financial awareness, and sibling dynamics.</p>
+        <div class="questions">
+          <ul style="list-style:none; margin:0; padding:0;">
+            <li style="padding: 6px 0;">How do you coordinate with siblings? (WhatsApp? Calls? You don't?)</li>
+            <li style="padding: 6px 0;">Who handles medical appointments? Bills? Groceries? Pharmacy runs?</li>
+            <li style="padding: 6px 0;">Do you know if your parents' health insurance is active? When it renews?</li>
+            <li style="padding: 6px 0;">How do you split costs? Is it fair? Does everyone agree it's fair?</li>
+            <li style="padding: 6px 0;">When was the last time you had a real conversation about this with your siblings?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-number">3</div>
+      <div class="flow-content">
+        <h4>Gemini-powered "Family Care Reality" report</h4>
+        <p>Personalized, warm, actionable. Four sections:</p>
+        <ul class="check">
+          <li><strong>What you're carrying</strong> — estimated hours, estimated monthly cost</li>
+          <li><strong>What's at risk</strong> — insurance gaps, financial blind spots, coordination gaps</li>
+          <li><strong>What's going well</strong> — what your family already has figured out</li>
+          <li><strong>One gentle nudge</strong> — "Families like yours often benefit from..."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout green">
+    <div class="callout-title">Screenshot-worthy output</div>
+    <p>A warm, personal card — not a scary dashboard. Something you'd share in a family WhatsApp group or on LinkedIn as <em>"I took this and it really opened my eyes."</em></p>
+  </div>
+
+  <div class="big-stats" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="big-stat">
+      <div class="number green">0</div>
+      <div class="label">Signup required</div>
+    </div>
+    <div class="big-stat">
+      <div class="number blue">0</div>
+      <div class="label">Parent cooperation</div>
+    </div>
+    <div class="big-stat">
+      <div class="number red">2 min</div>
+      <div class="label">Time to value</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 04 — LAYER 2: CIRCLE ═══════════════════════ -->
+<section>
+  <div class="section-number">04 — Layer 2: Retention</div>
+  <h2>"The Family Circle"</h2>
+
+  <p>After the quiz, invite to create a family coordination space. This is where recurring engagement lives.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon red">₹</div>
+      <h4>Log Expenses</h4>
+      <p>Who paid what for parents — medical, utilities, household help, medicines, insurance. No "Mom owes Dad" dynamics. Not Splitwise.</p>
+      <span class="tag core">Core MVP</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon blue">✓</div>
+      <h4>Log Tasks</h4>
+      <p>Who did what — doctor visit, bill payment, pharmacy run, insurance call. Time contribution counts equally to money.</p>
+      <span class="tag core">Core MVP</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon green">📊</div>
+      <h4>See the Picture</h4>
+      <p>Monthly view of total family effort — time + money — by sibling. Shareable "Family Care Update" card for WhatsApp.</p>
+      <span class="tag core">Core MVP</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon purple">📱</div>
+      <h4>Family Contacts — "Mom's World"</h4>
+      <p>Shared contact book for parents' ecosystem: driver, maid, doctor, pharmacy, insurance agent, CA, emergency numbers. The info trapped in Mom's phone.</p>
+      <span class="tag core">Core MVP</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon amber">📋</div>
+      <h4>Medical Records</h4>
+      <p>Upload photos of reports, prescriptions, discharge summaries. Tagged by date, doctor, type — searchable, not buried in WhatsApp.</p>
+      <span class="tag core">Core MVP</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon teal">💬</div>
+      <h4>Caregiver Updates</h4>
+      <p>Text updates on how parents are doing: "Mom ate well today, walked to the park, BP was 130/80." Any sibling can post, all can view.</p>
+      <span class="tag core">Core MVP</span>
+    </div>
+
+    <div class="feature-card span-2">
+      <div class="feature-icon rose">🎙</div>
+      <h4>Voice Notes</h4>
+      <p>30-second audio updates — matches how families naturally communicate on WhatsApp. Add if ahead of schedule on Day 4–5, defer if not.</p>
+      <span class="tag stretch">Stretch Goal</span>
+    </div>
+  </div>
+
+  <h3>Two User Paths</h3>
+
+  <div class="two-paths">
+    <div class="path-card local">
+      <div class="path-label">Local Caregiver</div>
+      <h4>"Show your siblings what it really takes"</h4>
+      <p>Create circle → log what you do → invite siblings to see the reality. The invisible labor becomes visible.</p>
+    </div>
+    <div class="path-card nri">
+      <div class="path-label">NRI / Distant Child</div>
+      <h4>"Stay connected to your parents' care"</h4>
+      <p>Create circle → contribute financially → see what your local sibling handles. Distance doesn't mean disconnection.</p>
+    </div>
+  </div>
+
+  <h3>What it's NOT</h3>
+  <ul class="x">
+    <li><strong>Not Splitwise</strong> — no "Mom owes Dad" dynamics, no settle-up pressure</li>
+    <li><strong>Not a spreadsheet</strong> — visual, mobile-first, minimal data entry</li>
+    <li><strong>Not just money</strong> — time contribution counts equally</li>
+  </ul>
+
+  <div class="metric-box">
+    <div class="metric-label">User Metric (1 verified user =)</div>
+    <div class="metric-value">Completes quiz <span>AND</span> (shares result <span>OR</span> creates family circle)</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 05 — TECH SCOPE ═══════════════════════ -->
+<section>
+  <div class="section-number">05 — Technical Scope</div>
+  <h2>What to build</h2>
+
+  <h3>Stack</h3>
+  <div class="stack-row">
+    <span class="stack-badge"><span class="dot next"></span>Next.js (App Router)</span>
+    <span class="stack-badge"><span class="dot tailwind"></span>Tailwind CSS</span>
+    <span class="stack-badge"><span class="dot vercel"></span>Vercel</span>
+    <span class="stack-badge"><span class="dot supabase"></span>Supabase</span>
+    <span class="stack-badge"><span class="dot gemini"></span>Gemini 2.5 Flash</span>
+  </div>
+
+  <h3>MVP Pages</h3>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>1. Landing Page</h4>
+      <p>Empathetic headline, "Take the 2-minute check" CTA. Mobile-first, fast, emotionally resonant.</p>
+    </div>
+    <div class="feature-card">
+      <h4>2. Quiz Flow</h4>
+      <p>8–10 questions, branching for local vs NRI path. One question per screen. Progress indicator.</p>
+    </div>
+    <div class="feature-card">
+      <h4>3. Results Page</h4>
+      <p>Gemini-generated personalized report + shareable card. The screenshot moment.</p>
+    </div>
+    <div class="feature-card">
+      <h4>4. Family Circle</h4>
+      <p>Create circle, invite siblings via shareable link. Anonymous — no accounts needed.</p>
+    </div>
+    <div class="feature-card">
+      <h4>5. Expenses & Tasks</h4>
+      <p>Log who paid/did what. 44px touch targets. Minimal data entry. Mobile-first forms.</p>
+    </div>
+    <div class="feature-card">
+      <h4>6. Family Contacts</h4>
+      <p>Shared contact book — doctor, driver, pharmacy, etc. Siblings add what they know.</p>
+    </div>
+    <div class="feature-card">
+      <h4>7. Medical Records</h4>
+      <p>Upload report photos + caregiver text updates. Tagged by date and type.</p>
+    </div>
+    <div class="feature-card">
+      <h4>8. Circle Dashboard</h4>
+      <p>Monthly view of contributions (time + money) + shareable "Family Care Update" card.</p>
+    </div>
+  </div>
+
+  <h3>What NOT to Build</h3>
+  <ul class="x">
+    <li>User accounts / login</li>
+    <li>Settings page</li>
+    <li>Admin dashboard</li>
+    <li>Dark mode</li>
+    <li>Notification system</li>
+    <li>Payment / billing</li>
+  </ul>
+
+  <div class="callout amber">
+    <div class="callout-title">Supabase tracking</div>
+    <p>Each interaction is tracked in Supabase — quiz completions, circle creations, expense/task logs. This is how we count to 100 users. No separate analytics.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 06 — BUILD SEQUENCE ═══════════════════════ -->
+<section>
+  <div class="section-number">06 — Build Sequence</div>
+  <h2>5 days to live MVP</h2>
+
+  <div class="timeline">
+    <div class="timeline-row">
+      <div class="timeline-day">Day 1</div>
+      <div class="timeline-what">
+        <h4>Quiz flow + Gemini integration + results page</h4>
+        <p>Landing page, quiz questions, Gemini report generation, shareable results card. The viral loop starts here.</p>
+      </div>
+      <div class="timeline-deliverable">Working quiz → shareable result</div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-day">Day 2</div>
+      <div class="timeline-what">
+        <h4>Family circle + expense/task logging + family contacts</h4>
+        <p>Circle creation, sibling invite links, expense + task forms, shared contact book. The retention layer.</p>
+      </div>
+      <div class="timeline-deliverable">Working coordination tool</div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-day">Day 3</div>
+      <div class="timeline-what">
+        <h4>Medical records + caregiver updates + circle dashboard</h4>
+        <p>Photo upload, text updates, monthly contribution view. The full picture emerges.</p>
+      </div>
+      <div class="timeline-deliverable">Full circle features working</div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-day">Day 4</div>
+      <div class="timeline-what">
+        <h4>Monthly view + share cards + voice notes (stretch) + polish</h4>
+        <p>Shareable summary cards, mobile testing, edge cases, voice notes if ahead of schedule.</p>
+      </div>
+      <div class="timeline-deliverable">Shippable MVP</div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-day">Day 5</div>
+      <div class="timeline-what">
+        <h4>Launch + LinkedIn content + team distributes</h4>
+        <p>Go live on Vercel, team posts from personal LinkedIn accounts, monitor Supabase for user count.</p>
+      </div>
+      <div class="timeline-deliverable">Live with real users</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 07 — DISTRIBUTION ═══════════════════════ -->
+<section>
+  <div class="section-number">07 — Distribution</div>
+  <h2>How 1 user becomes 100</h2>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon red">📣</div>
+      <h4>Entry: LinkedIn</h4>
+      <p>Empathy-driven posts from team's personal accounts. Not stats-heavy, not guilt-inducing. Personal stories + "I took this check, here's what I learned."</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon green">🔄</div>
+      <h4>Viral Loop</h4>
+      <p>Quiz result is shareable → recipient takes quiz → shares their result. Family circle invite = 1 creator → 2–4 siblings. Natural compound growth.</p>
+    </div>
+  </div>
+
+  <div class="callout purple">
+    <div class="callout-title">Hook Tone</div>
+    <p>Authentic, empathy-first messaging. The research has the stats. The content should lead with the human story — not data dumps.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 08 — OPEN DECISIONS ═══════════════════════ -->
+<section>
+  <div class="section-number">08 — Open Decisions</div>
+  <h2>For the team</h2>
+
+  <div class="decisions-grid">
+    <div class="decision-card">
+      <div class="decision-num">01</div>
+      <h4>Product Name</h4>
+      <p>Needs to evoke family, care, clarity. Warmth over fintech.</p>
+    </div>
+    <div class="decision-card">
+      <div class="decision-num">02</div>
+      <h4>LinkedIn Hook Copy</h4>
+      <p>Brainstorm after MVP is built, test with team's networks.</p>
+    </div>
+    <div class="decision-card">
+      <div class="decision-num">03</div>
+      <h4>Quiz Questions</h4>
+      <p>Finalize the exact 8–10 questions. Can draft with Gemini.</p>
+    </div>
+    <div class="decision-card">
+      <div class="decision-num">04</div>
+      <h4>Share Formats</h4>
+      <p>WhatsApp vs LinkedIn — different formats, different audiences.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 09 — VERIFICATION ═══════════════════════ -->
+<section>
+  <div class="section-number">09 — Verification</div>
+  <h2>Ship checklist</h2>
+
+  <div class="checklist">
+    <div class="check-item">
+      <div class="check-box"></div>
+      <span>Quiz completes in <2 minutes on mobile</span>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <span>Results page loads in <2s</span>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <span>Gemini report feels personal, not generic</span>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <span>Shareable card renders correctly in WhatsApp preview + LinkedIn</span>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <span>Family circle works with 1–4 siblings</span>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <span>Expense/task logging works on mobile (44px touch targets)</span>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <span>Each interaction tracked in Supabase</span>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <span>Fresh incognito test before any handoff</span>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ─── Footer ─── -->
+<div style="text-align: center; padding: 48px 24px; color: var(--text-muted); font-size: 13px; border-top: 1px solid var(--border);">
+  Z Buildathon — Product Plan · April 2026 · Built for the adult child, not the parent.
+</div>
+
+</body>
+</html>

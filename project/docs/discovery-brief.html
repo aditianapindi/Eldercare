@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z Buildathon — Aging Parent Discovery Brief</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #FAFAF9;
+    --surface: #FFFFFF;
+    --border: #E7E5E4;
+    --text: #1C1917;
+    --text-secondary: #57534E;
+    --text-muted: #A8A29E;
+    --accent: #DC2626;
+    --accent-light: #FEF2F2;
+    --accent-dark: #991B1B;
+    --blue: #2563EB;
+    --blue-light: #EFF6FF;
+    --green: #16A34A;
+    --green-light: #F0FDF4;
+    --amber: #D97706;
+    --amber-light: #FFFBEB;
+    --purple: #7C3AED;
+    --purple-light: #F5F3FF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── Hero ─── */
+  .hero {
+    background: linear-gradient(135deg, #1C1917 0%, #292524 50%, #44403C 100%);
+    color: white;
+    padding: 80px 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(220,38,38,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(220,38,38,0.2);
+    color: #FCA5A5;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: #EF4444; }
+  .hero p {
+    font-size: 18px;
+    color: #A8A29E;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  /* ─── Layout ─── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ─── Section ─── */
+  section {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  section:last-of-type { border-bottom: none; }
+
+  .section-number {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 32px;
+    line-height: 1.2;
+  }
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    margin-top: 40px;
+    color: var(--text);
+  }
+  h3:first-of-type { margin-top: 0; }
+
+  p { margin-bottom: 16px; color: var(--text-secondary); }
+  strong { color: var(--text); font-weight: 600; }
+
+  /* ─── Stats Grid ─── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .stat-card .number {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-card .label {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  /* ─── Big Stats Row ─── */
+  .big-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 40px 0;
+  }
+  .big-stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .big-stat .number {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .big-stat .number.red { color: var(--accent); }
+  .big-stat .number.blue { color: var(--blue); }
+  .big-stat .number.green { color: var(--green); }
+  .big-stat .label {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .big-stat .sublabel {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* ─── Bullet lists ─── */
+  ul {
+    list-style: none;
+    margin: 16px 0;
+  }
+  ul li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+  ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ─── Blockquotes ─── */
+  blockquote {
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  blockquote cite {
+    display: block;
+    font-style: normal;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  /* ─── Pain Cards ─── */
+  .pain-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 24px 0;
+  }
+  .pain-card h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pain-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    color: white;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ─── Callout ─── */
+  .callout {
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin: 24px 0;
+    font-size: 15px;
+  }
+  .callout.red { background: var(--accent-light); border: 1px solid #FECACA; }
+  .callout.blue { background: var(--blue-light); border: 1px solid #BFDBFE; }
+  .callout.green { background: var(--green-light); border: 1px solid #BBF7D0; }
+  .callout.amber { background: var(--amber-light); border: 1px solid #FDE68A; }
+  .callout.purple { background: var(--purple-light); border: 1px solid #DDD6FE; }
+  .callout strong { display: block; margin-bottom: 8px; font-size: 16px; }
+
+  /* ─── Table ─── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 24px 0;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th {
+    background: #F5F5F4;
+    text-align: left;
+    padding: 14px 16px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #FAFAF9; }
+
+  /* ─── ICP Profiles ─── */
+  .icp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin: 20px 0;
+  }
+  .icp-card h4 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .icp-card .tag {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+  }
+
+  /* ─── Week Timeline ─── */
+  .week-day {
+    display: flex;
+    gap: 20px;
+    margin: 16px 0;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .week-day:last-child { border-bottom: none; }
+  .day-label {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    min-width: 90px;
+    flex-shrink: 0;
+  }
+  .day-content {
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  /* ─── Gap List ─── */
+  .gap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .gap-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .gap-item .number {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .gap-item .desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  /* ─── Unmet Needs ─── */
+  .need-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin: 16px 0;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .need-number {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent);
+    min-width: 28px;
+  }
+  .need-quote {
+    font-style: italic;
+    color: var(--text);
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+  .need-solution {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* ─── Discussion Questions ─── */
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin: 16px 0;
+  }
+  .question-card .q-num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .question-card .q-text {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .question-card .q-context {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* ─── Sources ─── */
+  .sources-section {
+    background: #F5F5F4;
+    padding: 64px 0;
+  }
+  .source-category {
+    margin-bottom: 32px;
+  }
+  .source-category h4 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+  }
+  .source-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .source-list li {
+    padding: 6px 0;
+    padding-left: 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .source-list li::before { display: none; }
+  .source-list li a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  .source-list li a:hover { text-decoration: underline; }
+  .source-list li .pub {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  /* ─── Footer ─── */
+  footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 768px) {
+    .hero { padding: 48px 24px 40px; }
+    .big-stats { grid-template-columns: 1fr; }
+    .gap-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .week-day { flex-direction: column; gap: 4px; }
+    section { padding: 40px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Z Buildathon &middot; Discovery Brief</div>
+    <h1>The <span>Aging Parent</span> Crisis<br>Nobody Is Solving</h1>
+    <p>153 million elderly in India. 18 million NRIs drowning in guilt. Every product builds for the parent. Nobody builds for the adult child. This is the gap.</p>
+  </div>
+</div>
+
+<!-- ═══ 1. THE MARKET ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">01 &mdash; The Market</div>
+  <h2>A $30B Market With $22.5M in Startup Funding</h2>
+
+  <div class="big-stats">
+    <div class="big-stat">
+      <div class="number red">153M</div>
+      <div class="label">Elderly (60+) in India today</div>
+      <div class="sublabel">347M by 2050</div>
+    </div>
+    <div class="big-stat">
+      <div class="number blue">18M+</div>
+      <div class="label">NRIs globally</div>
+      <div class="sublabel">74% cite parents as reason to return</div>
+    </div>
+    <div class="big-stat">
+      <div class="number green">$29.6B</div>
+      <div class="label">India care services market</div>
+      <div class="sublabel">Growing 13.76% CAGR</div>
+    </div>
+  </div>
+
+  <h3>The Structural Shift</h3>
+  <ul>
+    <li>Joint family living: <strong>&lt;20% of urban families</strong> (was near-universal 30 years ago)</li>
+    <li><strong>40% of young Indians</strong> migrate to cities/abroad for work</li>
+    <li><strong>26% of older adults</strong> live alone or with spouse only</li>
+    <li>By 2045: <strong>60M older adults</strong> estimated to live alone</li>
+    <li><strong>74% of NRIs</strong> cite aging parents as top-3 reason for considering return to India</li>
+  </ul>
+
+  <h3>Financial Dependency</h3>
+  <ul>
+    <li><strong>~40% of elderly</strong> in the poorest wealth quintile; ~20% have NO income</li>
+    <li>Government pensions as low as Rs 200-500/month</li>
+    <li>Only <strong>18% of 60+ Indians</strong> have health insurance</li>
+    <li><strong>75% of seniors</strong> suffer chronic diseases</li>
+    <li>A single medical emergency can "wipe out decades of careful savings"</li>
+    <li><strong>27% of household income</strong> spent on healthcare for seniors with chronic illness</li>
+  </ul>
+
+  <h3>Digital Reality of the Elderly</h3>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="number">85%</div>
+      <div class="label">Classified as "digitally illiterate"</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">40%</div>
+      <div class="label">Own smartphones</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">66%</div>
+      <div class="label">Find digital tools "too confusing"</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">51%</div>
+      <div class="label">Fear "pressing the wrong button"</div>
+    </div>
+  </div>
+  <p>WhatsApp and YouTube = peak usage. Anything beyond = hand-holding required. Adult children serve as <strong>mandatory digital intermediaries</strong> for bills, healthcare, government portals.</p>
+</div>
+</section>
+
+<!-- ═══ 2. THE PAIN ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">02 &mdash; The Pain</div>
+  <h2>Real Voices, Real Pain</h2>
+
+  <div class="pain-card">
+    <h4><span class="pain-number">1</span> GUILT &mdash; The Universal Constant</h4>
+    <p>Every single source, every forum, every article &mdash; guilt is the undercurrent.</p>
+    <blockquote>
+      "I actually understand now what my parents gave up. How much of their lives revolved around us. And now if they're fortunate, I'm on the other side of the globe calling once a week."
+      <cite>&mdash; Viral NRI post (massive engagement)</cite>
+    </blockquote>
+    <blockquote>
+      "Every year they grow dearer as they age and I feel so helpless and so far away. If they needed help I would be the last person to reach! This thought alone tears me."
+      <cite>&mdash; Lassi with Lavina commenter</cite>
+    </blockquote>
+    <blockquote>
+      "The guilt of being 8,000 miles away when a parent falls sick &mdash; no salary can offset."
+      <cite>&mdash; Back To India NRI Survey (1,247 respondents)</cite>
+    </blockquote>
+    <p><strong>6 types of guilt identified:</strong> Not doing enough. Wanting your own life. Placing parent in facility. Living far away. Feeling resentful. Wishing it would end.</p>
+  </div>
+
+  <div class="pain-card">
+    <h4><span class="pain-number">2</span> SIBLING CONFLICT &mdash; The Family Breaker</h4>
+    <p>The most anger-inducing pain. Nearly universal.</p>
+    <blockquote>
+      "I'm the one with all the responsibility. I am mad at my brother and sister for leaving this up to me. I have become bitter."
+      <cite>&mdash; momof2, AgingCare</cite>
+    </blockquote>
+    <blockquote>
+      "The resentment started growing like a fungus &mdash; dank &amp; stinking. I didn't want it but had no tools to remove it."
+      <cite>&mdash; anonymous, AgingCare</cite>
+    </blockquote>
+    <blockquote>
+      "Two brothers who are concerned about how much money my mother is going to leave them. I have not taken one penny from her."
+      <cite>&mdash; Jane29, AgingCare</cite>
+    </blockquote>
+    <div class="callout red">
+      <strong>Pattern</strong>
+      One sibling (usually a daughter, geographically closest) carries 80-90% of the load. Others visit, criticize, don't contribute. The sibling who gives time resents the one who gives money, and vice versa. Money is the #1 family-breaking factor.
+    </div>
+  </div>
+
+  <div class="pain-card">
+    <h4><span class="pain-number">3</span> FINANCIAL CATASTROPHE</h4>
+    <p>Not just expensive &mdash; chaotic and family-destroying.</p>
+    <blockquote>
+      "My mother was diagnosed with leukemia in 2019 and it took away my entire savings. I took a loan on my home and I am still paying it off."
+      <cite>&mdash; Bhavna Sharma, single mother</cite>
+    </blockquote>
+    <blockquote>
+      "What about my future?"
+      <cite>&mdash; Rahul Bhargava, 42, whose father's medical bills exhausted all savings</cite>
+    </blockquote>
+    <blockquote>
+      "I barely get time with my wife and children together... we hardly talk about anything but bills and expenses."
+      <cite>&mdash; Ankit Jhalana, 45, banking professional</cite>
+    </blockquote>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="number">60%</div><div class="label">Sandwich gen financially unprepared</div></div>
+      <div class="stat-card"><div class="number">65%</div><div class="label">Abandoned seniors skip meds</div></div>
+      <div class="stat-card"><div class="number">Rs 35K-1.5L</div><div class="label">Monthly cost of dependent parent</div></div>
+    </div>
+  </div>
+
+  <div class="pain-card">
+    <h4><span class="pain-number">4</span> THE PARENT WHO HIDES</h4>
+    <blockquote>
+      "Parents say: 'Don't worry.' You hear: 'Something is not right.'"
+      <cite>&mdash; Multiple NRI sources</cite>
+    </blockquote>
+    <blockquote>
+      "It's 11 p.m. Your phone lights up. 'Beta, I slipped a little. It's nothing.' You're in Bengaluru. They're in Lucknow."
+      <cite>&mdash; Samarth Community</cite>
+    </blockquote>
+    <div class="callout amber">
+      <strong>The Vicious Cycle</strong>
+      Parents hide problems to protect children &rarr; Children discover late &rarr; Trust erodes &rarr; Children install monitoring &rarr; Parents feel surveilled &rarr; Parents hide more. Nobody wins.
+    </div>
+  </div>
+
+  <div class="pain-card">
+    <h4><span class="pain-number">5</span> CAREGIVER BURNOUT &amp; IDENTITY LOSS</h4>
+    <blockquote>
+      "Taking care of my mom is slowly killing me."
+      <cite>&mdash; Sunny2020, AgingCare</cite>
+    </blockquote>
+    <blockquote>
+      "Switching roles 20 times a day &mdash; parent, child, professional, caregiver."
+      <cite>&mdash; Samvedna Care</cite>
+    </blockquote>
+    <blockquote>
+      "Most caregivers don't have anyone who asks, 'How are you holding up?'"
+      <cite>&mdash; Samvedna Care</cite>
+    </blockquote>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="number">78%</div><div class="label">Indian caregivers near collapse</div></div>
+      <div class="stat-card"><div class="number">40%</div><div class="label">Report clinical depression</div></div>
+      <div class="stat-card"><div class="number">9x</div><div class="label">More unpaid care hours by women</div></div>
+    </div>
+  </div>
+
+  <div class="pain-card">
+    <h4><span class="pain-number">6</span> THE 2 AM PHONE CALL</h4>
+    <p>NRIs' deepest fear.</p>
+    <blockquote>
+      "My mom couldn't stay alone... they demanded that we should come back and take care of her right away... how can I drop everything here, go to India and take care of my mom as long as she lives?"
+      <cite>&mdash; Lassi with Lavina commenter</cite>
+    </blockquote>
+    <p>Approving hospital admissions remotely. Speaking with unfamiliar doctors across time zones. Managing insurance paperwork from another country. Having "only a vague idea of their parents' chronic health conditions."</p>
+  </div>
+
+  <div class="pain-card">
+    <h4><span class="pain-number">7</span> ROLE REVERSAL GRIEF</h4>
+    <p>Ambiguous grief &mdash; mourning someone still alive.</p>
+    <blockquote>
+      "My father doesn't speak unless one word orders. Beyond depressed and is this my life now."
+      <cite>&mdash; Simon53, AgingCare</cite>
+    </blockquote>
+    <blockquote>
+      "There is no space to think about themselves. Some spoke about grieving the life they imagined they would have."
+      <cite>&mdash; Rashi Vidyasagar, Criminologist</cite>
+    </blockquote>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 3. CULTURAL CONTEXT ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">03 &mdash; Cultural Context</div>
+  <h2>What Makes India Different</h2>
+
+  <div class="pain-card">
+    <ul>
+      <li><strong>Filial duty = identity.</strong> Caring for parents isn't optional &mdash; it's tied to self-worth, karma ("punya"), and community standing. Failing = spiritual failure.</li>
+      <li><strong>"Ghar ki baat ghar mein."</strong> Family matters stay private. Seeking outside help = shame.</li>
+      <li><strong>Old age home = abandonment.</strong> "What will the neighbors say?" is the first thought, not medical facilities.</li>
+      <li><strong>Daughters-in-law bear the brunt.</strong> 80% of elder care falls on women. 68% of DILs provide physical caregiving vs. 51% of sons.</li>
+      <li><strong>Parents as silent martyrs.</strong> Won't spend on themselves. Hide problems to "not burden" children.</li>
+      <li><strong>Emotional blackmail is normalized.</strong> Extended family uses guilt strategically. "They demanded we come back right away."</li>
+      <li><strong>The "return to India" debate.</strong> Haunts every NRI. Average decision period: 1.8 years.</li>
+    </ul>
+  </div>
+
+  <div class="callout purple">
+    <strong>A Real Example of Cultural Complexity</strong>
+    An NRI eldercare manager's actual advice for getting parents to accept a caregiver: <em>Pretend the caretaker is free.</em> Or introduce them as "a friend who needs company." Because parents won't accept help if they know it costs money.
+  </div>
+</div>
+</section>
+
+<!-- ═══ 4. ICP ANALYSIS ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">04 &mdash; ICP Analysis</div>
+  <h2>Who Is In The Most Pain?</h2>
+
+  <div class="icp-card">
+    <div class="tag">Primary Target</div>
+    <h4>The Primary Caregiver Daughter (or Daughter-in-Law), 35-50</h4>
+    <ul>
+      <li>Carries 80-90% of the caregiving load</li>
+      <li>Invisible to siblings, employer, and often the parent</li>
+      <li>Burned out, resentful, guilty about the resentment</li>
+      <li>Sacrificed career progression, personal life, mental health</li>
+      <li>Has no one asking "How are YOU doing?"</li>
+    </ul>
+    <div class="callout red">
+      <strong>This is the person every existing product ignores.</strong>
+      Everyone builds for the parent's logistics. Nobody builds for HER.
+    </div>
+  </div>
+
+  <div class="icp-card">
+    <div class="tag">High Willingness to Pay</div>
+    <h4>The NRI Son/Daughter, 30-45</h4>
+    <ul>
+      <li>Living 8,000 miles away, calling once a week, drowning in guilt</li>
+      <li>Managing finances across borders, time zones, and currencies</li>
+      <li>Fielding sibling conflicts about who's doing what</li>
+      <li>Can't find reliable local care; can't verify quality from afar</li>
+      <li>74% considering returning to India (average deliberation: 1.8 years)</li>
+    </ul>
+    <div class="callout blue">
+      <strong>Guilt converts to spending.</strong>
+      NRIs have the highest willingness to pay in this category.
+    </div>
+  </div>
+
+  <div class="icp-card">
+    <div class="tag">Largest Segment</div>
+    <h4>The Sandwich Generation Professional, 35-50</h4>
+    <ul>
+      <li>Caught between children's needs and parents' needs</li>
+      <li>60% feel financially unprepared despite earning well</li>
+      <li>"We hardly talk about anything but bills and expenses"</li>
+      <li>Multiple provident fund withdrawals, home loans for parent medical bills</li>
+      <li>No financial products designed for the triple burden</li>
+    </ul>
+  </div>
+
+  <div class="callout amber">
+    <strong>Who Is NOT The User (For a Buildathon)</strong>
+    The 70+ parent themselves (85% digitally illiterate). The rural elderly (no smartphone). The affluent elderly who can self-fund (already served by Emoha/Anvayaa).
+  </div>
+</div>
+</section>
+
+<!-- ═══ 5. COMPETITIVE LANDSCAPE ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">05 &mdash; Competitive Landscape</div>
+  <h2>What Exists &amp; What's Failed</h2>
+
+  <h3>Active Players</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Company</th><th>Focus</th><th>Raised</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Emoha</strong></td><td>Emergency + concierge + activities</td><td>$16.4M</td><td>-96.6% EBITDA</td></tr>
+        <tr><td><strong>Anvayaa</strong></td><td>Smartwatch + care management</td><td>&mdash;</td><td>38 cities, 1L+ seniors</td></tr>
+        <tr><td><strong>Khyaal</strong></td><td>Live sessions, digital literacy</td><td>$4.2M</td><td>3M+ users</td></tr>
+        <tr><td><strong>Nila Cares</strong></td><td>AI care coordination for NRIs</td><td>$2.4M</td><td>Zero churn claimed</td></tr>
+        <tr><td><strong>Praan Health</strong></td><td>Chronic condition mgmt + strength training</td><td>Rainmatter (Nithin Kamath), WEH Ventures</td><td>Founded 2024, 10K+ families, 250K+ sessions, 5x rev growth</td></tr>
+        <tr><td><strong>Samarth</strong></td><td>Tech-enabled care app</td><td>&mdash;</td><td>NRI-focused</td></tr>
+        <tr><td><strong>Yodda</strong></td><td>Premium elder care</td><td>&mdash;</td><td>Technology-driven</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>What's Failed</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Company</th><th>Lesson</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>GenWise</strong> (Kunal Shah-backed)</td><td>3M users, shut down. Senior used it, wouldn't pay. Buyer (child) wasn't user.</td></tr>
+        <tr><td><strong>~20 deadpooled startups</strong></td><td>Service models bleed money. Hyperlocal complexity. Caregiver churn.</td></tr>
+        <tr><td><strong>"Uberize nursing" startups</strong></td><td>Caregiving resists transactional platform logic.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout red">
+    <strong>The Gap Nobody Has Filled</strong>
+    All existing players solve care coordination and health monitoring. None adequately address: (1) Financial management / sibling expense splitting, (2) Sibling coordination and accountability, (3) Emotional/cultural support for the caregiver, (4) The digital intermediary burden.
+    <br><br>
+    <em>The insight: Every product builds for the PARENT. Nobody builds for the ADULT CHILD'S pain.</em>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 6. UNMET NEEDS ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">06 &mdash; Unmet Needs</div>
+  <h2>What Real Users Are Asking For</h2>
+
+  <div class="need-item">
+    <div class="need-number">1</div>
+    <div>
+      <div class="need-quote">"I wish my siblings would just SEE what I do every day."</div>
+      <div class="need-solution">&rarr; Visibility into actual caregiving workload</div>
+    </div>
+  </div>
+  <div class="need-item">
+    <div class="need-number">2</div>
+    <div>
+      <div class="need-quote">"I wish I could know my parents are OK without calling and asking."</div>
+      <div class="need-solution">&rarr; Passive, non-intrusive wellbeing signal</div>
+    </div>
+  </div>
+  <div class="need-item">
+    <div class="need-number">3</div>
+    <div>
+      <div class="need-quote">"I wish someone would just tell me what to do next."</div>
+      <div class="need-solution">&rarr; Care roadmap for progressive decline</div>
+    </div>
+  </div>
+  <div class="need-item">
+    <div class="need-number">4</div>
+    <div>
+      <div class="need-quote">"I wish there was a way to coordinate without the family drama."</div>
+      <div class="need-solution">&rarr; Structured task/responsibility distribution</div>
+    </div>
+  </div>
+  <div class="need-item">
+    <div class="need-number">5</div>
+    <div>
+      <div class="need-quote">"I wish my parents would tell me the truth."</div>
+      <div class="need-solution">&rarr; Bridge the information asymmetry</div>
+    </div>
+  </div>
+  <div class="need-item">
+    <div class="need-number">6</div>
+    <div>
+      <div class="need-quote">"I wish I didn't have to choose between my career and my parents."</div>
+      <div class="need-solution">&rarr; Solutions that don't require relocating</div>
+    </div>
+  </div>
+  <div class="need-item">
+    <div class="need-number">7</div>
+    <div>
+      <div class="need-quote">"I wish someone just asked me how I'm holding up."</div>
+      <div class="need-solution">&rarr; Caregiver emotional support</div>
+    </div>
+  </div>
+  <div class="need-item">
+    <div class="need-number">8</div>
+    <div>
+      <div class="need-quote">"I wish managing their finances wasn't so complicated from here."</div>
+      <div class="need-solution">&rarr; Simplified cross-border financial oversight</div>
+    </div>
+  </div>
+  <div class="need-item">
+    <div class="need-number">9</div>
+    <div>
+      <div class="need-quote">"I wish the technology was simpler for them."</div>
+      <div class="need-solution">&rarr; Elderly-friendly interfaces</div>
+    </div>
+  </div>
+  <div class="need-item">
+    <div class="need-number">10</div>
+    <div>
+      <div class="need-quote">"I wish I could be there."</div>
+      <div class="need-solution">&rarr; The irreducible need no technology fully solves</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 7. VIRAL DISTRIBUTION ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">07 &mdash; Distribution Signal</div>
+  <h2>What Goes Viral</h2>
+
+  <ul>
+    <li>Personal confessional posts that <strong>name a specific guilt</strong> ("calling once a week") &mdash; outperform advice content 10:1</li>
+    <li>Ankur Warikoo thread on leaving parents' home: <strong>934K views, 151 replies</strong></li>
+    <li>The NRI viral post about 10 years of guilt: massive engagement</li>
+    <li>"Hire My Dad" LinkedIn post (daughter seeking job for veteran father)</li>
+  </ul>
+
+  <div class="callout blue">
+    <strong>Pattern: Vulnerability + Specificity + No Easy Answer</strong>
+    Both adult child AND parent see themselves in the content. Cross-generational resonance. The content must feel like a confession, not an ad.
+  </div>
+</div>
+</section>
+
+<!-- ═══ 8. DAY-TO-DAY REALITY ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">08 &mdash; Day-to-Day Reality</div>
+  <h2>What "Managing From Afar" Actually Looks Like</h2>
+
+  <h3>A Composite Week</h3>
+  <div class="pain-card">
+    <div class="week-day">
+      <div class="day-label">Monday</div>
+      <div class="day-content">Quick WhatsApp text: "How are you?" Response: "Fine, beta." Between meetings, notice 3 messages in family group &mdash; a forwarded prayer video, a "good morning" image, and buried between them: "Papa's sugar was 210 today." Evening: 4-minute call. "Don't waste money calling."</div>
+    </div>
+    <div class="week-day">
+      <div class="day-label">Tuesday</div>
+      <div class="day-content">Reminder: Mother's thyroid meds should be running low. "I still have some." Electricity bill is due. Ask father to pay. "I'll go tomorrow."</div>
+    </div>
+    <div class="week-day">
+      <div class="day-label">Wednesday</div>
+      <div class="day-content">Sister in Bangalore messages: "Amma mentioned chest pain to her neighbor yesterday. Did she tell you?" She didn't. Panic. Call mother. "Oh just gas. Don't worry." 45 minutes convincing her to see a doctor. She agrees to "if it happens again."</div>
+    </div>
+    <div class="week-day">
+      <div class="day-label">Thursday</div>
+      <div class="day-content">Father went to pay electricity bill. "Line was too long, I'll go tomorrow." Third day. WhatsApp from domestic help asking for an advance. No one makes a decision for 6 hours.</div>
+    </div>
+    <div class="week-day">
+      <div class="day-label">Friday</div>
+      <div class="day-content">Property tax notice. Parents photograph it &mdash; blurry. 20 minutes teaching how to take a clearer photo. Separately realize you have no idea when father's health insurance premium is due.</div>
+    </div>
+    <div class="week-day">
+      <div class="day-label">Weekend</div>
+      <div class="day-content">Video call. House looks less tidy. Don't mention it. Sunday: Mother watched TV all week. Father walked "once or twice." Same as every week. End Sunday with low-grade anxiety.</div>
+    </div>
+  </div>
+
+  <h3>The WhatsApp Problem</h3>
+  <blockquote>
+    "Prescriptions get buried in hundreds of messages. No one knows if a dose was given. Vitals are never tracked. Documents can't be found in an emergency."
+    <cite>&mdash; WiseCare</cite>
+  </blockquote>
+  <blockquote>
+    "My brother thinks I handle everything. I think he does."
+    <cite>&mdash; WiseCare user</cite>
+  </blockquote>
+  <p><strong>What gets shared:</strong> Medical reports, screenshots of bills, forwarded doctor messages, coordination requests &mdash; all mixed with good morning images and prayer forwards.</p>
+  <p><strong>What gets lost:</strong> Everything important. Hospital bills scroll away. Medication schedules are never formalized. No search, no structure, no accountability.</p>
+</div>
+</section>
+
+<!-- ═══ 9. FINANCIAL CHAOS ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">09 &mdash; The Financial Chaos</div>
+  <h2>Where The Money Goes (And Gets Lost)</h2>
+
+  <h3>The Fragmentation</h3>
+  <p>Average Indian senior's financial life is spread across <strong>6-12 institutions</strong>: multiple bank accounts, 3-5 LIC policies with different due dates, pension from one source, property documents in a steel almirah, gold jewelry undocumented. <strong>84% of household wealth is in real estate</strong> &mdash; the least liquid asset.</p>
+
+  <h3>The Medical Money Pit</h3>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="number">76%</div><div class="label">Hospitalization costs paid out of pocket</div></div>
+    <div class="stat-card"><div class="number">49%</div><div class="label">Families face catastrophic health spend</div></div>
+    <div class="stat-card"><div class="number">83%</div><div class="label">Seniors have no health insurance</div></div>
+    <div class="stat-card"><div class="number">15%</div><div class="label">Pushed below poverty by medical costs</div></div>
+  </div>
+
+  <h3>The Sibling Split Problem</h3>
+  <ul>
+    <li>No agreed framework in most families &mdash; never an explicit conversation about cost-sharing</li>
+    <li>Sibling who gives TIME resents sibling who gives MONEY (and vice versa)</li>
+    <li>Property inheritance expectations poison current cost-sharing</li>
+    <li><strong>Splitwise fails</strong> because families don't "settle up" &mdash; it creates awkward debt dynamics</li>
+    <li>Cultural barrier: talking about money with siblings feels taboo</li>
+  </ul>
+
+  <h3>The Legal Time Bomb</h3>
+  <div class="callout red">
+    <strong>Critical Legal Risks Most Families Don't Know About</strong>
+    <ul>
+      <li><strong>Power of Attorney becomes void upon mental incapacity</strong> in India (unlike UK/US). No enduring PoA exists.</li>
+      <li><strong>Less than 10-15% of Indian families have wills.</strong> 85% of NRIs lack estate planning.</li>
+      <li><strong>66% of ALL civil cases in India are property disputes.</strong> 7.3M cases pending. Average resolution: 20 years.</li>
+      <li><strong>Rs 1.84 lakh crore lies unclaimed</strong> across banks, insurance, mutual funds.</li>
+      <li><strong>Nominee &ne; legal heir.</strong> Most Indians believe otherwise. This single misunderstanding triggers explosive family conflict.</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 10. THE PRODUCT GAP ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">10 &mdash; The Product Gap</div>
+  <h2>What Does NOT Exist</h2>
+
+  <p>Every existing player solves <strong>one slice</strong>:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Category</th><th>Players</th><th>Limitation</th></tr></thead>
+      <tbody>
+        <tr><td>Care coordination</td><td>Emoha, Anvayaa, Nila</td><td>Expensive concierge, Rs 15-50K/month</td></tr>
+        <tr><td>Bill payment</td><td>NRIWAY, BBPS</td><td>Rails exist but no family layer</td></tr>
+        <tr><td>Health tracking</td><td>WiseCare</td><td>Closest to coordination, but health-only</td></tr>
+        <tr><td>Estate planning</td><td>Kustodian, Yellow</td><td>Post-death or pre-death legal, not living management</td></tr>
+        <tr><td>Expense splitting</td><td>Splitwise</td><td>Breaks for family dynamics</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>What Nobody Has Built</h3>
+  <div class="gap-grid">
+    <div class="gap-item"><div class="number">1</div><div class="desc">Consolidated view of parent's entire financial life</div></div>
+    <div class="gap-item"><div class="number">2</div><div class="desc">Expense tracking designed for family dynamics</div></div>
+    <div class="gap-item"><div class="number">3</div><div class="desc">Sibling coordination with accountability</div></div>
+    <div class="gap-item"><div class="number">4</div><div class="desc">Document vault (medical + financial + legal)</div></div>
+    <div class="gap-item"><div class="number">5</div><div class="desc">Emergency readiness kit for hospitalization</div></div>
+    <div class="gap-item"><div class="number">6</div><div class="desc">A tool that addresses the CHILD'S pain</div></div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 11. PITCH STATS ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">11 &mdash; Pitch Deck Stats</div>
+  <h2>Key Numbers</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Stat</th><th>Number</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>India elderly (60+) today</td><td><strong>153 million</strong></td><td>UNFPA</td></tr>
+        <tr><td>India elderly by 2050</td><td><strong>347 million</strong></td><td>UNFPA</td></tr>
+        <tr><td>NRIs globally</td><td><strong>18 million+</strong></td><td>MEA</td></tr>
+        <tr><td>NRIs citing parents as reason to return</td><td><strong>74%</strong></td><td>Back To India Survey</td></tr>
+        <tr><td>Seniors without health insurance</td><td><strong>83%</strong></td><td>Outlook Money</td></tr>
+        <tr><td>Households facing catastrophic health spend</td><td><strong>49%</strong></td><td>Research studies</td></tr>
+        <tr><td>Civil cases that are property disputes</td><td><strong>66%</strong></td><td>Supreme Court</td></tr>
+        <tr><td>Unclaimed financial assets in India</td><td><strong>Rs 1.84 lakh crore</strong></td><td>Dept of Financial Services</td></tr>
+        <tr><td>NRIs without estate planning</td><td><strong>85%</strong></td><td>Industry estimate</td></tr>
+        <tr><td>Indian caregivers near collapse</td><td><strong>78%</strong></td><td>Medium/research</td></tr>
+        <tr><td>Elderly classified as digitally illiterate</td><td><strong>85%</strong></td><td>ORF</td></tr>
+        <tr><td>India elder care startup funding (total)</td><td><strong>$22.5M</strong></td><td>Industry data</td></tr>
+        <tr><td>India care services market</td><td><strong>$29.6B, 13.76% CAGR</strong></td><td>Market research</td></tr>
+        <tr><td>Eldercare startups deadpooled in India</td><td><strong>20+</strong></td><td>Failory</td></tr>
+        <tr><td>Sandwich gen feeling financially unprepared</td><td><strong>60%</strong></td><td>ETV Bharat</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 12. WHY NOW ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">12 &mdash; Why Now?</div>
+  <h2>The Convergence That Makes This Moment Different</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Factor</th><th>2020</th><th>2023</th><th>2025-2026</th></tr></thead>
+      <tbody>
+        <tr><td>60+ population</td><td>~140M</td><td>~149M</td><td><strong>153M+ (crossed 150M)</strong></td></tr>
+        <tr><td>ABHA health records</td><td>Not launched</td><td>~10 crore</td><td><strong>84+ crore</strong></td></tr>
+        <tr><td>AI API cost (per 1M tokens)</td><td>N/A</td><td>$30 (GPT-4)</td><td><strong>$0.10 (Gemini Flash)</strong></td></tr>
+        <tr><td>UPI cross-border txns/year</td><td>180</td><td>144</td><td><strong>755,000+</strong></td></tr>
+        <tr><td>Ayushman Bharat for 70+</td><td>Income-restricted</td><td>Income-restricted</td><td><strong>Universal (Sep 2024)</strong></td></tr>
+        <tr><td>NRI remittances</td><td>~$83B</td><td>~$112B</td><td><strong>$136B</strong></td></tr>
+        <tr><td>Insurance age ceiling</td><td>65</td><td>65</td><td><strong>Removed (Apr 2024)</strong></td></tr>
+        <tr><td>Elder care VC funding/year</td><td>Minimal</td><td>$19.1M</td><td><strong>$22.5M+</strong></td></tr>
+        <tr><td>GenWise (senior-as-customer)</td><td>N/A</td><td>Launched</td><td><strong>Failed Dec 2025</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Demographic Tipping Point</h3>
+  <ul>
+    <li>By <strong>~2030</strong>: Elderly will outnumber children under 10 for the first time</li>
+    <li>By <strong>2046</strong>: Elderly will outnumber ALL children aged 0-14 &mdash; irreversible crossover</li>
+    <li>2025-2030 is the inflection zone: growth rate of elderly population now accelerating faster than overall population growth</li>
+  </ul>
+
+  <h3>Policy &amp; Regulatory Shifts</h3>
+  <div class="callout green">
+    <strong>September 2024: Ayushman Bharat expanded to ALL seniors 70+</strong>
+    Universal health coverage of Rs 5 lakh/year for every citizen above 70, regardless of income. Covers ~6 crore seniors across 4.5 crore families. Previously income-restricted &mdash; now universal.
+  </div>
+  <ul>
+    <li><strong>April 2024</strong>: IRDAI removed the age ceiling of 65 for buying health insurance</li>
+    <li><strong>January 2025</strong>: IRDAI capped premium hikes on senior mediclaim at 10% annually</li>
+    <li><strong>Maintenance and Welfare Amendment Bill</strong> under active reconsideration &mdash; proposes removing Rs 10,000 maintenance cap</li>
+  </ul>
+
+  <h3>Technology Enablers</h3>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="number">300x</div><div class="label">AI cost reduction in 3 years</div></div>
+    <div class="stat-card"><div class="number">84 Cr</div><div class="label">ABHA health IDs created</div></div>
+    <div class="stat-card"><div class="number">20x</div><div class="label">UPI cross-border growth (1 year)</div></div>
+    <div class="stat-card"><div class="number">$136B</div><div class="label">NRI remittances FY25</div></div>
+  </div>
+  <p>An AI care product costing $3,000/month in APIs in 2023 now costs $10/month. India Stack (Aadhaar + UPI + ABDM + DigiLocker) creates full digital infrastructure that didn't exist 3 years ago. BBPS will soon accept cross-border inward payments.</p>
+
+  <h3>COVID Aftermath (Permanent Changes)</h3>
+  <ul>
+    <li>Distance = danger became viscerally real. NRIs who couldn't return are now proactively seeking permanent solutions.</li>
+    <li>Digital health interventions for elderly became accepted and are here to stay</li>
+    <li>WhatsApp became the lifeline &mdash; now the most natural digital touchpoint</li>
+    <li>Stigma around "outsiders" helping with parents reduced when the alternative was zero help</li>
+  </ul>
+
+  <h3>The GenWise Lesson</h3>
+  <div class="callout red">
+    <strong>GenWise shut down December 2025</strong>
+    3M users. $3.5M raised (Kunal Shah, Z47). Rs 1 crore revenue vs Rs 12.1 crore loss. <strong>$0.04 ARPU annually.</strong>
+    <br><br>
+    <strong>Root cause:</strong> Sold TO seniors, not FOR seniors. The buyer must be the adult child.
+    <br><br>
+    Proved the market exists (3M users) but validated the wrong business model. What's different now: target the <strong>NRI child as payer</strong>, not the senior as customer.
+  </div>
+</div>
+</section>
+
+<!-- ═══ 13. MARKET POTENTIAL ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">13 &mdash; Market Potential &amp; Propensity to Pay</div>
+  <h2>The Money</h2>
+
+  <h3>TAM / SAM / SOM</h3>
+  <div class="big-stats">
+    <div class="big-stat">
+      <div class="number red">$50B</div>
+      <div class="label">India eldercare market by 2030</div>
+      <div class="sublabel">$7B today</div>
+    </div>
+    <div class="big-stat">
+      <div class="number blue">50-80M</div>
+      <div class="label">Adult children actively caregiving</div>
+      <div class="sublabel">200-250M with aging parent</div>
+    </div>
+    <div class="big-stat">
+      <div class="number green">8-12M</div>
+      <div class="label">NRIs managing parents remotely</div>
+      <div class="sublabel">$5,000+/year each in care costs</div>
+    </div>
+  </div>
+
+  <h3>What Families Currently Spend</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Service</th><th>Monthly Cost</th></tr></thead>
+      <tbody>
+        <tr><td>Full-time domestic helper (metro)</td><td>Rs 12,000-30,000</td></tr>
+        <tr><td>Attendant care (bathing, feeding, mobility)</td><td>Rs 22,500-30,000</td></tr>
+        <tr><td>Nursing care (medical supervision)</td><td>Rs 37,500-52,500</td></tr>
+        <tr><td>24/7 skilled nursing</td><td>Rs 36,000-60,000</td></tr>
+        <tr><td>Comprehensive in-home elder care (agency)</td><td>Rs 90,000-200,000+</td></tr>
+        <tr><td>Emergency/safety monitoring</td><td>Rs 5,000-20,000</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Competitor Pricing (Subscription Elder Care)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Provider</th><th>Entry</th><th>Mid</th><th>Premium</th><th>Target</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Emoha</strong></td><td>Rs 2,999/mo</td><td>Rs 7,999/mo</td><td>Rs 15,999/mo</td><td>Domestic + NRI</td></tr>
+        <tr><td><strong>Samarth</strong></td><td>Rs 9,999/mo</td><td>Rs 12,999/mo</td><td>Rs 16,999/mo</td><td>NRI + Domestic</td></tr>
+        <tr><td><strong>Anvayaa</strong></td><td>~Rs 4,167/mo</td><td>~Rs 8,333/mo</td><td>~Rs 16,667/mo</td><td>NRI-heavy</td></tr>
+        <tr><td><strong>Nila Cares</strong></td><td>~Rs 8,500/mo ($100)</td><td>&mdash;</td><td>&mdash;</td><td>UK/US NRIs</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Market clusters at <strong>Rs 3,000-17,000/month</strong>. No provider has cracked &lt;Rs 1,000/month at scale.</p>
+
+  <h3>The Guilt Premium (NRI Willingness to Pay)</h3>
+  <div class="callout blue">
+    <strong>Zero churn.</strong> Nila Cares reports that once NRIs subscribe, they don't cancel. NRI care packages priced at premium over domestic equivalents ($100/mo vs Rs 3,000-10,000). Indian services are <strong>5-20x cheaper than US equivalents</strong> ($4,000+/month), creating massive willingness-to-pay headroom.
+  </div>
+  <ul>
+    <li>US adult children spend ~26% of income on caregiving (~$7,242/year)</li>
+    <li>US in-home care: $4,000+/month national average</li>
+    <li>US long-distance caregivers: $8,728/year average</li>
+    <li>54% of US caregivers sacrifice personal spending for parent care</li>
+  </ul>
+
+  <h3>Revenue Models That Work</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Model</th><th>Evidence</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Annual subscription</strong></td><td>Emoha (60K members), Samarth, Anvayaa</td><td>Primary model</td></tr>
+        <tr><td><strong>NRI premium pricing</strong></td><td>Nila at $100/mo, zero churn</td><td>Highest ARPU</td></tr>
+        <tr><td><strong>Add-on services</strong></td><td>Emoha condition mgmt (Rs 1,599-14,299/mo)</td><td>Key margin driver</td></tr>
+        <tr><td><strong>B2B2C (employer)</strong></td><td>EldersIndia (India), Wellthy (US &rarr; India)</td><td>Emerging, strong potential</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Unit Economics Reality Check</h3>
+  <ul>
+    <li><strong>Emoha FY25</strong>: Rs 74.35 Cr revenue (40% YoY growth), Rs 36.68 Cr loss. Spends Rs 1.50 to earn Rs 1. Improving.</li>
+    <li><strong>Nila</strong>: $2.4M pre-seed, 3,000+ care requests, zero churn. Early but capital-efficient.</li>
+    <li><strong>Anvayaa</strong>: Rs 2.5 Cr revenue, 800+ subscribers, bootstrapped at Rs 1.5 Cr.</li>
+    <li><strong>The child is always the buyer.</strong> Every single provider's landing page addresses the adult child.</li>
+  </ul>
+
+  <h3>Pricing Sweet Spot (Opportunity)</h3>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="number">Rs 500-3K</div><div class="label">Domestic adult children (underserved &mdash; below market floor)</div></div>
+    <div class="stat-card"><div class="number">$50-150</div><div class="label">NRIs (proven, anchored vs US care costs)</div></div>
+    <div class="stat-card"><div class="number">Rs 200-500</div><div class="label">Per employee/month (B2B2C)</div></div>
+  </div>
+
+  <h3>The Employer Angle</h3>
+  <ul>
+    <li><strong>EldersIndia</strong>: India's first B2B2C eldercare platform for corporates</li>
+    <li><strong>Wellthy</strong> (US): Clients include Meta, Best Buy, Vanguard &mdash; launched India-specific care service</li>
+    <li>Elder care is an emerging but not yet standard employee benefit in India</li>
+    <li>B2B2C dramatically reduces CAC &mdash; employer pays, employee gets access</li>
+  </ul>
+</div>
+</section>
+
+<!-- ═══ 14. OPEN QUESTIONS ═══ -->
+<section>
+<div class="container">
+  <div class="section-number">14 &mdash; Open Questions</div>
+  <h2>For Team Discussion</h2>
+
+  <div class="question-card">
+    <div class="q-num">Question 1</div>
+    <div class="q-text">Which ICP hits closest to home for your team?</div>
+    <div class="q-context">The primary caregiver daughter? The NRI son? The local sandwich gen professional? Your personal pain = your product instinct.</div>
+  </div>
+  <div class="question-card">
+    <div class="q-num">Question 2</div>
+    <div class="q-text">The 3 blindnesses &mdash; which burns hottest?</div>
+    <div class="q-context">Financial visibility ("where does the money go?"), health visibility ("are they really okay?"), or emotional visibility ("are they hiding their struggles?")?</div>
+  </div>
+  <div class="question-card">
+    <div class="q-num">Question 3</div>
+    <div class="q-text">India-only or NRI-inclusive?</div>
+    <div class="q-context">NRIs have higher willingness to pay but add cross-border complexity. India-local is simpler to build.</div>
+  </div>
+  <div class="question-card">
+    <div class="q-num">Question 4</div>
+    <div class="q-text">Is there a "do less" angle here?</div>
+    <div class="q-context">Instead of drowning in 50 worries about your parents, get clarity on the 3 that matter for YOUR situation.</div>
+  </div>
+  <div class="question-card">
+    <div class="q-num">Question 5</div>
+    <div class="q-text">WhatsApp replacement or WhatsApp enhancement?</div>
+    <div class="q-context">The family is already on WhatsApp. Do you replace it with something structured, or build on top of it?</div>
+  </div>
+  <div class="question-card">
+    <div class="q-num">Question 6</div>
+    <div class="q-text">The legal time bomb &mdash; is estate planning the wedge?</div>
+    <div class="q-context">"Rs 1.84 lakh crore unclaimed" is a headline-grabbing stat. The tool that helps families organize parent finances while alive prevents the chaos after death.</div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ SOURCES ═══ -->
+<div class="sources-section">
+<div class="container">
+  <div class="section-number">Sources</div>
+  <h2>70+ References Across 5 Research Streams</h2>
+
+  <div class="source-category">
+    <h4>Emotional Pain, Guilt &amp; Caregiver Experience</h4>
+    <ul class="source-list">
+      <li><a href="https://www.entertales.com/nri-man-guilty-living-away-parents-for-10-years/">NRI Man Feels Guilty Living Away From Parents For 10 Years</a> <span class="pub">&mdash; EnterTales</span></li>
+      <li><a href="https://www.lassiwithlavina.com/thebuzz/the-dilemma-of-looking-after-aging-desi-parents/html">The Dilemma of Looking After Aging Desi Parents</a> <span class="pub">&mdash; Lassi with Lavina</span></li>
+      <li><a href="https://www.agingcare.com/questions/im-so-tired-of-this-taking-care-of-my-mom-is-slowly-killing-me-469887.htm">Taking care of my mom is slowly killing me</a> <span class="pub">&mdash; AgingCare Forum</span></li>
+      <li><a href="https://www.agingcare.com/questions/amp/444221">I'm so tired of helping my parents</a> <span class="pub">&mdash; AgingCare Forum</span></li>
+      <li><a href="https://www.agingcare.com/Discussions/siblings-dont-help-care-for-parents-153537.htm">Siblings don't help care for parents</a> <span class="pub">&mdash; AgingCare Forum</span></li>
+      <li><a href="https://www.agingcare.com/questions/i-need-help-in-dealing-with-the-resentment-towards-siblings-who-dont-help-more-when-they-know-what-461826.htm">Resentment towards siblings who don't help</a> <span class="pub">&mdash; AgingCare Forum</span></li>
+      <li><a href="https://www.agingcare.com/articles/a-common-caregiver-confession-i-secretly-wish-my-ill-loved-one-would-die-139321.htm">A Common Caregiver Confession</a> <span class="pub">&mdash; AgingCare</span></li>
+      <li><a href="https://beverlysdaughter.com/feel-less-guilty-about-not-wanting-to-care-for-your-parents/">Feel Less Guilty About Not Wanting to Care for Your Parents</a> <span class="pub">&mdash; Beverly's Daughter</span></li>
+      <li><a href="https://www.caregivercalifornia.org/2025/10/13/care-without-the-conflict-navigating-caregiver-sibling-resentment/">Care Without the Conflict</a> <span class="pub">&mdash; Caregiver California</span></li>
+      <li><a href="https://www.aplaceformom.com/caregiver-resources/articles/family-disputes">Family Disputes</a> <span class="pub">&mdash; A Place for Mom</span></li>
+      <li><a href="https://debliu.substack.com/p/the-sandwich-generation">The Sandwich Generation</a> <span class="pub">&mdash; Deb Liu Substack</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Indian Eldercare Context &amp; Demographics</h4>
+    <ul class="source-list">
+      <li><a href="https://india.unfpa.org/en/news/indias-ageing-population-why-it-matters-more-ever">India's Ageing Population</a> <span class="pub">&mdash; UNFPA India</span></li>
+      <li><a href="https://www.deccanchronicle.com/tabloid/hyderabad-chronicle/the-silent-pain-of-the-sandwich-generation-1930020">The Silent Pain of the Sandwich Generation</a> <span class="pub">&mdash; Deccan Chronicle</span></li>
+      <li><a href="https://www.etvbharat.com/en/!lifestyle/the-sandwich-generation-struggles-financially-and-emotionally-enn25022501496">The Sandwich Generation Struggles</a> <span class="pub">&mdash; ETV Bharat</span></li>
+      <li><a href="https://theprint.in/ground-reports/indias-seniors-are-facing-abuse-in-families-children-are-no-longer-shravan-kumar/2633615/">India's Seniors Are Facing Abuse in Families</a> <span class="pub">&mdash; ThePrint</span></li>
+      <li><a href="https://business.cornell.edu/article/2025/07/indias-aging-crisis/">India's Aging Crisis</a> <span class="pub">&mdash; Cornell</span></li>
+      <li><a href="https://www.thinkglobalhealth.org/article/indias-invisible-chains">India's Invisible Chains</a> <span class="pub">&mdash; Think Global Health</span></li>
+      <li><a href="https://idronline.org/article/health/reimagining-elderly-care-in-india/">Reimagining Elderly Care</a> <span class="pub">&mdash; IDR Online</span></li>
+      <li><a href="https://americankahani.com/perspectives/autumn-of-their-lives-the-predicament-of-aging-parents-of-children-away-in-america/">Autumn of Their Lives</a> <span class="pub">&mdash; American Kahani</span></li>
+      <li><a href="https://www.parentous.com/leaving-parents-in-old-age-homes-are-children-always-to-blame/">Old Age Homes: Are Children Always to Blame?</a> <span class="pub">&mdash; Parentous</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>NRI-Specific Challenges</h4>
+    <ul class="source-list">
+      <li><a href="https://backtoindia.com/survey/">Back To India NRI Survey</a></li>
+      <li><a href="https://www.teamblind.com/post/NRIS-how-do-you-take-care-of-aging-parents-in-india-4fk7BjJW">NRIs: How Do You Take Care of Aging Parents?</a> <span class="pub">&mdash; TeamBlind</span></li>
+      <li><a href="https://bharatvasandani.medium.com/a-story-of-one-nri-whose-parents-live-back-in-india-be4ec4e44fc5">A Story of One NRI</a> <span class="pub">&mdash; Bharat Vasandani, Medium</span></li>
+      <li><a href="https://medium.com/@sohilparekh/the-abcs-of-remotely-caring-for-aging-parents-in-india-d9a01a2eb148">The ABCs of Remotely Caring</a> <span class="pub">&mdash; Sohil Parekh, Medium</span></li>
+      <li><a href="https://www.truhands.in/blogs/how-nri-families-can-support-parents">10 Challenges NRIs Face</a> <span class="pub">&mdash; TruHands</span></li>
+      <li><a href="https://health4silvers.com/blog/nris-caring-for-aging-parents-in-india">NRIs Caring for Aging Parents</a> <span class="pub">&mdash; Health4Silvers</span></li>
+      <li><a href="https://www.nilacares.com/blogs/balancing-act-caring-for-parents-in-india-while-raising-a-family-abroad">Balancing Act</a> <span class="pub">&mdash; Nila Cares</span></li>
+      <li><a href="https://emoha.com/blogs/safety/how-to-care-for-your-parents-in-india-as-an-nri">Care for Parents in India as an NRI</a> <span class="pub">&mdash; Emoha</span></li>
+      <li><a href="https://learn.academy4sc.org/uncategorized/coping-with-success-how-indias-elderly-suffer-with-their-children-abroad/">How India's Elderly Suffer</a> <span class="pub">&mdash; NRIPO</span></li>
+      <li><a href="https://mgicmh.org/nris-parental-care/">NRIs' Parental Care</a> <span class="pub">&mdash; MGICMH</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Caregiving, Gender &amp; Cultural Dynamics</h4>
+    <ul class="source-list">
+      <li><a href="https://www.samvednacare.com/sandwich-generation-counseling-india">Sandwich Generation Counseling</a> <span class="pub">&mdash; Samvedna Care</span></li>
+      <li><a href="https://www.helpageindia.org/blog/is-caregiving-mainly-a-womans-job">Is Caregiving Mainly a Woman's Job?</a> <span class="pub">&mdash; HelpAge India</span></li>
+      <li><a href="https://www.tandfonline.com/doi/full/10.1080/17441730.2017.1412593">Gendered Roles in Caregiving</a> <span class="pub">&mdash; Taylor &amp; Francis</span></li>
+      <li><a href="https://www.pewresearch.org/religion/2022/03/02/gender-roles-in-the-family/">Gender Roles in the Family</a> <span class="pub">&mdash; Pew Research</span></li>
+      <li><a href="https://multiculturalcaregiving.com/elderly-caregiving-in-indian-families/">Elderly Caregiving in Indian Families</a> <span class="pub">&mdash; Multicultural Caregiving</span></li>
+      <li><a href="https://girishs307.medium.com/why-78-of-indian-caregivers-are-on-the-verge-of-total-collapse-and-whats-really-to-blame-2e63bd0c6309">78% of Indian Caregivers Near Collapse</a> <span class="pub">&mdash; Medium</span></li>
+      <li><a href="https://www.primuslife.in/blog/caring-for-parents-while-raising-kids-the-sandwich-generation-s-new-reality">Sandwich Generation's New Reality</a> <span class="pub">&mdash; Primus Life</span></li>
+      <li><a href="https://completewellbeing.com/article/care-aging-indian-parents/">Supporting Aging Indian Parents</a> <span class="pub">&mdash; Complete Wellbeing</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Digital Divide &amp; Elderly Technology</h4>
+    <ul class="source-list">
+      <li><a href="https://www.outlookmoney.com/retirement/news/digital-divide-among-elderly-66-find-digital-tools-too-confusing">66% Find Digital Tools Confusing</a> <span class="pub">&mdash; Outlook Money</span></li>
+      <li><a href="https://www.orfonline.org/expert-speak/digital-capacity-building-a-key-to-elderly-welfare">Digital Capacity Building</a> <span class="pub">&mdash; ORF Online</span></li>
+      <li><a href="https://openthemagazine.com/columns/why-indias-digital-push-is-leaving-its-oldest-citizens-behind">India's Digital Push Leaving Oldest Behind</a> <span class="pub">&mdash; Open Magazine</span></li>
+      <li><a href="https://care.samarth.community/blog/communication/what-to-do-when-elderly-parent-refuse-help/">Tips to Convince Elderly Parents</a> <span class="pub">&mdash; Samarth</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Elder Care Operations &amp; Coordination</h4>
+    <ul class="source-list">
+      <li><a href="https://care.samarth.community/blog/communication/elderly-care-for-nris/">Elderly Care for NRIs</a> <span class="pub">&mdash; Samarth</span></li>
+      <li><a href="https://care.samarth.community/blog/long-distance-care-giving/caring-for-parents-another-city-india-challenges-nri-life/">Caring for Parents in Another City</a> <span class="pub">&mdash; Samarth</span></li>
+      <li><a href="https://care.samarth.community/blog/long-distance-care-giving/social-withdrawal-elderly-parents-nri-guide/">Social Withdrawal in Elderly Parents</a> <span class="pub">&mdash; Samarth</span></li>
+      <li><a href="https://anvayaa.com/nri-parents-elder-care-india/">The NRI Challenge</a> <span class="pub">&mdash; Anvayaa</span></li>
+      <li><a href="https://www.wisecare.in/">Family Care Coordination</a> <span class="pub">&mdash; WiseCare</span></li>
+      <li><a href="https://parentcare.family/parentcare-is-a-digital-health-platform/">Digital Health Platform</a> <span class="pub">&mdash; ParentCare</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Financial Management &amp; NRI Finance</h4>
+    <ul class="source-list">
+      <li><a href="https://arthgyaan.com/blog/nri-investing-for-parents.html">NRI Managing Parents' Finances</a> <span class="pub">&mdash; Arthgyaan</span></li>
+      <li><a href="https://investmates.io/blog/nri-supporting-parents-from-abroad">NRI Supporting Parents from Abroad</a> <span class="pub">&mdash; Investmates</span></li>
+      <li><a href="https://www.financialfriend.in/how-to-financially-plan-for-your-dependent-parents-in-india-a-complete-guide-for-2026">Financial Planning for Dependent Parents</a> <span class="pub">&mdash; Financial Friend</span></li>
+      <li><a href="https://www.outlookmoney.com/retirement/plan/financial-planning/indias-sandwich-generation-how-to-plan-supporting-children-and-ageing-parents-simultaneously">India's Sandwich Generation Financial Plan</a> <span class="pub">&mdash; Outlook Money</span></li>
+      <li><a href="https://cleartax.in/s/nre-nro-accounts">NRE and NRO Accounts</a> <span class="pub">&mdash; ClearTax</span></li>
+      <li><a href="https://cleartax.in/s/tax-on-foreign-remittance">Tax on Foreign Remittance</a> <span class="pub">&mdash; ClearTax</span></li>
+      <li><a href="https://www.goinri.com/blog/what-nris-must-know-about-section-80d-tax-deductions-in-india">Section 80D for NRIs</a> <span class="pub">&mdash; GoiNRI</span></li>
+      <li><a href="https://nriway.com/nri-service/bill-payment">NRI Bill Payment</a> <span class="pub">&mdash; NRIWAY</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Health Insurance &amp; Medical Costs</h4>
+    <ul class="source-list">
+      <li><a href="https://www.outlookmoney.com/insurance/indias-senior-health-insurance-gap-why-83-are-uninsured-and-how-to-bridge-it">83% Seniors Uninsured</a> <span class="pub">&mdash; Outlook Money</span></li>
+      <li><a href="https://www.nivabupa.com/govt-scheme-articles/guide-to-ayushman-bharat-for-senior-citizens.html">Ayushman Bharat for Seniors</a> <span class="pub">&mdash; Niva Bupa</span></li>
+      <li><a href="https://www.starhealth.in/health-insurance/health-insurance-for-senior-citizens/">Senior Citizen Health Insurance</a> <span class="pub">&mdash; Star Health</span></li>
+      <li><a href="https://link.springer.com/article/10.1186/s12961-024-01202-x">Catastrophic Health Expenditure</a> <span class="pub">&mdash; Springer</span></li>
+      <li><a href="https://academic.oup.com/heapol/article/38/8/926/7220383">Out-of-pocket Health Expenditure</a> <span class="pub">&mdash; Oxford Academic</span></li>
+      <li><a href="https://www.nature.com/articles/s41598-024-55142-1">Catastrophic Health Expenditure Among Elderly</a> <span class="pub">&mdash; Nature/Scientific Reports</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Legal &amp; Estate Planning</h4>
+    <ul class="source-list">
+      <li><a href="https://www.whytecroftford.com/indian-power-of-attorney-and-mental-incapacity/">Indian PoA &amp; Mental Incapacity</a> <span class="pub">&mdash; Whytecroft Ford</span></li>
+      <li><a href="https://www.seniorcarejoy.com/legal-financial-matters/legal-financial-planning-aging-parents-india/">Legal Financial Planning for Aging Parents</a> <span class="pub">&mdash; SeniorCareJoy</span></li>
+      <li><a href="https://indiacurrents.com/ask-a-lawyer-when-aging-parents-need-help-with-legal-affairs/">When Aging Parents Need Legal Help</a> <span class="pub">&mdash; India Currents</span></li>
+      <li><a href="https://assetlyhq.com/blog/india-property-dispute-crisis/">India's Property Crisis in Numbers</a> <span class="pub">&mdash; AssetlyHQ</span></li>
+      <li><a href="https://www.willjini.com/blog/inheritance-laws-in-india-what-happens-without-a-will">Inheritance Laws Without a Will</a> <span class="pub">&mdash; WillJini</span></li>
+      <li><a href="https://www.getyellow.in/resources/how-to-avoid-inheritance-disputes-among-siblings">How to Avoid Inheritance Disputes</a> <span class="pub">&mdash; GetYellow</span></li>
+      <li><a href="https://www.whalesbook.com/news/English/personal-finance/Indias-Inheritance-Shock-Your-Nominee-Isnt-Your-Heir/6939b196622f0de33211b3c8">Nominee Isn't Your Heir</a> <span class="pub">&mdash; WhalesBook</span></li>
+      <li><a href="https://cleartax.in/s/what-is-nominee-in-bank-account">Nominee vs Legal Heir</a> <span class="pub">&mdash; ClearTax</span></li>
+      <li><a href="https://www.businesstoday.in/personal-finance/banking/story/finance-minister-launches-rs-1-84-lakh-crore-unclaimed-assets-campaign-496827-2025-10-04">Rs 1.84 Lakh Crore Unclaimed</a> <span class="pub">&mdash; Business Today</span></li>
+      <li><a href="https://udgam.rbi.org.in/">RBI UDGAM Portal</a> <span class="pub">&mdash; RBI</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Startup &amp; Market Landscape</h4>
+    <ul class="source-list">
+      <li><a href="https://blog.privatecircle.co/indias-eldertech-market-15-startups-building-for-60-and-overlooked/">India's ElderTech Market: 15 Startups</a> <span class="pub">&mdash; PrivateCircle</span></li>
+      <li><a href="https://www.failory.com/startups/elder-care">Elder Care Startups &mdash; Failed</a> <span class="pub">&mdash; Failory</span></li>
+      <li><a href="https://inc42.com/company/kustodian-life/latest/">Kustodian.life</a> <span class="pub">&mdash; Inc42</span></li>
+      <li><a href="https://www.getyellow.in/resources/yellow-your-digital-estate-planner">Yellow Digital Estate Planner</a> <span class="pub">&mdash; GetYellow</span></li>
+      <li><a href="https://www.tryzedger.com/blog/best-free-expense-splitting-apps-india">Best Expense Splitting Apps India</a> <span class="pub">&mdash; Zedger</span></li>
+      <li><a href="https://vatavriksh.com/senior-assisted-living-stigma-india/">Senior Assisted Living Stigma</a> <span class="pub">&mdash; Vatavriksh</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Sibling Coordination &amp; Expense Splitting</h4>
+    <ul class="source-list">
+      <li><a href="https://www.nextavenue.org/dividing-caregiving-costs-without-splitting-family/">Dividing Caregiving Costs Without Splitting the Family</a> <span class="pub">&mdash; Next Avenue</span></li>
+      <li><a href="https://taking.care/blogs/resources-advice/resolving-sibling-conflict-over-care-of-an-elderly-parent">Resolving Sibling Conflict</a> <span class="pub">&mdash; Taking Care</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Viral Content &amp; Social Media</h4>
+    <ul class="source-list">
+      <li><a href="https://x.com/warikoo/status/1669582393953628160">Ankur Warikoo &mdash; Leaving Parents' Home Thread</a> <span class="pub">&mdash; Twitter/X (934K views)</span></li>
+      <li><a href="https://www.linkedin.com/pulse/hidden-crisis-why-70-indian-seniors-being-abandoned-children-sharma-oao4f">70% Indian Seniors Abandoned</a> <span class="pub">&mdash; LinkedIn</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Government &amp; Research Data Sources</h4>
+    <ul class="source-list">
+      <li>UNFPA India &mdash; Elderly population statistics</li>
+      <li>NITI Aayog &mdash; Health insurance data</li>
+      <li>HelpAge India &mdash; Elder abuse statistics</li>
+      <li>LASI (Longitudinal Aging Study in India) &mdash; Financial dependency</li>
+      <li>RBI &mdash; Household wealth composition, unclaimed assets</li>
+      <li>Supreme Court / NITI Aayog &mdash; Property dispute statistics</li>
+      <li>Department of Financial Services &mdash; Unclaimed assets campaign</li>
+      <li><a href="https://jeevanpramaan.gov.in/v1.0/">Jeevan Pramaan &mdash; Digital Life Certificate</a></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Why Now &mdash; Policy, Technology &amp; Demographics</h4>
+    <ul class="source-list">
+      <li><a href="https://www.pmindia.gov.in/en/news_updates/cabinet-approves-health-coverage-to-all-senior-citizens-of-the-age-70-years-and-above-irrespective-of-income-under-ayushman-bharat-pradhan-mantri-jan-arogya-yojana-ab-pm-jay/">AB PM-JAY Expansion for Seniors 70+</a> <span class="pub">&mdash; PM India</span></li>
+      <li><a href="https://www.businesstoday.in/personal-finance/insurance/story/ayushman-bharat-for-all-senior-citizens-above-70-will-providers-step-up-445780-2024-09-13">Ayushman Bharat for All Seniors Above 70</a> <span class="pub">&mdash; Business Today</span></li>
+      <li><a href="https://prsindia.org/billtrack/the-maintenance-and-welfare-of-parents-and-senior-citizens-amendment-bill-2019">Amendment Bill 2019 Tracker</a> <span class="pub">&mdash; PRS India</span></li>
+      <li><a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2101737">ABDM Implementation Update</a> <span class="pub">&mdash; PIB</span></li>
+      <li><a href="https://www.ibef.org/news/unified-payments-interface-upi-goes-global-cross-border-transactions-grow-20-fold-in-a-year">UPI Goes Global &mdash; 20x Growth</a> <span class="pub">&mdash; IBEF</span></li>
+      <li><a href="https://www.rupeeflo.com/resources/upi-global-rollout-updates-where-nris-can-use-upi-outside-india-and-regulatory-updates-in-2025">UPI Global Rollout for NRIs 2025</a> <span class="pub">&mdash; Rupeeflo</span></li>
+      <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7786866/">COVID-19 Pandemic Through Psycho-Social Lens</a> <span class="pub">&mdash; PMC</span></li>
+      <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7378369/">COVID-19 and Mental Health Care of Older Adults in India</a> <span class="pub">&mdash; PMC</span></li>
+      <li><a href="https://www.statista.com/chart/30958/share-of-age-groups-in-indian-population/">Aging Population Accelerates in India</a> <span class="pub">&mdash; Statista</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Market Potential &amp; Propensity to Pay</h4>
+    <ul class="source-list">
+      <li><a href="https://unlistedintel.com/blogs/indias-eldercare-landscape-growing-market-and-untapped-potential/">India's Eldercare Landscape</a> <span class="pub">&mdash; Unlisted Intel</span></li>
+      <li><a href="https://www.healthcareexecutive.in/blog/booming-eldercare-startups">Booming Eldercare Startups</a> <span class="pub">&mdash; Healthcare Executive</span></li>
+      <li><a href="https://emoha.com/plans">Emoha Plans &amp; Pricing</a> <span class="pub">&mdash; Emoha</span></li>
+      <li><a href="https://www.financeoutlookindia.com/news/emoha-posts-rs-7435-cr-fy25-revenue-narrows-losses-by-32-nwid-6065.html">Emoha FY25 Revenue</a> <span class="pub">&mdash; Finance Outlook India</span></li>
+      <li><a href="https://care.samarth.community/care-plans-for-elderly/">Samarth Elder Care Plans</a> <span class="pub">&mdash; Samarth</span></li>
+      <li><a href="https://startuptalky.com/anvayaa-success-story/">Anvayaa Success Story</a> <span class="pub">&mdash; StartupTalky</span></li>
+      <li><a href="https://care.samarth.community/blog/long-distance-care-giving/elderly-in-home-care-cost-in-india/">Elderly In-Home Care Costs India</a> <span class="pub">&mdash; Samarth</span></li>
+      <li><a href="https://www.mordorintelligence.com/industry-reports/india-senior-living-market">India Senior Living Market</a> <span class="pub">&mdash; Mordor Intelligence</span></li>
+      <li><a href="https://wellthy.com/for-employers">Wellthy for Employers</a> <span class="pub">&mdash; Wellthy</span></li>
+      <li><a href="https://eldersindia.com/what-we-offer">EldersIndia Corporate Offerings</a> <span class="pub">&mdash; EldersIndia</span></li>
+      <li><a href="https://www.insightsonindia.com/2025/04/05/rbis-remittances-survey-2025/">RBI Remittances Survey 2023-24</a> <span class="pub">&mdash; Insights on India</span></li>
+      <li><a href="https://www.vifindia.org/article/2025/august/04/Indian-Diaspora-and-Remittance-Flows-Trends-Impacts-and-Perspectives">Indian Diaspora and Remittance Flows</a> <span class="pub">&mdash; VIF India</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>GenWise Shutdown</h4>
+    <ul class="source-list">
+      <li><a href="https://inc42.com/buzz/exclusive-kunal-shah-backed-genwise-shuts-down-operations/">GenWise Shuts Down Operations</a> <span class="pub">&mdash; Inc42</span></li>
+      <li><a href="https://www.peoplematters.in/news/business/kunal-shah-backed-genwise-shuts-down-operations-amid-mounting-losses-47688">GenWise Amid Mounting Losses</a> <span class="pub">&mdash; PeopleMatters</span></li>
+      <li><a href="https://entrackr.com/exclusive/exclusive-z47-backed-genwise-lays-off-20-of-workforce-9036952">GenWise Lays Off 20%</a> <span class="pub">&mdash; Entrackr</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Recent Funding &amp; Market Signals</h4>
+    <ul class="source-list">
+      <li><a href="https://www.generalcatalyst.com/stories/our-investment-in-primus-senior-living">Investment in Primus Senior Living</a> <span class="pub">&mdash; General Catalyst</span></li>
+      <li><a href="https://yourstory.com/2024/10/funding-senior-care-startup-primus-20million-seed-round">Primus Raises $20M Seed</a> <span class="pub">&mdash; YourStory</span></li>
+      <li><a href="https://techfundingnews.com/nila-raises-2-4m-pre-seed-to-transform-cross-border-senior-care/">Nila Raises $2.4M Pre-Seed</a> <span class="pub">&mdash; TechFundingNews</span></li>
+      <li><a href="https://www.business-standard.com/content/press-releases-ani/emoha-partners-with-aditya-birla-health-insurance-to-provide-holistic-eldercare-solutions-124052101032_1.html">Emoha Partners with Aditya Birla Health Insurance</a> <span class="pub">&mdash; Business Standard</span></li>
+      <li><a href="https://yourstory.com/2024/12/reimagining-elder-care-startups-innovating-greying-population-senior">Reimagining Elder Care Startups</a> <span class="pub">&mdash; YourStory</span></li>
+    </ul>
+  </div>
+
+  <div class="source-category">
+    <h4>Legal Cases Referenced</h4>
+    <ul class="source-list">
+      <li><em>Mahendra Pratap Singh v. Padam Kumari Devi</em> (AIR 1993 All 143) &mdash; PoA and mental incapacity</li>
+      <li><em>Sarbati Devi v. Usha Devi</em> &mdash; Nominee as custodian, not owner</li>
+    </ul>
+  </div>
+
+</div>
+</div>
+
+<footer>
+  Z Buildathon &middot; Discovery Brief &middot; April 2026 &middot; Research compiled from 100+ sources across forums, news, academic papers, government data, and startup intelligence
+</footer>
+
+</body>
+</html>
