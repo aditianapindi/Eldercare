@@ -4,9 +4,9 @@ import { AuthHeaderLink, LogoWithAuthLink } from "@/lib/auth-widgets";
 import { FraudguardStickyBar } from "./fraudguard-client";
 
 export const metadata = {
-  title: "FraudGuard — A companion app for scam calls | GetSukoon",
+  title: "Saaya — A companion app for scam calls | Inaya",
   description:
-    "A small Android companion that catches scam calls in the moment a banking app opens. On-device only. No cloud. Built alongside GetSukoon.",
+    "A small Android companion that catches scam calls in the moment a banking app opens. On-device only. No cloud. Built alongside Inaya.",
 };
 
 const RESPONSES = [
@@ -34,11 +34,11 @@ const SETUP_STEPS = [
   },
   {
     title: "Enable Usage Access",
-    detail: "Settings → Special app access → Usage access → FraudGuard. This lets it see which app is open during a call.",
+    detail: "Settings → Special app access → Usage access → Saaya. This lets it see which app is open during a call.",
   },
   {
     title: "Enable Overlay permission",
-    detail: "Settings → Special app access → Display over other apps → FraudGuard. Needed for the warning screen.",
+    detail: "Settings → Special app access → Display over other apps → Saaya. Needed for the warning screen.",
   },
   {
     title: "Disable battery restrictions",
@@ -46,7 +46,7 @@ const SETUP_STEPS = [
   },
   {
     title: "Enable Notification Access",
-    detail: "Settings → Special app access → Notification access → FraudGuard. Needed for WhatsApp call detection.",
+    detail: "Settings → Special app access → Notification access → Saaya. Needed for WhatsApp call detection.",
   },
   {
     title: "Enter your phone number as the guardian",
@@ -58,7 +58,7 @@ const SETUP_STEPS = [
   },
 ];
 
-export default function FraudGuardPage() {
+export default function SaayaPage() {
   return (
     <main className="min-h-dvh relative overflow-hidden pb-[120px] md:pb-[100px]">
       <Watermark />
@@ -89,7 +89,7 @@ export default function FraudGuardPage() {
             The companion app
           </p>
           <h1 className="font-[family-name:var(--font-display)] text-[clamp(32px,6vw,52px)] leading-[1.15] font-light text-ink tracking-tight mb-6">
-            FraudGuard catches scam calls in the moment a{" "}
+            Saaya catches scam calls in the moment a{" "}
             <span className="text-terracotta font-normal">banking app opens</span>.
           </h1>
           <p className="text-xl text-ink-secondary leading-relaxed max-w-[620px] mb-6">
@@ -116,7 +116,7 @@ export default function FraudGuardPage() {
           <p className="text-ink-secondary text-base md:text-lg leading-relaxed">
             The dangerous moment in a phone scam is not the ring. It&apos;s when the
             victim opens a banking app while still on the call. That&apos;s the window
-            where transfers happen. FraudGuard watches that window.
+            where transfers happen. Saaya watches that window.
           </p>
         </section>
 
@@ -151,7 +151,7 @@ export default function FraudGuardPage() {
             What it watches for.
           </h2>
           <p className="text-ink-secondary text-base md:text-lg leading-relaxed mb-5">
-            FraudGuard has a built-in list of high-risk apps. Opening any of these
+            Saaya has a built-in list of high-risk apps. Opening any of these
             while on an unknown call triggers the warning.
           </p>
           <div className="grid sm:grid-cols-3 gap-3 md:gap-4">
@@ -180,7 +180,7 @@ export default function FraudGuardPage() {
               Getting the app.
             </h2>
             <p className="text-ink-secondary text-base md:text-lg leading-relaxed mb-5">
-              FraudGuard is open source and currently in developer beta. The source
+              Saaya is open source and currently in developer beta. The source
               and build instructions are on GitHub. A signed APK release for
               non-technical users is on the way.
             </p>

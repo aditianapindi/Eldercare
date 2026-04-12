@@ -119,7 +119,7 @@ function JoinInner() {
             <p className="text-ink-secondary text-sm mb-6">
               {token
                 ? "Someone shared their family vault with you. Sign in to accept."
-                : "Welcome back to GetSukoon."}
+                : "Welcome back to Inaya."}
             </p>
             <button
               onClick={() => {

@@ -90,7 +90,7 @@ export default function ReportPage() {
 function ReportView({ report }: { report: CareReport }) {
   const scoreLabel = getScoreLabel(report.score);
   const scoreSubtext = getScoreSubtext(report.score);
-  const shareText = `I just checked how prepared my family is for my parents' care with GetSukoon. It opened my eyes to things I hadn't thought about. Try it — takes 2 minutes.`;
+  const shareText = `I just checked how prepared my family is for my parents' care with Inaya. It opened my eyes to things I hadn't thought about. Try it — takes 2 minutes.`;
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   return (

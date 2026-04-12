@@ -3,9 +3,9 @@ import { AuthHeaderLink, LogoWithAuthLink } from "@/lib/auth-widgets";
 import { SafetyHeroCTAs, SafetyStickyBar } from "./safety-client";
 
 export const metadata = {
-  title: "Family Safety — Protect your parents from scams | GetSukoon",
+  title: "Family Safety — Protect your parents from scams | Inaya",
   description:
-    "The 5 scams targeting Indian parents right now — and what to do if it happens. From GetSukoon, the family care vault.",
+    "The 5 scams targeting Indian parents right now — and what to do if it happens. From Inaya, the family care vault.",
 };
 
 const SCAMS = [
@@ -64,7 +64,7 @@ export default function SafetyPage() {
             Here&apos;s what every family should know.
           </h1>
           <p className="text-lg text-ink-secondary leading-relaxed max-w-[620px] mb-6">
-            GetSukoon is the family care vault that keeps your parents&apos; health,
+            Inaya is the family care vault that keeps your parents&apos; health,
             money and safety essentials in one place — for the whole family.
           </p>
           <SafetyHeroCTAs />

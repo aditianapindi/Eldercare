@@ -126,7 +126,7 @@ export default function InsightsPage() {
   const funnelMax = Math.max(f.pageVisits, 1);
 
   return (
-    <PageShell title="GetSukoon Insights">
+    <PageShell title="Inaya Insights">
       {/* Funnel */}
       <Card title="Funnel">
         <div className="space-y-2">

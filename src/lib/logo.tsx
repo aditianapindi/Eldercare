@@ -19,7 +19,7 @@ export function Logo({ size = "default" }: { size?: "small" | "default" | "large
         priority
       />
       <span className={`font-[family-name:var(--font-display)] ${textClass} font-light tracking-tight text-ink leading-none`}>
-        get<span className="font-medium">sukoon</span>
+        inaya
       </span>
     </div>
   );
