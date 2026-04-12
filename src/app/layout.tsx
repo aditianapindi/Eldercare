@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
+import PageTracker from "@/lib/page-tracker";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -43,7 +44,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${fraunces.variable} ${dmSans.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <PageTracker />
+        {children}
+      </body>
     </html>
   );
 }
