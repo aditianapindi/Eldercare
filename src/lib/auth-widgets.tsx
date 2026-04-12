@@ -31,7 +31,7 @@ export function AuthHeaderLink({ className = "" }: { className?: string }) {
   return (
     <Link
       href="/join"
-      className={`text-ink-tertiary text-sm hover:text-ink transition-colors ${className}`}
+      className={`inline-flex items-center justify-center px-4 py-2 min-h-[44px] text-sm font-medium text-ink border border-border rounded-full hover:border-ink-tertiary transition-colors ${className}`}
     >
       Sign in
     </Link>
