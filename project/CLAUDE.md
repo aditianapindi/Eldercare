@@ -30,17 +30,25 @@ Same stack as Nod — proven, no time to learn new tools.
 - **Key validated stats:** Rs 1.84L Cr unclaimed assets, 53% LIC policies lapse, 66% civil cases = property disputes, zero products in this space.
 - **Research docs:** `docs/discovery-brief.md`, `docs/market-research-aging-parent-care.md`, `docs/financial-pain-validation.md` (+ HTML versions)
 
-## Folder Structure
+## Folder Structure (updated Session 11)
 
 ```
-Z/
-  knowledge/        # session journals, decisions, past mistakes
-  docs/             # PRD, research, diagrams
-  src/              # when we start building
-  CLAUDE.md         # this file
+~/Z/src/                  ← the git repo (github.com/aditianapindi/Eldercare)
+  src/                    # Next.js app source
+  public/                 # static assets
+  project/                # team-shared docs (NEW as of Session 11)
+    knowledge/            # session journals, decisions, past mistakes
+    docs/                 # research, product plan, style guide
+    db/                   # 11 SQL migrations
+    CLAUDE.md             # this file
+    idea-*.md             # idea notes
+  package.json
+  next.config.ts
+  ...
 ```
 
-Only README, CLAUDE.md, and config at root. Everything else in folders.
+Git repo lives at `~/Z/src/.git`. Remote: `github.com/aditianapindi/Eldercare`.
+Deploy: `vercel --prod` from `~/Z/src/`. ALWAYS `git push` BEFORE `vercel --prod`.
 
 ## Lessons From Nod (Apply Here)
 
@@ -71,6 +79,7 @@ Only README, CLAUDE.md, and config at root. Everything else in folders.
 ## Session Protocol
 
 End of each work session:
-1. Write a session journal in `knowledge/session-N.md`
-2. If something broke unexpectedly → add to `knowledge/past-mistakes.md`
-3. If an architecture choice was made → add to `knowledge/decisions.md`
+1. Write a session journal in `project/knowledge/session-N.md`
+2. If something broke unexpectedly → add to `project/knowledge/past-mistakes.md`
+3. If an architecture choice was made → add to `project/knowledge/decisions.md`
+4. `git add . && git commit` BEFORE `vercel --prod` — never let GitHub drift behind production
