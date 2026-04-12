@@ -1,0 +1,157 @@
+import Link from "next/link";
+import { Watermark } from "@/lib/watermark";
+import { AuthHeaderLink, LogoWithAuthLink } from "@/lib/auth-widgets";
+import { SafetyHeroCTAs, SafetyStickyBar } from "./safety-client";
+
+export const metadata = {
+  title: "Family Safety — Protect your parents from scams | GetSukoon",
+  description:
+    "The 5 scams targeting Indian parents right now — and what to do if it happens. From GetSukoon, the family care vault.",
+};
+
+const SCAMS = [
+  {
+    name: "Digital arrest",
+    how: "A fake CBI or RBI officer on a video call claims your parent's name is in a money laundering case and asks them to transfer to a \"safe account.\"",
+    flag: "No real Indian agency arrests anyone over a video call. Ever.",
+  },
+  {
+    name: "KYC update",
+    how: "An SMS or call from \"your bank\" says KYC has expired and the account will be frozen in 24 hours — with a phishing link or an AnyDesk install.",
+    flag: "Real banks never ask for OTP, PIN or remote screen access.",
+  },
+  {
+    name: "Courier / FedEx",
+    how: "A caller claims a package in your parent's name was found with contraband and transfers them to fake \"Mumbai customs\" or \"Mumbai police.\"",
+    flag: "No courier company has authority to call anyone about contraband.",
+  },
+  {
+    name: "Family emergency",
+    how: "\"Aunty, your son met with an accident — please send money to this hospital.\" Sometimes uses a voice cloned from a few seconds of social audio.",
+    flag: "Always call your child directly on their known number first.",
+  },
+  {
+    name: "Lottery or refund",
+    how: "\"You've won ₹25 lakh in KBC / an income tax refund / SBI rewards. Pay a small processing fee to claim.\"",
+    flag: "You cannot win a lottery you didn't enter. Refunds never need processing fees.",
+  },
+];
+
+export default function SafetyPage() {
+  return (
+    <main className="min-h-dvh relative overflow-hidden pb-[120px] md:pb-[100px]">
+      <Watermark />
+      {/* Warm decorative background — same palette as home */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute -top-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-sage/[0.06]" />
+        <div className="absolute bottom-[10%] -left-[100px] w-[300px] h-[300px] rounded-full bg-terracotta/[0.04]" />
+      </div>
+
+      <div className="relative px-6 pt-6 md:px-12 lg:px-24 md:pt-8">
+        {/* Header — auth-aware */}
+        <header className="mb-12 flex items-center justify-between gap-4">
+          <LogoWithAuthLink />
+          <AuthHeaderLink />
+        </header>
+
+        {/* Hero — soft story + product line + CTAs (fonts match /) */}
+        <section className="max-w-[760px] mb-16 md:mb-24">
+          <h1 className="font-[family-name:var(--font-display)] text-[clamp(32px,6vw,52px)] leading-[1.15] font-light text-ink tracking-tight mb-6">
+            A scam call cost my mother{" "}
+            <span className="text-terracotta font-normal">₹1.5 lakh</span>. Here&apos;s
+            what we wish we&apos;d known.
+          </h1>
+          <p className="text-xl text-ink-secondary leading-relaxed max-w-[620px] mb-10">
+            GetSukoon is the family care vault that keeps your parents&apos; health,
+            money and safety essentials in one place — for the whole family.
+          </p>
+          <SafetyHeroCTAs />
+
+          {/* Here's the app — slim signpost inside the hero voice */}
+          <div className="mt-10 pt-6 border-t border-border-subtle max-w-[620px]">
+            <p className="text-ink-secondary text-[15px] md:text-base leading-relaxed">
+              <span className="text-ink font-medium">Here&apos;s the app we built to catch these calls.</span>{" "}
+              A small companion for the parent&apos;s phone — it listens for scam
+              patterns and alerts you the moment it hears one.{" "}
+              <Link
+                href="/fraudguard"
+                className="text-sage font-medium underline underline-offset-4 decoration-sage/40 hover:decoration-sage transition-colors whitespace-nowrap"
+              >
+                See the app →
+              </Link>
+            </p>
+          </div>
+        </section>
+
+        {/* Scam cards — 2-col grid, compressed */}
+        <section id="scams" className="max-w-[900px] mb-16 md:mb-24 scroll-mt-6">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-light text-ink leading-tight mb-6 md:mb-8">
+            The 5 scams targeting Indian parents right now.
+          </h2>
+
+          <div className="grid gap-4 md:gap-5 md:grid-cols-2">
+            {SCAMS.map((scam, idx) => (
+              <div
+                key={scam.name}
+                className="bg-surface border border-border-subtle rounded-[14px] p-5 md:p-6"
+              >
+                <div className="flex items-center gap-3 mb-2.5">
+                  <span className="shrink-0 w-6 h-6 rounded-full bg-terracotta-light text-terracotta flex items-center justify-center font-semibold text-xs font-[family-name:var(--font-display)]">
+                    {idx + 1}
+                  </span>
+                  <h3 className="font-[family-name:var(--font-display)] text-lg md:text-xl font-medium text-ink leading-snug">
+                    {scam.name}
+                  </h3>
+                </div>
+                <p className="text-ink-secondary text-[15px] leading-relaxed mb-3">
+                  {scam.how}
+                </p>
+                <p className="text-ink text-[15px] leading-snug">
+                  <span className="text-mustard font-semibold">Red flag — </span>
+                  {scam.flag}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Helpline — single callout */}
+        <section className="max-w-[760px] mb-16 md:mb-24">
+          <div className="bg-surface border border-border-subtle rounded-[16px] p-6 md:p-8">
+            <p className="text-ink-tertiary text-xs md:text-sm font-semibold uppercase tracking-wide mb-3">
+              If it&apos;s already happened
+            </p>
+            <a
+              href="tel:1930"
+              className="inline-flex items-baseline gap-3 mb-3 group flex-wrap"
+            >
+              <span className="font-[family-name:var(--font-display)] text-5xl md:text-6xl font-medium text-terracotta group-hover:opacity-90 transition-opacity">
+                1930
+              </span>
+              <span className="text-ink-secondary text-base md:text-lg">
+                National Cybercrime Helpline
+              </span>
+            </a>
+            <p className="text-ink-secondary text-base md:text-lg leading-relaxed">
+              Call within the first hour — that&apos;s when accounts can still be frozen.
+              Then file at{" "}
+              <a
+                href="https://cybercrime.gov.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sage font-medium underline underline-offset-4 decoration-sage/40 hover:decoration-sage transition-colors"
+              >
+                cybercrime.gov.in
+              </a>
+              . Government-run, 24×7, free.
+            </p>
+          </div>
+        </section>
+
+      </div>
+
+      {/* Sticky bottom CTA bar — auth-aware */}
+      <SafetyStickyBar />
+    </main>
+  );
+}
