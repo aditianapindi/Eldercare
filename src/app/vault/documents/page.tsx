@@ -426,44 +426,40 @@ function ABHACard() {
   if (state === "loading") return null;
 
   return (
-    <div className="mb-6 bg-gradient-to-br from-sage-light/60 to-blue-light/40 border border-sage/20 rounded-[14px] p-5 md:p-6 relative overflow-hidden">
-      {/* Decorative corner leaf */}
-      <div className="absolute -top-4 -right-4 opacity-10">
-        <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
-          <path d="M20 80C20 80 30 50 60 30C60 30 80 20 80 20C80 20 80 40 70 60C50 70 20 80 20 80Z" fill="#7A8B6F" />
-        </svg>
-      </div>
-
-      <div className="relative">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="px-2 py-0.5 bg-mustard-light text-mustard text-[10px] font-bold uppercase tracking-wide rounded-full">
-            Coming soon
+    <div className="mb-5 bg-gradient-to-r from-sage-light/50 to-blue-light/30 border border-sage/15 rounded-[12px] px-4 py-3 flex items-center gap-3">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-0.5">
+          <span className="px-1.5 py-0.5 bg-mustard-light text-mustard text-[9px] font-bold uppercase tracking-wide rounded-full">
+            Soon
           </span>
+          <h3 className="font-semibold text-ink text-sm">
+            Link your parent&apos;s ABHA
+          </h3>
         </div>
-        <h3 className="font-[family-name:var(--font-display)] text-lg md:text-xl font-medium text-ink mb-1.5">
-          Link your parent&apos;s ABHA
-        </h3>
-        <p className="text-ink-secondary text-sm md:text-base mb-4 max-w-[480px]">
-          Ayushman Bharat Health Account — pull every hospital visit, prescription, and lab report across all ABDM-linked hospitals into one place. No more chasing files.
+        <p className="text-ink-tertiary text-xs leading-relaxed">
+          Pull hospital visits, prescriptions, and lab reports from ABDM into one place.
         </p>
-
-        {state === "joined" ? (
-          <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-sage text-white rounded-[10px] text-sm font-medium min-h-[40px]">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            You&apos;re on the list — we&apos;ll email you when it&apos;s ready
-          </div>
-        ) : (
-          <button
-            onClick={handleJoin}
-            disabled={state === "joining"}
-            className="px-5 py-2.5 bg-ink text-cream font-medium rounded-[10px] text-sm min-h-[44px] hover:opacity-90 transition-opacity disabled:opacity-50"
-          >
-            {state === "joining" ? "Adding you…" : "Notify me when it's ready"}
-          </button>
-        )}
       </div>
+
+      {state === "joined" ? (
+        <div className="shrink-0 w-10 h-10 rounded-full bg-sage flex items-center justify-center" title="You're on the list">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8L6.5 11.5L13 4.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+      ) : (
+        <button
+          onClick={handleJoin}
+          disabled={state === "joining"}
+          className="shrink-0 w-10 h-10 rounded-full bg-ink flex items-center justify-center hover:opacity-90 transition-opacity disabled:opacity-50"
+          title="Notify me when it's ready"
+        >
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2C7.24 2 5 4.24 5 7V10.5L3.5 13H16.5L15 10.5V7C15 4.24 12.76 2 10 2Z" stroke="#FAF7F2" strokeWidth="1.5" strokeLinejoin="round" />
+            <path d="M8 15C8 16.1 8.9 17 10 17C11.1 17 12 16.1 12 15" stroke="#FAF7F2" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }

@@ -443,40 +443,40 @@ function StreakBanner({
   };
 
   return (
-    <div className={`rounded-[14px] p-4 md:p-5 mb-6 transition-all ${
+    <div className={`rounded-[14px] p-3 md:p-4 mb-6 transition-all ${
       checkedToday
         ? "bg-sage-light/40 border border-sage/20"
         : "bg-mustard-light/40 border border-mustard/20"
     }`}>
-      {/* Top row: streak + message */}
-      <div className="flex items-center gap-3 mb-3">
-        <div className={`text-2xl md:text-3xl ${overallStreak >= 7 ? "" : ""}`}>
+      {/* Top row: streak + dots inline */}
+      <div className="flex items-center gap-3 mb-2.5">
+        <div className="text-xl">
           {overallStreak >= 7 ? "🔥" : overallStreak >= 3 ? "🌱" : checkedToday ? "🌿" : "💛"}
         </div>
-        <div className="flex-1">
-          <div className="flex items-baseline gap-2 flex-wrap">
-            <span className="font-[family-name:var(--font-display)] text-xl md:text-2xl font-bold text-ink">
-              {overallStreak}
+        <div className="flex items-baseline gap-1.5">
+          <span className="font-[family-name:var(--font-display)] text-lg md:text-xl font-bold text-ink">
+            {overallStreak}
+          </span>
+          <span className="text-ink-secondary text-sm font-medium">
+            day streak
+          </span>
+          {longestStreak > overallStreak && longestStreak >= 3 && (
+            <span className="text-ink-tertiary text-xs">
+              · best {longestStreak}
             </span>
-            <span className="text-ink-secondary text-sm md:text-base font-medium">
-              day streak
-            </span>
-            {longestStreak > overallStreak && longestStreak >= 3 && (
-              <span className="text-ink-tertiary text-xs md:text-sm">
-                · longest {longestStreak}
-              </span>
-            )}
-          </div>
-          <p className="text-ink-tertiary text-xs md:text-sm">{getMessage()}</p>
+          )}
         </div>
+        <span className="ml-auto text-ink-tertiary text-xs font-medium">
+          {daysThisWeek}/7
+        </span>
       </div>
 
-      {/* Weekly dots */}
-      <div className="flex justify-between mb-4 px-1">
+      {/* Weekly dots — compact */}
+      <div className="flex justify-between mb-2.5 px-0.5">
         {weekDays.map((day, i) => (
-          <div key={i} className="flex flex-col items-center gap-1.5">
-            <span className="text-[10px] md:text-xs text-ink-tertiary font-medium">{day.label}</span>
-            <div className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-all ${
+          <div key={i} className="flex flex-col items-center gap-1">
+            <span className="text-[9px] md:text-[10px] text-ink-tertiary font-medium">{day.label}</span>
+            <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center transition-all ${
               day.checked
                 ? "bg-sage text-white"
                 : day.isToday
@@ -486,33 +486,20 @@ function StreakBanner({
                 : "bg-border-subtle text-ink-tertiary"
             }`}>
               {day.checked ? (
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                   <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               ) : day.isToday ? (
-                <span className="text-[11px] font-bold">?</span>
+                <span className="text-[10px] font-bold">?</span>
               ) : (
-                <span className="text-[10px]">·</span>
+                <span className="text-[9px]">·</span>
               )}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Progress bar */}
-      <div className="flex items-center gap-2 mb-4">
-        <div className="flex-1 h-2 bg-white/60 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-sage rounded-full transition-all"
-            style={{ width: `${(daysThisWeek / 7) * 100}%` }}
-          />
-        </div>
-        <span className="text-xs md:text-sm text-ink-tertiary font-medium shrink-0">
-          {daysThisWeek}/7 this week
-        </span>
-      </div>
-
-      {/* Check-in buttons per parent — per-user, both siblings can check in */}
+      {/* Check-in buttons per parent */}
       <div className="flex flex-wrap gap-2">
         {parents.map((parent) => {
           const iCheckedThisParent = checkins.some(
