@@ -1,12 +1,12 @@
 import Image from "next/image";
 
 export function Logo({ size = "default" }: { size?: "small" | "default" | "large" }) {
-  const iconSize = size === "small" ? 28 : size === "large" ? 48 : 38;
+  const iconSize = size === "small" ? 32 : size === "large" ? 56 : 44;
   const textClass = size === "small"
-    ? "text-base"
+    ? "text-lg"
     : size === "large"
-    ? "text-xl md:text-2xl"
-    : "text-lg md:text-xl";
+    ? "text-2xl md:text-3xl"
+    : "text-xl md:text-2xl";
 
   return (
     <div className="flex items-center gap-0.5">

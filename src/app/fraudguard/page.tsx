@@ -86,7 +86,7 @@ export default function SaayaPage() {
         {/* Hero */}
         <section className="max-w-[760px] mb-16 md:mb-24">
           <p className="text-ink-tertiary text-xs uppercase tracking-wide mb-3 font-semibold">
-            The companion app
+            Companion app, Saaya
           </p>
           <h1 className="font-[family-name:var(--font-display)] text-[clamp(32px,6vw,52px)] leading-[1.15] font-light text-ink tracking-tight mb-6">
             Saaya catches scam calls in the moment a{" "}

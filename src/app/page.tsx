@@ -60,7 +60,7 @@ export default function Home() {
                     5 scams targeting Indian parents right now
                   </p>
                   <p className="text-ink-secondary text-sm leading-relaxed">
-                    A short guide — plus a companion app for the parent&apos;s phone that catches them in real time.
+                    A short guide — plus Saaya, a companion app for the parent&apos;s phone that catches them in real time.
                   </p>
                   <span className="inline-block mt-2 text-sage text-sm font-medium group-hover:underline">
                     Read the safety guide →

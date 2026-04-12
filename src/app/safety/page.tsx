@@ -132,7 +132,7 @@ export default function SafetyPage() {
         {/* Companion app */}
         <section id="app" className="max-w-[900px] mb-10 md:mb-14 scroll-mt-6">
           <p className="text-ink-tertiary text-xs uppercase tracking-wide mb-2 font-semibold">
-            The companion app
+            Companion app, Saaya
           </p>
           <h2 className="font-[family-name:var(--font-display)] text-xl md:text-2xl font-light text-ink leading-tight mb-3">
             We built an app that catches these calls in real time.
