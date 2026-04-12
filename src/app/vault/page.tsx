@@ -557,8 +557,8 @@ function StreakBanner({
 
 function ParentAvatar({ label }: { label: string }) {
   const lower = label.toLowerCase();
-  const isFemale = ["mother", "mom", "grandmother", "grandma", "aunt", "maid"].some((w) => lower.includes(w));
-  const isMale = ["father", "dad", "grandfather", "grandpa", "uncle"].some((w) => lower.includes(w));
+  const isFemale = ["mother", "mom", "mummy", "amma", "grandmother", "grandma", "nani", "dadi", "aunt", "maid"].some((w) => lower.includes(w));
+  const isMale = ["father", "dad", "daddy", "papa", "appa", "grandfather", "grandpa", "nana", "dada", "uncle"].some((w) => lower.includes(w));
 
   return (
     <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-sage-light flex items-center justify-center shrink-0">
