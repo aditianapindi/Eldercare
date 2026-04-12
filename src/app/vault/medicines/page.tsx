@@ -213,7 +213,10 @@ export default function HealthPage() {
             const isEditing = editingConditionsForParent === parent.id;
             return (
               <div key={parent.id} className="mb-3 last:mb-0">
-                <p className="text-xs text-ink-tertiary font-medium mb-1.5">{parent.label}</p>
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <span className="text-base">👤</span>
+                  <p className="text-sm font-semibold text-ink">{parent.label}</p>
+                </div>
                 {isEditing ? (
                   <ConditionEditor
                     conditions={editConditions}
