@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
-import { getAuthUser } from "@/lib/supabase-server";
+import { getAuthUser, getVaultOwnerId } from "@/lib/supabase-server";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -8,12 +8,13 @@ export async function POST(req: NextRequest) {
   const auth = await getAuthUser(req);
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { supabase, user } = auth;
+  const { supabase } = auth;
+  // Members regenerate against the vault owner's assessment
+  const ownerId = await getVaultOwnerId(auth);
 
-  // Gather all vault data for this user
   const [assessmentRes, reportRes, parentsRes, doctorsRes, medsRes, expensesRes, contactsRes] = await Promise.all([
-    supabase.from("assessments").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).single(),
-    supabase.from("reports").select("id, report_data").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).single(),
+    supabase.from("assessments").select("*").eq("user_id", ownerId).order("created_at", { ascending: false }).limit(1).single(),
+    supabase.from("reports").select("id, report_data").eq("user_id", ownerId).order("created_at", { ascending: false }).limit(1).single(),
     supabase.from("parents").select("*"),
     supabase.from("doctors").select("*"),
     supabase.from("medicines").select("*").eq("active", true),

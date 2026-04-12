@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/supabase-server";
+import { getAuthUser, getVaultOwnerId } from "@/lib/supabase-server";
 
 export async function GET(req: NextRequest) {
   const auth = await getAuthUser(req);
@@ -19,10 +19,11 @@ export async function POST(req: NextRequest) {
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
+  const ownerId = await getVaultOwnerId(auth);
   const { data, error } = await auth.supabase
     .from("family_contacts")
     .insert({
-      user_id: auth.user.id,
+      user_id: ownerId,
       parent_id: body.parent_id || null,
       name: body.name,
       role: body.role,

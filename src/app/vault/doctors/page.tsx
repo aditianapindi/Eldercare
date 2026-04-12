@@ -10,6 +10,7 @@ export default function DoctorsPage() {
   const [parents, setParents] = useState<Parent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -34,6 +35,18 @@ export default function DoctorsPage() {
     }
   };
 
+  const handleUpdate = async (id: string, updates: Partial<Doctor>) => {
+    const res = await authFetch("/api/vault/doctors", {
+      method: "PUT",
+      body: JSON.stringify({ id, ...updates }),
+    });
+    if (res.ok) {
+      const updated = await res.json();
+      setDoctors((prev) => prev.map((d) => (d.id === id ? updated : d)));
+      setEditingDoctor(null);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     const res = await authFetch("/api/vault/doctors", {
       method: "DELETE",
@@ -42,6 +55,21 @@ export default function DoctorsPage() {
     if (res.ok) {
       setDoctors((prev) => prev.filter((d) => d.id !== id));
     }
+  };
+
+  const handleScheduleVisit = async (doctor: Doctor, date: string) => {
+    const res = await authFetch("/api/vault/medical-events", {
+      method: "POST",
+      body: JSON.stringify({
+        event_type: "visit",
+        title: `Visit with ${doctor.name}`,
+        event_date: date,
+        doctor: doctor.name,
+        hospital: doctor.hospital || null,
+        parent_id: doctor.parent_id || null,
+      }),
+    });
+    return res.ok;
   };
 
   if (loading) {
@@ -71,54 +99,93 @@ export default function DoctorsPage() {
         </button>
       </div>
 
-      {showForm && (
+      {(showForm || editingDoctor) && (
         <DoctorForm
           parents={parents}
-          onSubmit={handleAdd}
-          onCancel={() => setShowForm(false)}
+          initialDoctor={editingDoctor}
+          onSubmit={(data) => {
+            if (editingDoctor) handleUpdate(editingDoctor.id, data);
+            else handleAdd(data);
+          }}
+          onCancel={() => {
+            setShowForm(false);
+            setEditingDoctor(null);
+          }}
         />
       )}
 
-      {doctors.length === 0 && !showForm ? (
+      {doctors.length === 0 && !showForm && !editingDoctor ? (
         <EmptyState onAdd={() => setShowForm(true)} />
       ) : (
-        <GroupedDoctors doctors={doctors} parents={parents} onDelete={handleDelete} />
+        <GroupedDoctors
+          doctors={doctors}
+          parents={parents}
+          onDelete={handleDelete}
+          onSchedule={handleScheduleVisit}
+          onEdit={(d) => {
+            setEditingDoctor(d);
+            setShowForm(false);
+          }}
+        />
       )}
     </div>
   );
 }
 
+const SPECIALTIES = [
+  "General Physician",
+  "Cardiologist",
+  "Orthopedic",
+  "Neurologist",
+  "Ophthalmologist",
+  "ENT",
+  "Diabetologist",
+  "Pulmonologist",
+  "Dermatologist",
+  "Other",
+];
+
 function DoctorForm({
   parents,
+  initialDoctor,
   onSubmit,
   onCancel,
 }: {
   parents: Parent[];
+  initialDoctor?: Doctor | null;
   onSubmit: (d: Partial<Doctor>) => void;
   onCancel: () => void;
 }) {
-  const [name, setName] = useState("");
-  const [specialty, setSpecialty] = useState("");
-  const [hospital, setHospital] = useState("");
-  const [phone, setPhone] = useState("");
-  const [parentId, setParentId] = useState("");
+  const isEditing = !!initialDoctor;
 
-  const specialties = [
-    "General Physician",
-    "Cardiologist",
-    "Orthopedic",
-    "Neurologist",
-    "Ophthalmologist",
-    "ENT",
-    "Diabetologist",
-    "Pulmonologist",
-    "Dermatologist",
-    "Other",
-  ];
+  // If the doctor's specialty matches a known pill, use that.
+  // Otherwise it's a custom one — select "Other" and put the value in the text input.
+  const initialIsKnown =
+    initialDoctor?.specialty && SPECIALTIES.includes(initialDoctor.specialty);
+
+  const [name, setName] = useState(initialDoctor?.name || "");
+  const [specialty, setSpecialty] = useState(
+    initialDoctor?.specialty
+      ? (initialIsKnown ? initialDoctor.specialty : "Other")
+      : ""
+  );
+  const [customSpecialty, setCustomSpecialty] = useState(
+    initialDoctor?.specialty && !initialIsKnown ? initialDoctor.specialty : ""
+  );
+  const [hospital, setHospital] = useState(initialDoctor?.hospital || "");
+  const [phone, setPhone] = useState(initialDoctor?.phone || "");
+  // Default to the single parent if there's only one (adding new); else empty (shared)
+  const [parentId, setParentId] = useState(
+    initialDoctor
+      ? (initialDoctor.parent_id || "")
+      : (parents.length === 1 ? parents[0].id : "")
+  );
 
   return (
     <div className="bg-surface border border-border-subtle rounded-[14px] p-5 md:p-6 mb-6 animate-[fadeIn_0.2s_ease]">
-      <p className="font-semibold text-ink text-base md:text-lg mb-4">Add a doctor</p>
+      <p className="font-semibold text-ink text-base md:text-lg mb-4">
+        {isEditing ? "Edit doctor" : "Add a doctor"}
+      </p>
       <div className="space-y-4">
         <input
           value={name}
@@ -130,7 +197,7 @@ function DoctorForm({
         <div>
           <p className="text-ink text-sm font-medium mb-2">Specialty</p>
           <div className="flex flex-wrap gap-2">
-            {specialties.map((s) => (
+            {SPECIALTIES.map((s) => (
               <button
                 key={s}
                 type="button"
@@ -145,6 +212,15 @@ function DoctorForm({
               </button>
             ))}
           </div>
+          {specialty === "Other" && (
+            <input
+              value={customSpecialty}
+              onChange={(e) => setCustomSpecialty(e.target.value)}
+              placeholder="e.g. Physical therapist, Nutritionist"
+              className="w-full mt-3 px-4 py-3 bg-white border-2 border-border rounded-[10px] text-ink text-base focus:border-sage focus:outline-none min-h-[48px]"
+              autoFocus
+            />
+          )}
         </div>
         <input
           value={hospital}
@@ -159,15 +235,15 @@ function DoctorForm({
           type="tel"
           className="w-full px-4 py-3 bg-white border-2 border-border rounded-[10px] text-ink text-base focus:border-sage focus:outline-none min-h-[48px]"
         />
-        {parents.length > 1 && (
+        {parents.length >= 1 && (
           <div>
             <p className="text-ink text-sm font-medium mb-2">For which parent?</p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {parents.map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => setParentId(parentId === p.id ? "" : p.id)}
+                  onClick={() => setParentId(p.id)}
                   className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
                     parentId === p.id
                       ? "bg-sage text-white border-sage"
@@ -177,6 +253,19 @@ function DoctorForm({
                   {p.label}
                 </button>
               ))}
+              {parents.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setParentId("")}
+                  className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
+                    parentId === ""
+                      ? "bg-sage text-white border-sage"
+                      : "bg-white border-border text-ink-secondary hover:border-sage/50"
+                  }`}
+                >
+                  Shared
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -184,9 +273,13 @@ function DoctorForm({
           <button
             onClick={() => {
               if (!name.trim()) return;
+              const finalSpecialty =
+                specialty === "Other"
+                  ? (customSpecialty.trim() || null)
+                  : (specialty || null);
               onSubmit({
                 name: name.trim(),
-                specialty: specialty || null,
+                specialty: finalSpecialty,
                 hospital: hospital.trim() || null,
                 phone: phone.trim() || null,
                 parent_id: parentId || null,
@@ -195,7 +288,7 @@ function DoctorForm({
             disabled={!name.trim()}
             className="px-6 py-3 bg-sage text-white font-medium rounded-[10px] text-base min-h-[48px] md:min-h-[52px] hover:opacity-90 transition-opacity disabled:opacity-40"
           >
-            Save doctor
+            {isEditing ? "Save changes" : "Save doctor"}
           </button>
           <button
             onClick={onCancel}
@@ -213,10 +306,14 @@ function GroupedDoctors({
   doctors,
   parents,
   onDelete,
+  onSchedule,
+  onEdit,
 }: {
   doctors: Doctor[];
   parents: Parent[];
   onDelete: (id: string) => void;
+  onSchedule: (doctor: Doctor, date: string) => Promise<boolean>;
+  onEdit: (doctor: Doctor) => void;
 }) {
   const byParent: { label: string; parentId: string | null; items: Doctor[] }[] = [];
 
@@ -249,6 +346,8 @@ function GroupedDoctors({
                 key={doctor.id}
                 doctor={doctor}
                 onDelete={() => onDelete(doctor.id)}
+                onSchedule={(date) => onSchedule(doctor, date)}
+                onEdit={() => onEdit(doctor)}
               />
             ))}
           </div>
@@ -261,50 +360,133 @@ function GroupedDoctors({
 function DoctorRow({
   doctor,
   onDelete,
+  onSchedule,
+  onEdit,
 }: {
   doctor: Doctor;
   onDelete: () => void;
+  onSchedule: (date: string) => Promise<boolean>;
+  onEdit: () => void;
 }) {
+  const [scheduling, setScheduling] = useState(false);
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [scheduled, setScheduled] = useState(false);
+
+  const todayISO = new Date().toISOString().slice(0, 10);
+
+  const handleSubmit = async () => {
+    if (!scheduleDate) return;
+    setSubmitting(true);
+    const ok = await onSchedule(scheduleDate);
+    setSubmitting(false);
+    if (ok) {
+      setScheduled(true);
+      setScheduling(false);
+      setScheduleDate("");
+      setTimeout(() => setScheduled(false), 2000);
+    }
+  };
+
   return (
-    <div className="flex items-center gap-3 px-4 py-3 md:px-5 md:py-3.5 group">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p className="font-semibold text-ink text-sm md:text-base truncate">{doctor.name}</p>
-          {doctor.specialty && (
-            <span className="text-[10px] md:text-xs px-1.5 py-0.5 rounded-full font-medium shrink-0 bg-sage-light text-sage">
-              {doctor.specialty}
-            </span>
+    <div className="group">
+      <div className="flex items-center gap-3 px-4 py-3 md:px-5 md:py-3.5">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="font-semibold text-ink text-sm md:text-base truncate">{doctor.name}</p>
+            {doctor.specialty && (
+              <span className="text-[10px] md:text-xs px-1.5 py-0.5 rounded-full font-medium shrink-0 bg-sage-light text-sage">
+                {doctor.specialty}
+              </span>
+            )}
+          </div>
+          {doctor.hospital && (
+            <p className="text-xs md:text-sm text-ink-tertiary truncate">{doctor.hospital}</p>
           )}
         </div>
-        {doctor.hospital && (
-          <p className="text-xs md:text-sm text-ink-tertiary truncate">{doctor.hospital}</p>
-        )}
-      </div>
-      <div className="flex items-center gap-1.5 shrink-0">
-        {doctor.phone && (
-          <a
-            href={`tel:${doctor.phone}`}
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-sage-light text-sage hover:bg-sage hover:text-white transition-colors"
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={() => setScheduling((s) => !s)}
+            title="Schedule next visit"
+            className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+              scheduled
+                ? "bg-sage text-white"
+                : scheduling
+                ? "bg-blue text-white"
+                : "bg-blue-light text-blue hover:bg-blue hover:text-white"
+            }`}
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M6 2H4C2.89543 2 2 2.89543 2 4C2 9.52285 6.47715 14 12 14C13.1046 14 14 13.1046 14 12V10L11 9L9.5 10.5C8.57201 10.0366 7.56269 9.42737 6.56802 8.43198C5.57336 7.43731 4.96398 6.42779 4.5 5.5L6 4L5 1L6 2Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
+            {scheduled ? (
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                <rect x="3" y="4" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M3 8H17" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M7 2V6M13 2V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            )}
+          </button>
+          {doctor.phone && (
+            <a
+              href={`tel:${doctor.phone}`}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-sage-light text-sage hover:bg-sage hover:text-white transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M6 2H4C2.89543 2 2 2.89543 2 4C2 9.52285 6.47715 14 12 14C13.1046 14 14 13.1046 14 12V10L11 9L9.5 10.5C8.57201 10.0366 7.56269 9.42737 6.56802 8.43198C5.57336 7.43731 4.96398 6.42779 4.5 5.5L6 4L5 1L6 2Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </a>
+          )}
+          <button
+            onClick={onEdit}
+            title="Edit doctor"
+            className="flex items-center justify-center w-9 h-9 rounded-full text-ink-tertiary md:opacity-0 md:group-hover:opacity-100 hover:bg-sand hover:text-ink transition-all"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M10 2L12 4L5 11H3V9L10 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
             </svg>
-          </a>
-        )}
-        <button
-          onClick={onDelete}
-          className="flex items-center justify-center w-9 h-9 rounded-full text-ink-tertiary opacity-0 group-hover:opacity-100 hover:bg-terracotta-light hover:text-terracotta transition-all"
-        >
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-            <path d="M2 4H12M5 4V2H9V4M5 7V11M9 7V11M3 4L4 13H10L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+          </button>
+          <button
+            onClick={onDelete}
+            title="Delete doctor"
+            className="flex items-center justify-center w-9 h-9 rounded-full text-ink-tertiary md:opacity-0 md:group-hover:opacity-100 hover:bg-terracotta-light hover:text-terracotta transition-all"
+          >
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M2 4H12M5 4V2H9V4M5 7V11M9 7V11M3 4L4 13H10L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
       </div>
+      {scheduling && (
+        <div className="px-4 pb-3 md:px-5 md:pb-3.5 flex items-center gap-2 bg-blue-light/30">
+          <input
+            type="date"
+            value={scheduleDate}
+            min={todayISO}
+            onChange={(e) => setScheduleDate(e.target.value)}
+            className="flex-1 px-3 py-2 bg-white border-2 border-border rounded-[8px] text-ink text-sm focus:border-sage focus:outline-none min-h-[40px]"
+          />
+          <button
+            onClick={handleSubmit}
+            disabled={!scheduleDate || submitting}
+            className="px-4 py-2 bg-sage text-white font-medium rounded-[8px] text-sm min-h-[40px] hover:opacity-90 transition-opacity disabled:opacity-50"
+          >
+            {submitting ? "…" : "Save"}
+          </button>
+          <button
+            onClick={() => { setScheduling(false); setScheduleDate(""); }}
+            className="px-3 py-2 text-ink-secondary font-medium rounded-[8px] text-sm min-h-[40px] hover:bg-sand transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
     </div>
   );
 }

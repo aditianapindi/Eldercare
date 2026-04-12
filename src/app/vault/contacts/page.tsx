@@ -313,21 +313,10 @@ function EditContactCard({
             className="px-3 py-2.5 bg-white border-2 border-border rounded-[8px] text-ink text-sm focus:border-sage focus:outline-none min-h-[44px]"
           />
         </div>
-        {parents.length > 1 && (
+        {parents.length >= 1 && (
           <div>
             <p className="text-ink text-sm font-medium mb-2">For which parent?</p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setParentId("")}
-                className={`px-3 py-1.5 rounded-[6px] text-xs font-medium border transition-colors min-h-[32px] ${
-                  !parentId
-                    ? "bg-sage text-white border-sage"
-                    : "bg-white border-border text-ink-secondary hover:border-sage/50"
-                }`}
-              >
-                Shared
-              </button>
+            <div className="flex flex-wrap gap-2">
               {parents.map((p) => (
                 <button
                   key={p.id}
@@ -342,6 +331,19 @@ function EditContactCard({
                   {p.label}
                 </button>
               ))}
+              {parents.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setParentId("")}
+                  className={`px-3 py-1.5 rounded-[6px] text-xs font-medium border transition-colors min-h-[32px] ${
+                    !parentId
+                      ? "bg-sage text-white border-sage"
+                      : "bg-white border-border text-ink-secondary hover:border-sage/50"
+                  }`}
+                >
+                  Shared
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -385,7 +387,7 @@ function ContactForm({
   const [role, setRole] = useState("");
   const [phone, setPhone] = useState("");
   const [relationship, setRelationship] = useState("");
-  const [parentId, setParentId] = useState("");
+  const [parentId, setParentId] = useState(parents.length === 1 ? parents[0].id : "");
 
   return (
     <div className="bg-surface border border-border-subtle rounded-[14px] p-5 md:p-6 mb-6 animate-[fadeIn_0.2s_ease]">
@@ -430,26 +432,15 @@ function ContactForm({
           placeholder="Details (e.g. 'next door', 'Mon/Wed/Fri', 'brother in Chennai')"
           className="w-full px-4 py-3 bg-white border-2 border-border rounded-[10px] text-ink text-base focus:border-sage focus:outline-none min-h-[48px]"
         />
-        {parents.length > 1 && (
+        {parents.length >= 1 && (
           <div>
             <p className="text-ink text-sm font-medium mb-2">For which parent?</p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setParentId("")}
-                className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
-                  !parentId
-                    ? "bg-sage text-white border-sage"
-                    : "bg-white border-border text-ink-secondary hover:border-sage/50"
-                }`}
-              >
-                Shared
-              </button>
+            <div className="flex flex-wrap gap-2">
               {parents.map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => setParentId(parentId === p.id ? "" : p.id)}
+                  onClick={() => setParentId(p.id)}
                   className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
                     parentId === p.id
                       ? "bg-sage text-white border-sage"
@@ -459,6 +450,19 @@ function ContactForm({
                   {p.label}
                 </button>
               ))}
+              {parents.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setParentId("")}
+                  className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
+                    !parentId
+                      ? "bg-sage text-white border-sage"
+                      : "bg-white border-border text-ink-secondary hover:border-sage/50"
+                  }`}
+                >
+                  Shared
+                </button>
+              )}
             </div>
           </div>
         )}

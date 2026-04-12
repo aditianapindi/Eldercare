@@ -613,7 +613,7 @@ function MedicineForm({
   const [withFood, setWithFood] = useState(true);
   const [isLifelong, setIsLifelong] = useState(true);
   const [endDate, setEndDate] = useState("");
-  const [parentId, setParentId] = useState("");
+  const [parentId, setParentId] = useState(parents.length === 1 ? parents[0].id : "");
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
   const [showNewDoctor, setShowNewDoctor] = useState(false);
   const [newDoctorName, setNewDoctorName] = useState("");
@@ -952,15 +952,15 @@ function MedicineForm({
             </div>
           )}
         </div>
-        {parents.length > 1 && (
+        {parents.length >= 1 && (
           <div>
             <p className="text-ink text-sm font-medium mb-2">For which parent?</p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {parents.map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => setParentId(parentId === p.id ? "" : p.id)}
+                  onClick={() => setParentId(p.id)}
                   className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
                     parentId === p.id
                       ? "bg-sage text-white border-sage"
@@ -970,6 +970,19 @@ function MedicineForm({
                   {p.label}
                 </button>
               ))}
+              {parents.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setParentId("")}
+                  className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
+                    parentId === ""
+                      ? "bg-sage text-white border-sage"
+                      : "bg-white border-border text-ink-secondary hover:border-sage/50"
+                  }`}
+                >
+                  Shared
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -1108,7 +1121,7 @@ function EventForm({
   const [hospital, setHospital] = useState("");
   const [doctor, setDoctor] = useState("");
   const [notes, setNotes] = useState("");
-  const [parentId, setParentId] = useState("");
+  const [parentId, setParentId] = useState(parents.length === 1 ? parents[0].id : "");
 
   return (
     <div className="bg-surface border border-border-subtle rounded-[14px] p-5 md:p-6 mb-6 animate-[fadeIn_0.2s_ease]">
@@ -1165,15 +1178,15 @@ function EventForm({
           rows={2}
           className="w-full px-4 py-3 bg-white border-2 border-border rounded-[10px] text-ink text-base focus:border-sage focus:outline-none resize-none"
         />
-        {parents.length > 1 && (
+        {parents.length >= 1 && (
           <div>
             <p className="text-ink text-sm font-medium mb-2">For which parent?</p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {parents.map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => setParentId(parentId === p.id ? "" : p.id)}
+                  onClick={() => setParentId(p.id)}
                   className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
                     parentId === p.id
                       ? "bg-sage text-white border-sage"
@@ -1183,6 +1196,19 @@ function EventForm({
                   {p.label}
                 </button>
               ))}
+              {parents.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setParentId("")}
+                  className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
+                    parentId === ""
+                      ? "bg-sage text-white border-sage"
+                      : "bg-white border-border text-ink-secondary hover:border-sage/50"
+                  }`}
+                >
+                  Shared
+                </button>
+              )}
             </div>
           </div>
         )}

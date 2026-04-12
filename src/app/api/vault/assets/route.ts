@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/supabase-server";
+import { getAuthUser, getVaultOwnerId } from "@/lib/supabase-server";
 
 export async function GET(req: NextRequest) {
   const auth = await getAuthUser(req);
@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await auth.supabase
     .from("financial_assets")
-    .select("id, parent_id, asset_type, institution, description, status, notes, created_at")
+    .select("id, parent_id, asset_type, institution, description, status, notes, renewal_date, created_at")
     .order("created_at", { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -19,16 +19,18 @@ export async function POST(req: NextRequest) {
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
+  const ownerId = await getVaultOwnerId(auth);
   const { data, error } = await auth.supabase
     .from("financial_assets")
     .insert({
-      user_id: auth.user.id,
+      user_id: ownerId,
       parent_id: body.parent_id || null,
       asset_type: body.asset_type,
       institution: body.institution || null,
       description: body.description || null,
       status: body.status || "unknown",
       notes: body.notes || null,
+      renewal_date: body.renewal_date || null,
     })
     .select()
     .single();

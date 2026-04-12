@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/lib/logo";
 import { Watermark } from "@/lib/watermark";
+import { AuthHeaderLink } from "@/lib/auth-widgets";
 
 export default function Home() {
   return (
@@ -17,9 +18,10 @@ export default function Home() {
       </div>
 
       <div className="relative px-6 pt-6 pb-12 md:px-12 lg:px-24 md:pt-8 flex flex-col min-h-dvh">
-        {/* Header */}
-        <header className="mb-12">
+        {/* Header — auth-aware sign-in / back-to-vault affordance */}
+        <header className="mb-12 flex items-center justify-between gap-4">
           <Logo />
+          <AuthHeaderLink />
         </header>
 
         {/* Hero + Stats — side by side on desktop */}
@@ -42,6 +44,22 @@ export default function Home() {
                 Take the assessment
               </Link>
               <span className="text-ink-tertiary text-base">Free · 2 minutes · No login</span>
+            </div>
+
+            {/* One more conversation — slim safety signpost, inside the hero voice */}
+            <div className="mt-10 pt-6 border-t border-border-subtle max-w-[540px]">
+              <p className="text-ink-secondary text-[15px] md:text-base leading-relaxed">
+                <span className="text-ink font-medium">And one more conversation worth having.</span>{" "}
+                We put together a guide on the five scam calls targeting Indian parents
+                right now — plus a small companion app for the parent&apos;s phone that
+                catches them in real time.{" "}
+                <Link
+                  href="/safety"
+                  className="text-sage font-medium underline underline-offset-4 decoration-sage/40 hover:decoration-sage transition-colors whitespace-nowrap"
+                >
+                  Read the safety guide →
+                </Link>
+              </p>
             </div>
           </section>
 

@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
       parents: assessment.parents || {},
       siblings: assessment.siblings || {},
       concern: assessment.concern?.openText || "",
+      care_worries: Array.isArray(assessment.careWorries) ? assessment.careWorries : [],
     })
     .select("id")
     .single();

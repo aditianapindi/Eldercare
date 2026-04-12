@@ -81,7 +81,8 @@ export interface Expense {
 
 export interface Checkin {
   id: string;
-  user_id: string;
+  user_id: string;          // vault owner (for RLS)
+  checked_in_by: string | null; // actual user who clicked check in
   parent_id: string | null;
   checked_at: string;
   note: string | null;
@@ -96,5 +97,30 @@ export interface FinancialAsset {
   description: string | null;
   status: string;
   notes: string | null;
+  renewal_date: string | null;
   created_at: string;
+}
+
+export interface HealthDocument {
+  id: string;
+  user_id: string;
+  parent_id: string | null;
+  medical_event_id: string | null;
+  doc_type: "prescription" | "test_report" | "insurance" | "other";
+  file_path: string;
+  file_name: string;
+  file_size: number;
+  mime_type: string;
+  notes: string | null;
+  uploaded_at: string;
+}
+
+export interface UpcomingItem {
+  id: string;
+  kind: "appointment" | "renewal" | "medicine";
+  title: string;
+  subtitle: string | null;
+  date: string;
+  parent_id: string | null;
+  parent_label: string;
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/supabase-server";
+import { getAuthUser, getVaultOwnerId } from "@/lib/supabase-server";
 
 export async function GET(req: NextRequest) {
   const auth = await getAuthUser(req);
@@ -19,10 +19,11 @@ export async function POST(req: NextRequest) {
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
+  const ownerId = await getVaultOwnerId(auth);
   const { data, error } = await auth.supabase
     .from("doctors")
     .insert({
-      user_id: auth.user.id,
+      user_id: ownerId,
       name: body.name,
       specialty: body.specialty || null,
       hospital: body.hospital || null,
@@ -31,6 +32,30 @@ export async function POST(req: NextRequest) {
       parent_id: body.parent_id || null,
       notes: body.notes || null,
     })
+    .select()
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
+export async function PUT(req: NextRequest) {
+  const auth = await getAuthUser(req);
+  if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id, ...updates } = await req.json();
+  if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+
+  // Whitelist fields — don't let user_id be reassigned
+  const allowed: Record<string, unknown> = {};
+  for (const key of ["name", "specialty", "hospital", "phone", "address", "parent_id", "notes"]) {
+    if (key in updates) allowed[key] = updates[key];
+  }
+
+  const { data, error } = await auth.supabase
+    .from("doctors")
+    .update(allowed)
+    .eq("id", id)
     .select()
     .single();
 

@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/supabase-server";
+import { getAuthUser, getVaultOwnerId } from "@/lib/supabase-server";
 
 export async function GET(req: NextRequest) {
   const auth = await getAuthUser(req);
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Get the most recent report linked to this user
+  // Members see the vault owner's report, owners see their own
+  const ownerId = await getVaultOwnerId(auth);
+
   const { data, error } = await auth.supabase
     .from("reports")
     .select("id, score, blind_spot_count, blind_spot_areas, report_data")
-    .eq("user_id", auth.user.id)
+    .eq("user_id", ownerId)
     .order("created_at", { ascending: false })
     .limit(1)
     .single();

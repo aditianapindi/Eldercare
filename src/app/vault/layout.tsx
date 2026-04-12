@@ -31,16 +31,20 @@ export default function VaultLayout({ children }: { children: React.ReactNode })
     { href: "/vault", label: "Home", icon: HomeIcon, exact: true },
     { href: "/vault/doctors", label: "Doctors", icon: DoctorIcon },
     { href: "/vault/medicines", label: "Health", icon: HealthIcon },
+    { href: "/vault/documents", label: "Docs", icon: DocIcon },
     { href: "/vault/expenses", label: "Expenses", icon: ExpenseIcon },
     { href: "/vault/assets", label: "Assets", icon: AssetIcon },
     { href: "/vault/contacts", label: "Contacts", icon: ContactIcon },
+    { href: "/safety", label: "Safety", icon: SafetyIcon },
   ];
 
   return (
     <div className="min-h-dvh pb-[80px] md:pb-0">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-cream/90 backdrop-blur-md border-b border-border-subtle px-6 py-3 flex items-center justify-between">
-        <Logo size="small" />
+        <Link href="/vault" className="hover:opacity-80 transition-opacity">
+          <Logo size="small" />
+        </Link>
         <UserMenu />
       </header>
 
@@ -165,6 +169,25 @@ function ContactIcon({ active }: { active: boolean }) {
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={active ? "text-sage" : "text-ink-tertiary"}>
       <circle cx="10" cy="7" r="3" stroke="currentColor" strokeWidth="1.5" fill={active ? "currentColor" : "none"} fillOpacity={active ? "0.12" : "0"} />
       <path d="M4 17C4 14.2386 6.68629 12 10 12C13.3137 12 16 14.2386 16 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function DocIcon({ active }: { active: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={active ? "text-sage" : "text-ink-tertiary"}>
+      <path d="M5 2H11L15 6V17C15 17.5523 14.5523 18 14 18H5C4.44772 18 4 17.5523 4 17V3C4 2.44772 4.44772 2 5 2Z" stroke="currentColor" strokeWidth="1.5" fill={active ? "currentColor" : "none"} fillOpacity={active ? "0.12" : "0"} strokeLinejoin="round" />
+      <path d="M11 2V6H15" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M7 10H12M7 13H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function SafetyIcon({ active }: { active: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={active ? "text-sage" : "text-ink-tertiary"}>
+      <path d="M10 2L16 5V10C16 13.5 13 16.5 10 18C7 16.5 4 13.5 4 10V5L10 2Z" stroke="currentColor" strokeWidth="1.5" fill={active ? "currentColor" : "none"} fillOpacity={active ? "0.12" : "0"} strokeLinejoin="round" />
+      <path d="M7.5 10L9 11.5L12.5 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

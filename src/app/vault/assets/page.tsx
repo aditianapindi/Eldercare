@@ -185,7 +185,7 @@ function AssetForm({
   const [institution, setInstitution] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("need_to_check");
-  const [parentId, setParentId] = useState("");
+  const [parentId, setParentId] = useState(parents.length === 1 ? parents[0].id : "");
 
   return (
     <div className="bg-surface border border-border-subtle rounded-[14px] p-5 md:p-6 mb-6 animate-[fadeIn_0.2s_ease]">
@@ -241,26 +241,15 @@ function AssetForm({
             ))}
           </div>
         </div>
-        {parents.length > 1 && (
+        {parents.length >= 1 && (
           <div>
             <p className="text-ink text-sm font-medium mb-2">For which parent?</p>
             <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => setParentId(parentId === "" ? "" : "")}
-                className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
-                  parentId === ""
-                    ? "bg-sage text-white border-sage"
-                    : "bg-white border-border text-ink-secondary hover:border-sage/50"
-                }`}
-              >
-                Shared
-              </button>
               {parents.map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => setParentId(parentId === p.id ? "" : p.id)}
+                  onClick={() => setParentId(p.id)}
                   className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
                     parentId === p.id
                       ? "bg-sage text-white border-sage"
@@ -270,6 +259,19 @@ function AssetForm({
                   {p.label}
                 </button>
               ))}
+              {parents.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setParentId("")}
+                  className={`px-3 py-2 rounded-[8px] text-sm font-medium border transition-colors min-h-[40px] md:min-h-[44px] ${
+                    parentId === ""
+                      ? "bg-sage text-white border-sage"
+                      : "bg-white border-border text-ink-secondary hover:border-sage/50"
+                  }`}
+                >
+                  Shared
+                </button>
+              )}
             </div>
           </div>
         )}

@@ -2,8 +2,9 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/lib/auth";
-import type { Parent, Checkin } from "@/lib/vault-types";
+import type { Parent, Checkin, UpcomingItem } from "@/lib/vault-types";
 import { CityInput } from "@/lib/city-input";
 
 type ParentStats = Record<string, { medicines: number; doctors: number; monthlyExpenses: number }>;
@@ -28,24 +29,28 @@ function VaultDashboard() {
   const [parents, setParents] = useState<Parent[]>([]);
   const [checkins, setCheckins] = useState<Checkin[]>([]);
   const [stats, setStats] = useState<ParentStats>({});
+  const [upcoming, setUpcoming] = useState<UpcomingItem[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const loadData = async () => {
-    const [p, c, s, r] = await Promise.all([
+    const [p, c, s, r, u] = await Promise.all([
       authFetch("/api/vault/parents").then((r) => r.json()),
       authFetch("/api/vault/checkins").then((r) => r.json()),
       authFetch("/api/vault/parents/stats").then((r) => r.json()),
       authFetch("/api/vault/report").then((r) => r.json()).catch(() => null),
+      authFetch("/api/vault/upcoming").then((r) => r.json()).catch(() => []),
     ]);
     setParents(Array.isArray(p) ? p : []);
     setCheckins(Array.isArray(c) ? c : []);
     setStats(s && typeof s === "object" && !Array.isArray(s) ? s : {});
     setReport(r);
+    setUpcoming(Array.isArray(u) ? u : []);
     setLoading(false);
   };
 
@@ -140,9 +145,24 @@ function VaultDashboard() {
 
   return (
     <div className="animate-[fadeIn_0.3s_ease]">
-      <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-medium text-ink mb-1">
-        Your Family
-      </h1>
+      <div className="flex items-start justify-between gap-4 mb-1">
+        <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-medium text-ink">
+          Your Family
+        </h1>
+        <button
+          onClick={() => setShowShareModal(true)}
+          className="shrink-0 mt-1 inline-flex items-center gap-1.5 px-3 py-2 min-h-[36px] bg-surface border border-border-subtle hover:border-sage hover:text-sage text-ink-secondary text-xs md:text-sm font-medium rounded-full transition-colors"
+          title="Share vault"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <circle cx="4" cy="8" r="1.8" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="12" cy="4" r="1.8" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="12" cy="12" r="1.8" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M5.5 7L10.5 4.5M5.5 9L10.5 11.5" stroke="currentColor" strokeWidth="1.5" />
+          </svg>
+          Share
+        </button>
+      </div>
       <p className="text-ink-secondary text-sm md:text-base mb-4">
         Everything about your parents&apos; care, in one place.
       </p>
@@ -153,6 +173,7 @@ function VaultDashboard() {
           parents={parents}
           checkins={checkins}
           today={today}
+          currentUserId={user?.id}
           onCheckin={handleCheckin}
         />
       )}
@@ -329,8 +350,17 @@ function VaultDashboard() {
         </div>
       )}
 
+      {/* What's coming up + Safety */}
+      <div className={`grid gap-4 mb-8 ${upcoming.length > 0 ? "md:grid-cols-[1fr_auto]" : ""}`}>
+        {upcoming.length > 0 && <UpcomingCard items={upcoming} />}
+        <SafetyCard hasUpcoming={upcoming.length > 0} />
+      </div>
+
       {/* Getting Started checklist */}
       <GettingStarted stats={stats} parents={parents} report={report} />
+
+      {/* Share vault modal */}
+      {showShareModal && <ShareModal onClose={() => setShowShareModal(false)} />}
     </div>
   );
 }
@@ -341,11 +371,13 @@ function StreakBanner({
   parents,
   checkins,
   today,
+  currentUserId,
   onCheckin,
 }: {
   parents: Parent[];
   checkins: Checkin[];
   today: string;
+  currentUserId: string | undefined;
   onCheckin: (parentId: string) => void;
 }) {
   // Calculate overall streak (checked on ANY parent counts as a day)
@@ -361,6 +393,21 @@ function StreakBanner({
       continue; // today not checked yet is ok
     } else {
       break;
+    }
+  }
+
+  // Longest streak — scan the full 60-day window for the longest consecutive run
+  let longestStreak = 0;
+  let runningStreak = 0;
+  for (let i = 59; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const ds = localDate(d);
+    if (allDates.includes(ds)) {
+      runningStreak++;
+      if (runningStreak > longestStreak) longestStreak = runningStreak;
+    } else {
+      runningStreak = 0;
     }
   }
 
@@ -407,13 +454,18 @@ function StreakBanner({
           {overallStreak >= 7 ? "🔥" : overallStreak >= 3 ? "🌱" : checkedToday ? "🌿" : "💛"}
         </div>
         <div className="flex-1">
-          <div className="flex items-baseline gap-2">
+          <div className="flex items-baseline gap-2 flex-wrap">
             <span className="font-[family-name:var(--font-display)] text-xl md:text-2xl font-bold text-ink">
               {overallStreak}
             </span>
             <span className="text-ink-secondary text-sm md:text-base font-medium">
               day streak
             </span>
+            {longestStreak > overallStreak && longestStreak >= 3 && (
+              <span className="text-ink-tertiary text-xs md:text-sm">
+                · longest {longestStreak}
+              </span>
+            )}
           </div>
           <p className="text-ink-tertiary text-xs md:text-sm">{getMessage()}</p>
         </div>
@@ -460,39 +512,43 @@ function StreakBanner({
         </span>
       </div>
 
-      {/* Check-in buttons per parent */}
-      {!checkedToday && (
-        <div className="flex flex-wrap gap-2">
-          {parents.map((parent) => {
-            const parentCheckedToday = checkins.some(
-              (c) => c.parent_id === parent.id && c.checked_at === today
-            );
-            return (
-              <button
-                key={parent.id}
-                onClick={() => !parentCheckedToday && onCheckin(parent.id)}
-                disabled={parentCheckedToday}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium min-h-[44px] transition-all ${
-                  parentCheckedToday
-                    ? "bg-sage-light text-sage"
-                    : "bg-sage text-white hover:opacity-90"
-                }`}
-              >
-                {parentCheckedToday ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    {parent.label}
-                  </>
-                ) : (
-                  `Check in on ${parent.label}`
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {/* Check-in buttons per parent — per-user, both siblings can check in */}
+      <div className="flex flex-wrap gap-2">
+        {parents.map((parent) => {
+          const iCheckedThisParent = checkins.some(
+            (c) => c.parent_id === parent.id && c.checked_at === today && c.checked_in_by === currentUserId
+          );
+          const someoneElseChecked = !iCheckedThisParent && checkins.some(
+            (c) => c.parent_id === parent.id && c.checked_at === today
+          );
+          return (
+            <button
+              key={parent.id}
+              onClick={() => !iCheckedThisParent && onCheckin(parent.id)}
+              disabled={iCheckedThisParent}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium min-h-[44px] transition-all ${
+                iCheckedThisParent
+                  ? "bg-sage-light text-sage cursor-default"
+                  : someoneElseChecked
+                  ? "bg-white border-2 border-sage text-sage hover:bg-sage-light"
+                  : "bg-sage text-white hover:opacity-90"
+              }`}
+              title={someoneElseChecked ? "Family already checked in — you can too" : undefined}
+            >
+              {iCheckedThisParent ? (
+                <>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  {parent.label}
+                </>
+              ) : (
+                `Check in on ${parent.label}`
+              )}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -796,6 +852,403 @@ function AddDependentForm({ onSubmit, onCancel }: { onSubmit: (label: string) =>
         >
           Cancel
         </button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Upcoming card ─── */
+
+function UpcomingCard({ items }: { items: UpcomingItem[] }) {
+  const top = items.slice(0, 5);
+
+  return (
+    <div className="bg-surface border border-border-subtle rounded-[14px] p-4 md:p-5">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="text-sage">
+            <rect x="3" y="4" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M3 8H17" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M7 2V6M13 2V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          <h3 className="font-semibold text-ink text-sm md:text-base">What&apos;s coming up</h3>
+        </div>
+        {items.length > 5 && (
+          <span className="text-xs text-ink-tertiary">{items.length} total</span>
+        )}
+      </div>
+
+      <div className="space-y-1">
+        {top.map((item, idx) => (
+          <div
+            key={item.id}
+            className={`flex items-center gap-3 py-2.5 ${
+              idx !== top.length - 1 ? "border-b border-border-subtle/60" : ""
+            }`}
+          >
+            <UpcomingIcon kind={item.kind} />
+            <div className="flex-1 min-w-0">
+              <p className="text-ink text-sm font-medium truncate">{item.title}</p>
+              <p className="text-ink-tertiary text-xs truncate">
+                {item.parent_label}
+                {item.subtitle && <> · {item.subtitle}</>}
+              </p>
+            </div>
+            <div className="shrink-0 text-right">
+              <p className="text-ink-secondary text-xs font-medium">{relativeDate(item.date)}</p>
+              <p className="text-ink-tertiary text-[10px]">{formatShortDate(item.date)}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Safety card ─── */
+
+function SafetyCard({ hasUpcoming }: { hasUpcoming: boolean }) {
+  return (
+    <Link
+      href="/safety"
+      className={`group block bg-gradient-to-br from-mustard-light/50 to-sage-light/40 border border-mustard/20 rounded-[14px] p-4 md:p-5 hover:border-mustard/40 hover:shadow-sm transition-all relative overflow-hidden ${
+        hasUpcoming ? "md:w-[260px] lg:w-[280px]" : ""
+      }`}
+    >
+      <div className="absolute -top-3 -right-3 opacity-15">
+        <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
+          <path
+            d="M35 8L52 18V34C52 47 43 56 35 60C27 56 18 47 18 34V18L35 8Z"
+            stroke="#C9A14A"
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+            fill="#C9A14A"
+            fillOpacity="0.2"
+          />
+        </svg>
+      </div>
+
+      <div className="relative">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-7 h-7 rounded-full bg-mustard-light flex items-center justify-center">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="text-mustard">
+              <path
+                d="M10 2L16 5V10C16 14 13.5 17 10 18C6.5 17 4 14 4 10V5L10 2Z"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <h3 className="font-semibold text-ink text-sm md:text-base">Family safety</h3>
+        </div>
+        <p className="text-ink-secondary text-xs md:text-[13px] leading-snug mb-3">
+          ₹22,495 Cr lost to scams in India in 2025. The 5 scams targeting Indian parents
+          right now — and how to stop them.
+        </p>
+        <span className="inline-flex items-center gap-1 text-mustard text-xs md:text-sm font-medium group-hover:gap-1.5 transition-all">
+          Get safety setup →
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+function UpcomingIcon({ kind }: { kind: UpcomingItem["kind"] }) {
+  const common = "w-8 h-8 rounded-full flex items-center justify-center shrink-0";
+  if (kind === "appointment") {
+    return (
+      <div className={`${common} bg-blue-light text-blue`}>
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+          <rect x="4" y="2" width="12" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M10 7V13M7 10H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      </div>
+    );
+  }
+  if (kind === "renewal") {
+    return (
+      <div className={`${common} bg-mustard-light text-mustard`}>
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+          <path d="M3 10C3 6.13 6.13 3 10 3C12.76 3 15.14 4.63 16.26 7M17 10C17 13.87 13.87 17 10 17C7.24 17 4.86 15.37 3.74 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M16 3V7H12M4 17V13H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    );
+  }
+  return (
+    <div className={`${common} bg-sage-light text-sage`}>
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+        <rect x="6" y="3" width="8" height="14" rx="3" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M6 10H14" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    </div>
+  );
+}
+
+function relativeDate(iso: string): string {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const then = new Date(iso + "T00:00:00");
+  const diff = Math.round((then.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  if (diff <= 0) return "today";
+  if (diff === 1) return "tomorrow";
+  if (diff < 7) return `in ${diff} days`;
+  if (diff < 14) return "next week";
+  if (diff < 30) return `in ${Math.round(diff / 7)} weeks`;
+  if (diff < 60) return "next month";
+  return `in ${Math.round(diff / 30)} months`;
+}
+
+function formatShortDate(iso: string): string {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+}
+
+/* ─── Share modal ─── */
+
+interface ShareInvite {
+  id: string;
+  token: string;
+  label: string | null;
+  role: string;
+  created_at: string;
+  expires_at: string;
+  claimed_at: string | null;
+  claimed_by: string | null;
+  revoked_at: string | null;
+}
+
+interface VaultMember {
+  id: string;
+  member_user_id: string;
+  invite_label: string | null; // the label the owner set on the share they claimed
+  role: string;
+  created_at: string;
+}
+
+function ShareModal({ onClose }: { onClose: () => void }) {
+  const { authFetch } = useAuth();
+  const [shares, setShares] = useState<ShareInvite[]>([]);
+  const [members, setMembers] = useState<VaultMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
+  const [newLabel, setNewLabel] = useState("");
+  const [copiedToken, setCopiedToken] = useState<string | null>(null);
+
+  const load = async () => {
+    try {
+      const res = await authFetch("/api/vault/shares");
+      const data = await res.json();
+      setShares(Array.isArray(data.shares) ? data.shares : []);
+      setMembers(Array.isArray(data.members) ? data.members : []);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleCreate = async () => {
+    setCreating(true);
+    try {
+      const res = await authFetch("/api/vault/shares", {
+        method: "POST",
+        body: JSON.stringify({ label: newLabel || null }),
+      });
+      if (res.ok) {
+        const invite = await res.json();
+        setShares((prev) => [invite, ...prev]);
+        setNewLabel("");
+        // auto-copy the freshly-created link
+        const url = `${window.location.origin}/join?token=${invite.token}`;
+        await navigator.clipboard.writeText(url).catch(() => {});
+        setCopiedToken(invite.token);
+        setTimeout(() => setCopiedToken(null), 2000);
+      }
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handleCopy = async (token: string) => {
+    const url = `${window.location.origin}/join?token=${token}`;
+    await navigator.clipboard.writeText(url).catch(() => {});
+    setCopiedToken(token);
+    setTimeout(() => setCopiedToken(null), 2000);
+  };
+
+  const handleRevoke = async (id: string) => {
+    if (!confirm("Revoke this invite? The link will stop working immediately.")) return;
+    const res = await authFetch("/api/vault/shares", {
+      method: "DELETE",
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) setShares((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const handleRemoveMember = async (id: string) => {
+    if (!confirm("Remove this member? They'll lose access immediately.")) return;
+    const res = await authFetch("/api/vault/shares", {
+      method: "DELETE",
+      body: JSON.stringify({ id, type: "member" }),
+    });
+    if (res.ok) setMembers((prev) => prev.filter((m) => m.id !== id));
+  };
+
+  const activeShares = shares.filter((s) => !s.claimed_at && !s.revoked_at && new Date(s.expires_at) > new Date());
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm p-4 animate-[fadeIn_0.15s_ease]"
+      onClick={onClose}
+    >
+      <div
+        className="bg-cream border border-border-subtle rounded-[18px] w-full max-w-[480px] max-h-[85dvh] overflow-y-auto shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-cream/95 backdrop-blur border-b border-border-subtle px-5 py-4 flex items-center justify-between">
+          <div>
+            <h2 className="font-[family-name:var(--font-display)] text-xl font-medium text-ink">Share vault</h2>
+            <p className="text-ink-tertiary text-xs">Invite a sibling or partner to co-manage</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-full flex items-center justify-center text-ink-tertiary hover:bg-sand transition-colors"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="p-5">
+          {/* Create new invite */}
+          <div className="mb-6">
+            <label className="block text-xs font-medium text-ink-tertiary uppercase tracking-wide mb-2">
+              Invite label (optional)
+            </label>
+            <div className="flex gap-2">
+              <input
+                value={newLabel}
+                onChange={(e) => setNewLabel(e.target.value)}
+                placeholder="e.g. Brother Ravi"
+                maxLength={60}
+                className="flex-1 px-3 py-2.5 bg-white border-2 border-border rounded-[10px] text-ink text-sm focus:border-sage focus:outline-none min-h-[44px]"
+              />
+              <button
+                onClick={handleCreate}
+                disabled={creating}
+                className="px-4 py-2.5 bg-sage text-white font-medium rounded-[10px] text-sm min-h-[44px] hover:opacity-90 transition-opacity disabled:opacity-50 whitespace-nowrap"
+              >
+                {creating ? "…" : "Create link"}
+              </button>
+            </div>
+            <p className="text-ink-tertiary text-xs mt-2">Single-use. Expires in 48 hours.</p>
+            {newLabel.trim() === "" && (
+              <p className="text-mustard text-xs mt-1.5">
+                Tip: add a label so you can tell members apart later
+              </p>
+            )}
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-6">
+              <div className="w-6 h-6 rounded-full border-2 border-sage border-t-transparent animate-spin" />
+            </div>
+          ) : (
+            <>
+              {/* Active members */}
+              {members.length > 0 && (
+                <div className="mb-5">
+                  <p className="text-xs font-medium text-ink-tertiary uppercase tracking-wide mb-2">
+                    Members ({members.length})
+                  </p>
+                  <div className="space-y-1.5">
+                    {members.map((m) => (
+                      <div
+                        key={m.id}
+                        className="flex items-center justify-between gap-3 px-3 py-2.5 bg-sage-light/40 border border-sage/15 rounded-[10px] min-h-[44px]"
+                      >
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <div className="w-7 h-7 rounded-full bg-sage text-white flex items-center justify-center shrink-0">
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                              <circle cx="8" cy="6" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+                              <path d="M3 14C3 11.8 5.2 10 8 10C10.8 10 13 11.8 13 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            </svg>
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-ink text-sm font-medium truncate">
+                              {m.invite_label || "Member"}
+                            </p>
+                            <p className="text-ink-tertiary text-[11px]">
+                              Editor · joined {new Date(m.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleRemoveMember(m.id)}
+                          className="text-ink-tertiary hover:text-terracotta text-xs font-medium px-2 py-1 rounded hover:bg-terracotta-light transition-colors shrink-0"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Active invites */}
+              {activeShares.length > 0 && (
+                <div>
+                  <p className="text-xs font-medium text-ink-tertiary uppercase tracking-wide mb-2">
+                    Pending invites ({activeShares.length})
+                  </p>
+                  <div className="space-y-1.5">
+                    {activeShares.map((s) => (
+                      <div
+                        key={s.id}
+                        className="px-3 py-2.5 bg-surface border border-border-subtle rounded-[10px]"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-1.5">
+                          <span className="text-ink text-sm font-medium truncate">
+                            {s.label || "Unlabeled invite"}
+                          </span>
+                          <button
+                            onClick={() => handleRevoke(s.id)}
+                            className="text-ink-tertiary hover:text-terracotta text-xs font-medium shrink-0"
+                          >
+                            Revoke
+                          </button>
+                        </div>
+                        <button
+                          onClick={() => handleCopy(s.token)}
+                          className="w-full text-left px-2.5 py-2 bg-cream border border-border-subtle rounded-[8px] text-xs text-ink-secondary hover:border-sage hover:text-sage transition-colors flex items-center justify-between gap-2"
+                        >
+                          <span className="truncate font-mono">
+                            /join?token={s.token.slice(0, 10)}…
+                          </span>
+                          <span className="shrink-0 font-medium">
+                            {copiedToken === s.token ? "Copied" : "Copy link"}
+                          </span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {members.length === 0 && activeShares.length === 0 && (
+                <div className="text-center py-4 text-ink-tertiary text-sm">
+                  No shares yet. Create a link above to invite a family member.
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

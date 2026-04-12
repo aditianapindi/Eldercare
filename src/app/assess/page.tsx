@@ -25,6 +25,7 @@ export default function AssessPage() {
   const [livingSituation, setLivingSituation] = useState("");
   const [siblingCount, setSiblingCount] = useState("");
   const [concern, setConcern] = useState<ConcernInfo>({ openText: "" });
+  const [careWorries, setCareWorries] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const answeredAll = diagnosticQuestions.every((q) => answers[q.id]);
@@ -47,6 +48,7 @@ export default function AssessPage() {
       },
       siblings: { count: siblingCount },
       concern,
+      careWorries,
       createdAt: new Date().toISOString(),
     };
 
@@ -253,6 +255,40 @@ export default function AssessPage() {
               placeholder="What keeps you up at night about your parents? (optional — makes the report personal)"
               className="w-full px-3 py-2.5 bg-surface border-2 border-border rounded-[10px] text-ink text-sm md:text-base focus:border-sage focus:outline-none resize-none"
             />
+
+            {/* Row 5: Care worries chip-row (multi-select, optional) */}
+            <div className="flex flex-wrap gap-1.5">
+              <span className="text-ink-tertiary text-xs md:text-sm self-center mr-1">Worries</span>
+              {[
+                { label: "Health", value: "health" },
+                { label: "Money", value: "money" },
+                { label: "Safety & scams", value: "safety" },
+                { label: "Loneliness", value: "loneliness" },
+                { label: "Legal & paperwork", value: "legal" },
+              ].map((opt) => {
+                const selected = careWorries.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() =>
+                      setCareWorries((prev) =>
+                        prev.includes(opt.value)
+                          ? prev.filter((v) => v !== opt.value)
+                          : [...prev, opt.value]
+                      )
+                    }
+                    className={`px-3 py-1.5 rounded-[8px] text-xs md:text-sm font-medium border transition-colors min-h-[32px] md:min-h-[36px] ${
+                      selected
+                        ? "bg-sage text-white border-sage"
+                        : "bg-surface border-border text-ink-secondary hover:border-sage/50"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
 
             {/* Submit */}
             <button
