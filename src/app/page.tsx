@@ -46,21 +46,28 @@ export default function Home() {
               <span className="text-ink-tertiary text-base">Free · 2 minutes · No login</span>
             </div>
 
-            {/* One more conversation — slim safety signpost, inside the hero voice */}
-            <div className="mt-10 pt-6 border-t border-border-subtle max-w-[540px]">
-              <p className="text-ink-secondary text-[15px] md:text-base leading-relaxed">
-                <span className="text-ink font-medium">And one more conversation worth having.</span>{" "}
-                We put together a guide on the five scam calls targeting Indian parents
-                right now — plus a small companion app for the parent&apos;s phone that
-                catches them in real time.{" "}
-                <Link
-                  href="/safety"
-                  className="text-sage font-medium underline underline-offset-4 decoration-sage/40 hover:decoration-sage transition-colors whitespace-nowrap"
-                >
-                  Read the safety guide →
-                </Link>
-              </p>
-            </div>
+            {/* Safety card — visual signpost */}
+            <Link href="/safety" className="block mt-10 max-w-[540px] group">
+              <div className="bg-sage-light/50 border border-sage/15 rounded-[14px] p-5 flex items-start gap-4 hover:border-sage/30 transition-colors">
+                <div className="shrink-0 w-10 h-10 rounded-full bg-sage/10 flex items-center justify-center mt-0.5">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-sage">
+                    <path d="M10 2L16 5V10C16 13.5 13 16.5 10 18C7 16.5 4 13.5 4 10V5L10 2Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.12" strokeLinejoin="round" />
+                    <path d="M7.5 10L9 11.5L12.5 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-ink font-medium text-[15px] md:text-base mb-1">
+                    5 scams targeting Indian parents right now
+                  </p>
+                  <p className="text-ink-secondary text-sm leading-relaxed">
+                    A short guide — plus a companion app for the parent&apos;s phone that catches them in real time.
+                  </p>
+                  <span className="inline-block mt-2 text-sage text-sm font-medium group-hover:underline">
+                    Read the safety guide →
+                  </span>
+                </div>
+              </div>
+            </Link>
           </section>
 
           {/* Stats — stacked cards on the right on desktop */}

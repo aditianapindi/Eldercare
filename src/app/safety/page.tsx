@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Watermark } from "@/lib/watermark";
 import { AuthHeaderLink, LogoWithAuthLink } from "@/lib/auth-widgets";
 import { SafetyHeroCTAs, SafetyStickyBar } from "./safety-client";
@@ -67,20 +66,6 @@ export default function SafetyPage() {
           </p>
           <SafetyHeroCTAs />
 
-          {/* Here's the app — slim signpost inside the hero voice */}
-          <div className="mt-10 pt-6 border-t border-border-subtle max-w-[620px]">
-            <p className="text-ink-secondary text-[15px] md:text-base leading-relaxed">
-              <span className="text-ink font-medium">Here&apos;s the app we built to catch these calls.</span>{" "}
-              A small companion for the parent&apos;s phone — it listens for scam
-              patterns and alerts you the moment it hears one.{" "}
-              <Link
-                href="/fraudguard"
-                className="text-sage font-medium underline underline-offset-4 decoration-sage/40 hover:decoration-sage transition-colors whitespace-nowrap"
-              >
-                See the app →
-              </Link>
-            </p>
-          </div>
         </section>
 
         {/* Scam cards — 2-col grid, compressed */}
@@ -145,6 +130,68 @@ export default function SafetyPage() {
               </a>
               . Government-run, 24×7, free.
             </p>
+          </div>
+        </section>
+
+        {/* The companion app — folded from /fraudguard */}
+        <section id="app" className="max-w-[900px] mb-16 md:mb-24 scroll-mt-6">
+          <p className="text-ink-tertiary text-xs uppercase tracking-wide mb-3 font-semibold">
+            The companion app
+          </p>
+          <h2 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-light text-ink leading-tight mb-4">
+            We built an app that catches these calls in real time.
+          </h2>
+          <p className="text-ink-secondary text-base md:text-lg leading-relaxed max-w-[620px] mb-8">
+            A small Android companion for the parent&apos;s phone. It watches for the
+            dangerous moment in a scam — an unknown caller on the line while a banking or
+            UPI app is opened — and triggers three things at once:
+          </p>
+
+          <div className="grid gap-4 md:gap-5 md:grid-cols-3 mb-8">
+            <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+              <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-terracotta-light text-terracotta font-semibold text-xs font-[family-name:var(--font-display)] mb-3">1</span>
+              <h3 className="font-[family-name:var(--font-display)] text-lg font-medium text-ink leading-snug mb-2">
+                A full-screen red warning
+              </h3>
+              <p className="text-ink-secondary text-[15px] leading-relaxed">
+                Hard to miss, with a 30-second countdown — so there&apos;s time to think.
+              </p>
+            </div>
+            <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+              <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-terracotta-light text-terracotta font-semibold text-xs font-[family-name:var(--font-display)] mb-3">2</span>
+              <h3 className="font-[family-name:var(--font-display)] text-lg font-medium text-ink leading-snug mb-2">
+                A Hindi voice alert
+              </h3>
+              <p className="text-ink-secondary text-[15px] leading-relaxed">
+                Spoken on the speaker, audible to whoever is in the room.
+              </p>
+            </div>
+            <div className="bg-surface border border-border-subtle rounded-[14px] p-5">
+              <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-terracotta-light text-terracotta font-semibold text-xs font-[family-name:var(--font-display)] mb-3">3</span>
+              <h3 className="font-[family-name:var(--font-display)] text-lg font-medium text-ink leading-snug mb-2">
+                An SMS to you
+              </h3>
+              <p className="text-ink-secondary text-[15px] leading-relaxed">
+                Sent instantly from the parent&apos;s SIM. No internet, no account, no delay.
+              </p>
+            </div>
+          </div>
+
+          {/* Developer beta callout */}
+          <div className="bg-mustard-light/40 border border-mustard/20 rounded-[16px] p-6 md:p-8">
+            <p className="text-mustard text-xs font-bold uppercase tracking-wide mb-2">Developer beta</p>
+            <p className="text-ink-secondary text-base leading-relaxed mb-4">
+              FraudGuard is open source and currently in developer beta. A signed APK
+              for non-technical users is on the way.
+            </p>
+            <a
+              href="https://github.com/orangeaka/fraud-guard"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3 bg-ink text-cream text-base font-medium rounded-[10px] hover:opacity-90 transition-opacity min-h-[48px]"
+            >
+              View the source on GitHub →
+            </a>
           </div>
         </section>
 
