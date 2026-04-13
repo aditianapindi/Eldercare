@@ -5,11 +5,12 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-/** Keep only the first sentence of a string */
-function oneSentence(s: string | undefined): string {
+/** Keep first two sentences max */
+function twoSentences(s: string | undefined): string {
   if (!s) return "";
-  const m = s.match(/^[^.!?]*[.!?]/);
-  return m ? m[0].trim() : s.trim();
+  const sentences = s.match(/[^.!?]*[.!?]/g);
+  if (!sentences) return s.trim();
+  return sentences.slice(0, 2).join("").trim();
 }
 
 export async function POST(req: NextRequest) {
@@ -49,12 +50,12 @@ export async function POST(req: NextRequest) {
 
       const reportData = JSON.parse(jsonMatch[0]);
       // Enforce concise insights regardless of Gemini verbosity
-      if (reportData.careTimeline) reportData.careTimeline = oneSentence(reportData.careTimeline);
-      if (reportData.biggestExposure) reportData.biggestExposure = oneSentence(reportData.biggestExposure);
+      if (reportData.careTimeline) reportData.careTimeline = twoSentences(reportData.careTimeline);
+      if (reportData.biggestExposure) reportData.biggestExposure = twoSentences(reportData.biggestExposure);
       if (reportData.priorityActions) {
         reportData.priorityActions = reportData.priorityActions.map((a: { title: string; description: string; urgency: string }) => ({
           ...a,
-          description: oneSentence(a.description),
+          description: twoSentences(a.description),
         }));
       }
       report = {
@@ -137,8 +138,8 @@ Generate a JSON response with this EXACT structure:
     { "title": "<action title>", "description": "<2-3 sentence explanation of what to do and why>", "urgency": "high|medium|low" }
   ],
   "personalizedInsight": "<2-3 sentences connecting their specific 'what keeps you up at night' concern to concrete findings in their assessment>",
-  "careTimeline": "<ONE sentence max. Format: '[Specific change] typically happens by [age/timeframe]. Starting now gives you [X] years.' Reference their parents' ages and conditions.>",
-  "biggestExposure": "<ONE sentence max. Format: '[Specific risk] could cost ₹[amount]. [One action to fix it].' Be concrete, not generic.>",
+  "careTimeline": "<Max 2 sentences. Reference their parents' ages and conditions. Format: what changes by when, and what starting now gives them.>",
+  "biggestExposure": "<Max 2 sentences. Name the specific risk with a ₹ amount, then one action to fix it. Be concrete to their situation.>",
   "comparativeContext": "<one sentence putting their score in context, e.g. 'Most families score between 3-5 on this assessment'>"
 }
 

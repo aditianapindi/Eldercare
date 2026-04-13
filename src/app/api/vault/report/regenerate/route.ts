@@ -4,10 +4,11 @@ import { getAuthUser, getVaultOwnerId } from "@/lib/supabase-server";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-function oneSentence(s: string | undefined): string {
+function twoSentences(s: string | undefined): string {
   if (!s) return "";
-  const m = s.match(/^[^.!?]*[.!?]/);
-  return m ? m[0].trim() : s.trim();
+  const sentences = s.match(/[^.!?]*[.!?]/g);
+  if (!sentences) return s.trim();
+  return sentences.slice(0, 2).join("").trim();
 }
 
 export async function POST(req: NextRequest) {
@@ -88,8 +89,8 @@ Generate a JSON response with this EXACT structure:
   "riskAlerts": [{ "title": "<short>", "stat": "<stat>", "description": "<2-3 sentences>" }],
   "priorityActions": [{ "title": "<action>", "description": "<2-3 sentences>", "urgency": "high|medium|low" }],
   "personalizedInsight": "<2-3 sentences>",
-  "careTimeline": "<ONE sentence max. Format: '[Specific change] typically happens by [age/timeframe]. Starting now gives you [X] years.' Reference their parents' ages and conditions.>",
-  "biggestExposure": "<ONE sentence max. Format: '[Specific risk] could cost ₹[amount]. [One action to fix it].' Be concrete, not generic.>",
+  "careTimeline": "<Max 2 sentences. Reference their parents' ages and conditions. Format: what changes by when, and what starting now gives them.>",
+  "biggestExposure": "<Max 2 sentences. Name the specific risk with a ₹ amount, then one action to fix it. Be concrete to their situation.>",
   "comparativeContext": "<one sentence>"
 }
 
@@ -116,12 +117,12 @@ Return ONLY the JSON, no markdown.`;
     if (!jsonMatch) throw new Error("Failed to parse Gemini response");
 
     const reportData = JSON.parse(jsonMatch[0]);
-    if (reportData.careTimeline) reportData.careTimeline = oneSentence(reportData.careTimeline);
-    if (reportData.biggestExposure) reportData.biggestExposure = oneSentence(reportData.biggestExposure);
+    if (reportData.careTimeline) reportData.careTimeline = twoSentences(reportData.careTimeline);
+    if (reportData.biggestExposure) reportData.biggestExposure = twoSentences(reportData.biggestExposure);
     if (reportData.priorityActions) {
       reportData.priorityActions = reportData.priorityActions.map((a: { title: string; description: string; urgency: string }) => ({
         ...a,
-        description: oneSentence(a.description),
+        description: twoSentences(a.description),
       }));
     }
     const updatedReport = {
