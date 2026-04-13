@@ -128,14 +128,7 @@ Return ONLY the JSON, no markdown.`;
       })
       .eq("id", existingReport.id);
 
-    return NextResponse.json({
-      id: existingReport.id,
-      score: updatedReport.score,
-      blindSpotCount: updatedReport.blindSpotCount,
-      blindSpotAreas: updatedReport.blindSpotAreas,
-      priorityActions: updatedReport.priorityActions,
-      personalizedInsight: updatedReport.personalizedInsight,
-    });
+    return NextResponse.json(updatedReport);
   } catch (error) {
     console.error("Regeneration error:", error);
     return NextResponse.json({ error: "Failed to regenerate" }, { status: 500 });
