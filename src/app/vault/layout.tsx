@@ -66,6 +66,18 @@ export default function VaultLayout({ children }: { children: React.ReactNode })
               </Link>
             );
           })}
+          <div className="mt-auto pt-4 border-t border-border-subtle">
+            <Link
+              href="/privacy"
+              className="flex items-center gap-2 px-3 py-2 text-ink-tertiary text-xs hover:text-ink transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="shrink-0">
+                <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              Privacy &amp; data
+            </Link>
+          </div>
         </nav>
 
         {/* Main content */}

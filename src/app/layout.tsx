@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
 import PageTracker from "@/lib/page-tracker";
+import { FeedbackWidget } from "@/lib/feedback-widget";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -47,6 +48,7 @@ export default function RootLayout({
       <body className="antialiased">
         <PageTracker />
         {children}
+        <FeedbackWidget />
       </body>
     </html>
   );

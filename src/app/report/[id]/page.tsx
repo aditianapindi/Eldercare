@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import type { CareReport } from "@/lib/types";
 import { Logo } from "@/lib/logo";
 import { Watermark } from "@/lib/watermark";
 import { getScoreLabel, getScoreSubtext } from "@/lib/scoring";
+import { useAuth } from "@/lib/auth";
+import { PrivacyTrustLine } from "@/lib/privacy-trust";
 
 export default function ReportPage() {
   const { id } = useParams<{ id: string }>();
@@ -88,6 +91,42 @@ export default function ReportPage() {
 /* ─── Report layout ─── */
 
 function ReportView({ report }: { report: CareReport }) {
+  const searchParams = useSearchParams();
+  const { user, loading: authLoading, authFetch } = useAuth();
+  const isUnlocked = !!user;
+  const [justUnlocked, setJustUnlocked] = useState(false);
+
+  // Detect shared view: visitor didn't take this assessment themselves
+  const [isSharedView, setIsSharedView] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hasLocal = sessionStorage.getItem(`report-${report.id}`) || sessionStorage.getItem(`assessment-${report.id}`);
+    setIsSharedView(!hasLocal);
+  }, [report.id]);
+
+  // Handle ?setup=true — link session after OAuth return
+  useEffect(() => {
+    if (!user || searchParams.get("setup") !== "true") return;
+
+    const linkSession = async () => {
+      const sessionId = sessionStorage.getItem("vault_session_id");
+      const reportId = sessionStorage.getItem("vault_report_id");
+      if (sessionId) {
+        await authFetch("/api/link-session", {
+          method: "POST",
+          body: JSON.stringify({ sessionId, reportId }),
+        });
+        sessionStorage.removeItem("vault_session_id");
+        sessionStorage.removeItem("vault_report_id");
+      }
+      // Strip query param
+      window.history.replaceState({}, "", `/report/${report.id}`);
+    };
+
+    linkSession();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   const scoreLabel = getScoreLabel(report.score);
   const scoreSubtext = getScoreSubtext(report.score);
   const shareText = `I just checked how prepared my family is for my parents' care with Inaya. It opened my eyes to things I hadn't thought about. Try it — takes 2 minutes.`;
@@ -105,7 +144,7 @@ function ReportView({ report }: { report: CareReport }) {
       {/* Centered content column */}
       <div className="relative max-w-[720px] mx-auto px-6 pt-8 pb-12 md:pt-10">
 
-        {/* ─── Score hero with leaf watermark ─── */}
+        {/* ─── PUBLIC: Score hero ─── */}
         <section className="text-center mb-8 animate-[fadeIn_0.5s_ease]">
           <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-6">
             Your family&apos;s care readiness
@@ -170,18 +209,7 @@ function ReportView({ report }: { report: CareReport }) {
           </div>
         </section>
 
-        {/* ─── Vault CTA — stacked below score ─── */}
-        <section className="bg-sand rounded-[14px] p-5 md:p-6 mb-8">
-          <p className="font-semibold text-ink text-base md:text-lg mb-1">
-            Save &amp; track your care
-          </p>
-          <p className="text-ink-secondary text-sm mb-4">
-            Doctors, medicines, expenses, daily check-ins — all in one place.
-          </p>
-          <VaultCTA reportId={report.id} sessionId={report.sessionId} />
-        </section>
-
-        {/* ─── What we noticed ─── */}
+        {/* ─── PUBLIC: What we noticed ─── */}
         {report.personalizedInsight && (
           <section className="mb-8">
             <p className="text-ink-secondary text-sm md:text-base italic leading-relaxed">
@@ -191,24 +219,7 @@ function ReportView({ report }: { report: CareReport }) {
           </section>
         )}
 
-        {/* ─── Cost + Coordination (2 cols on desktop) ─── */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
-            <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Monthly cost estimate</p>
-            <p className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-ink mb-1">
-              ₹{(report.monthlyCostEstimate.low / 1000).toFixed(0)}K – ₹{(report.monthlyCostEstimate.high / 1000).toFixed(0)}K
-            </p>
-            <p className="text-xs text-ink-tertiary">Per month · grows 10-15% yearly</p>
-          </div>
-          {report.siblingSplitView && (
-            <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
-              <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Family coordination</p>
-              <p className="text-ink-secondary text-sm leading-relaxed">{report.siblingSplitView}</p>
-            </div>
-          )}
-        </section>
-
-        {/* ─── Things worth knowing ─── */}
+        {/* ─── PUBLIC: Things worth knowing ─── */}
         <section className="mb-8">
           <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Things worth knowing</h2>
           <div className="bg-surface border border-border-subtle rounded-[14px] divide-y divide-border-subtle">
@@ -222,40 +233,104 @@ function ReportView({ report }: { report: CareReport }) {
           </div>
         </section>
 
-        {/* ─── Next steps ─── */}
-        <section className="mb-4">
-          <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Steps you can take together</h2>
-          <div className="space-y-3">
-            {report.priorityActions.map((action, i) => {
-              const urgencyLabel: Record<string, string> = { high: "Start here", medium: "When you're ready", low: "Good to know" };
-              const urgencyStyle: Record<string, string> = { high: "bg-sage text-white", medium: "bg-mustard-light text-mustard", low: "bg-sand text-ink-tertiary" };
-              return (
-                <div key={i} className="bg-surface border border-border-subtle rounded-[12px] p-4 md:p-5 flex items-start gap-3">
-                  <span className="w-7 h-7 rounded-full bg-sage-light text-sage font-semibold text-sm flex items-center justify-center shrink-0">
-                    {i + 1}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <p className="font-semibold text-ink text-sm md:text-base">{action.title}</p>
-                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${urgencyStyle[action.urgency]}`}>
-                        {urgencyLabel[action.urgency]}
-                      </span>
-                    </div>
-                    <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
-                  </div>
+        {/* ─── GATE: Signup gate (only when not authed) ─── */}
+        {!authLoading && !isUnlocked && (
+          <SignupGate
+            reportId={report.id}
+            sessionId={report.sessionId}
+            onUnlocked={() => setJustUnlocked(true)}
+          />
+        )}
+
+        {/* ─── GATED: Cost + Coordination + Actions (only when authed) ─── */}
+        {isUnlocked && (
+          <div className={justUnlocked ? "animate-[fadeIn_0.5s_ease]" : ""}>
+            {/* Cost + Coordination (2 cols on desktop) */}
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
+                <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Monthly cost estimate</p>
+                <p className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-ink mb-1">
+                  ₹{(report.monthlyCostEstimate.low / 1000).toFixed(0)}K – ₹{(report.monthlyCostEstimate.high / 1000).toFixed(0)}K
+                </p>
+                <p className="text-xs text-ink-tertiary">Per month · grows 10-15% yearly</p>
+              </div>
+              {report.siblingSplitView && (
+                <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
+                  <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Family coordination</p>
+                  <p className="text-ink-secondary text-sm leading-relaxed">{report.siblingSplitView}</p>
                 </div>
-              );
-            })}
+              )}
+            </section>
+
+            {/* Steps you can take together */}
+            <section className="mb-8">
+              <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Steps you can take together</h2>
+              <div className="space-y-3">
+                {report.priorityActions.map((action, i) => {
+                  const urgencyLabel: Record<string, string> = { high: "Start here", medium: "When you're ready", low: "Good to know" };
+                  const urgencyStyle: Record<string, string> = { high: "bg-sage text-white", medium: "bg-mustard-light text-mustard", low: "bg-sand text-ink-tertiary" };
+                  return (
+                    <div key={i} className="bg-surface border border-border-subtle rounded-[12px] p-4 md:p-5 flex items-start gap-3">
+                      <span className="w-7 h-7 rounded-full bg-sage-light text-sage font-semibold text-sm flex items-center justify-center shrink-0">
+                        {i + 1}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <p className="font-semibold text-ink text-sm md:text-base">{action.title}</p>
+                          <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${urgencyStyle[action.urgency]}`}>
+                            {urgencyLabel[action.urgency]}
+                          </span>
+                        </div>
+                        <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Go to your vault CTA */}
+            <section className="text-center">
+              <Link
+                href="/vault"
+                className="inline-flex items-center justify-center px-8 py-3.5 bg-sage text-white font-medium rounded-[10px] text-base min-h-[52px] hover:opacity-90 transition-opacity"
+              >
+                Go to your vault →
+              </Link>
+            </section>
           </div>
-        </section>
+        )}
+
+        {/* ─── Nudge for shared-link visitors ─── */}
+        {isSharedView && (
+          <section className="text-center mt-2 mb-4">
+            <p className="text-ink-secondary text-sm mb-3">
+              Curious about your own family&apos;s care readiness?
+            </p>
+            <Link
+              href="/assess"
+              className="inline-flex items-center justify-center px-6 py-3 border-2 border-sage text-sage font-medium rounded-[10px] text-sm min-h-[48px] hover:bg-sage hover:text-white transition-colors"
+            >
+              Take your 2-minute assessment →
+            </Link>
+          </section>
+        )}
       </div>
     </main>
   );
 }
 
-/* ─── Vault CTA — sign in to save ─── */
+/* ─── Signup Gate — replaces VaultCTA ─── */
 
-function VaultCTA({ reportId, sessionId }: { reportId: string; sessionId: string }) {
+function SignupGate({
+  reportId,
+  sessionId,
+  onUnlocked,
+}: {
+  reportId: string;
+  sessionId: string;
+  onUnlocked: () => void;
+}) {
   const [mode, setMode] = useState<"initial" | "email-signup" | "email-signin">("initial");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -263,9 +338,10 @@ function VaultCTA({ reportId, sessionId }: { reportId: string; sessionId: string
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
-    // Store session info before redirect
+    // Store session info + return path before redirect
     sessionStorage.setItem("vault_session_id", sessionId);
     sessionStorage.setItem("vault_report_id", reportId);
+    sessionStorage.setItem("return_to_report", reportId);
 
     const { getSupabase } = await import("@/lib/supabase-browser");
     const supabase = getSupabase();
@@ -275,6 +351,20 @@ function VaultCTA({ reportId, sessionId }: { reportId: string; sessionId: string
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
+  };
+
+  const linkSessionAndUnlock = async (accessToken: string) => {
+    await fetch("/api/link-session", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ sessionId, reportId }),
+    });
+    sessionStorage.removeItem("vault_session_id");
+    sessionStorage.removeItem("vault_report_id");
+    onUnlocked();
   };
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
@@ -293,17 +383,15 @@ function VaultCTA({ reportId, sessionId }: { reportId: string; sessionId: string
       return;
     }
 
-    // Link session and redirect
+    // Check if session was created (auto-confirm enabled)
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
-      sessionStorage.setItem("vault_session_id", sessionId);
-      sessionStorage.setItem("vault_report_id", reportId);
-      window.location.href = "/vault?setup=true";
+      await linkSessionAndUnlock(session.access_token);
     } else {
       setError("Account created. Please sign in.");
       setMode("email-signin");
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
@@ -314,7 +402,7 @@ function VaultCTA({ reportId, sessionId }: { reportId: string; sessionId: string
 
     const { getSupabase } = await import("@/lib/supabase-browser");
     const supabase = getSupabase();
-    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (authError) {
       setError(authError.message);
@@ -322,91 +410,115 @@ function VaultCTA({ reportId, sessionId }: { reportId: string; sessionId: string
       return;
     }
 
-    sessionStorage.setItem("vault_session_id", sessionId);
-    sessionStorage.setItem("vault_report_id", reportId);
-    window.location.href = "/vault?setup=true";
+    if (data.session) {
+      await linkSessionAndUnlock(data.session.access_token);
+    }
+    setLoading(false);
   };
 
-  if (mode === "initial") {
-    return (
-      <div className="space-y-3">
-        <button
-          onClick={handleGoogleSignIn}
-          className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-white border-2 border-border rounded-[10px] text-ink font-medium text-base min-h-[52px] hover:border-ink-tertiary transition-colors"
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-            <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-            <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-          </svg>
-          Continue with Google
-        </button>
-        <button
-          onClick={() => setMode("email-signup")}
-          className="w-full px-6 py-3.5 bg-sage text-white font-medium rounded-[10px] text-base min-h-[52px] hover:opacity-90 transition-opacity"
-        >
-          Sign up with email
-        </button>
-        <button
-          onClick={() => setMode("email-signin")}
-          className="text-ink-tertiary text-sm hover:text-ink transition-colors"
-        >
-          Already have an account? Sign in
-        </button>
-      </div>
-    );
-  }
-
-  const isSignUp = mode === "email-signup";
-
   return (
-    <form onSubmit={isSignUp ? handleEmailSignUp : handleEmailSignIn} className="space-y-3">
-      {error && (
-        <p className="text-terracotta text-sm bg-terracotta-light px-3 py-2 rounded-lg">{error}</p>
-      )}
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="your@email.com"
-        required
-        className="w-full px-4 py-3 bg-white border-2 border-border rounded-[10px] text-ink text-base focus:border-sage focus:outline-none min-h-[48px]"
-        autoFocus
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password (min 6 characters)"
-        required
-        minLength={6}
-        className="w-full px-4 py-3 bg-white border-2 border-border rounded-[10px] text-ink text-base focus:border-sage focus:outline-none min-h-[48px]"
-      />
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full px-6 py-3.5 bg-sage text-white font-medium rounded-[10px] text-base min-h-[52px] hover:opacity-90 transition-opacity disabled:opacity-60"
-      >
-        {loading ? "Please wait..." : isSignUp ? "Create account" : "Sign in"}
-      </button>
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => setMode(isSignUp ? "email-signin" : "email-signup")}
-          className="text-ink-tertiary text-sm hover:text-ink transition-colors"
-        >
-          {isSignUp ? "Already have an account?" : "Need an account?"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("initial")}
-          className="text-ink-tertiary text-sm hover:text-ink transition-colors ml-auto"
-        >
-          Back
-        </button>
+    <section className="bg-sand rounded-[14px] p-5 md:p-6 mb-8">
+      <p className="font-semibold text-ink text-base md:text-lg mb-1">
+        Your personalized care plan is ready
+      </p>
+      <p className="text-ink-secondary text-sm mb-4">
+        Create a free account to unlock:
+      </p>
+
+      {/* Checklist preview of gated content */}
+      <div className="space-y-2 mb-5">
+        {[
+          "Monthly cost estimate for your family",
+          "Priority action steps — personalized to your situation",
+          "Sibling coordination plan",
+        ].map((item) => (
+          <div key={item} className="flex items-start gap-2.5">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0">
+              <path d="M13.3 4.3 6.5 11.1 2.7 7.3" stroke="#7A8B6F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="text-ink text-sm">{item}</span>
+          </div>
+        ))}
       </div>
-    </form>
+
+      {mode === "initial" ? (
+        <div className="space-y-3">
+          <button
+            onClick={handleGoogleSignIn}
+            className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-white border-2 border-border rounded-[10px] text-ink font-medium text-base min-h-[52px] hover:border-ink-tertiary transition-colors"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+              <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+              <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+              <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+            </svg>
+            Continue with Google
+          </button>
+          <button
+            onClick={() => setMode("email-signup")}
+            className="w-full px-6 py-3.5 bg-sage text-white font-medium rounded-[10px] text-base min-h-[52px] hover:opacity-90 transition-opacity"
+          >
+            Sign up with email
+          </button>
+          <button
+            onClick={() => setMode("email-signin")}
+            className="text-ink-tertiary text-sm hover:text-ink transition-colors"
+          >
+            Already have an account? Sign in
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={mode === "email-signup" ? handleEmailSignUp : handleEmailSignIn} className="space-y-3">
+          {error && (
+            <p className="text-terracotta text-sm bg-terracotta-light px-3 py-2 rounded-lg">{error}</p>
+          )}
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            required
+            className="w-full px-4 py-3 bg-white border-2 border-border rounded-[10px] text-ink text-base focus:border-sage focus:outline-none min-h-[48px]"
+            autoFocus
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password (min 6 characters)"
+            required
+            minLength={6}
+            className="w-full px-4 py-3 bg-white border-2 border-border rounded-[10px] text-ink text-base focus:border-sage focus:outline-none min-h-[48px]"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full px-6 py-3.5 bg-sage text-white font-medium rounded-[10px] text-base min-h-[52px] hover:opacity-90 transition-opacity disabled:opacity-60"
+          >
+            {loading ? "Please wait..." : mode === "email-signup" ? "Create account" : "Sign in"}
+          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setMode(mode === "email-signup" ? "email-signin" : "email-signup")}
+              className="text-ink-tertiary text-sm hover:text-ink transition-colors"
+            >
+              {mode === "email-signup" ? "Already have an account?" : "Need an account?"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("initial")}
+              className="text-ink-tertiary text-sm hover:text-ink transition-colors ml-auto"
+            >
+              Back
+            </button>
+          </div>
+        </form>
+      )}
+
+      <PrivacyTrustLine className="mt-4 pt-3 border-t border-border-subtle" />
+    </section>
   );
 }
 

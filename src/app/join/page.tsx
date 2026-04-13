@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
+import { PrivacyTrustLine } from "@/lib/privacy-trust";
 import { Logo } from "@/lib/logo";
 
 export default function JoinPage() {
@@ -172,6 +173,7 @@ function JoinInner() {
                 </p>
               </div>
             )}
+            <PrivacyTrustLine className="mt-5" />
           </>
         ) : status === "claiming" ? (
           <>

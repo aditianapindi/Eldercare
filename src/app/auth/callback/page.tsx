@@ -41,6 +41,14 @@ function AuthCallbackInner() {
         return;
       }
 
+      // If user signed up from the report page, return them there
+      const returnToReport = typeof window !== "undefined" ? sessionStorage.getItem("return_to_report") : null;
+      if (returnToReport) {
+        sessionStorage.removeItem("return_to_report");
+        router.replace(`/report/${returnToReport}?setup=true`);
+        return;
+      }
+
       router.replace(defaultRedirect);
     };
 
