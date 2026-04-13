@@ -145,13 +145,13 @@ function ReportView({ report }: { report: CareReport }) {
       <div className="relative max-w-[720px] mx-auto px-6 pt-8 pb-12 md:pt-10">
 
         {/* ─── Score hero ─── */}
-        <section className="text-center mb-8 animate-[fadeIn_0.5s_ease]">
-          <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-6">
+        <section className="text-center mb-6 animate-[fadeIn_0.5s_ease]">
+          <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-4">
             {isSharedView ? "Their care readiness score" : "Your family\u2019s care readiness"}
           </p>
 
           {/* Score with leaf behind it */}
-          <div className="relative inline-block mb-5">
+          <div className="relative inline-block mb-4">
             <Image
               src="/logo-icon.png"
               alt=""
@@ -160,13 +160,13 @@ function ReportView({ report }: { report: CareReport }) {
               className="absolute inset-0 w-full h-full opacity-[0.12] scale-110"
               aria-hidden="true"
             />
-            <div className="relative w-[160px] h-[160px] md:w-[180px] md:h-[180px] rounded-full flex items-center justify-center">
+            <div className="relative w-[130px] h-[130px] md:w-[180px] md:h-[180px] rounded-full flex items-center justify-center">
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-sage-light/40 to-cream border-[3px] border-sage/30 shadow-[0_8px_32px_rgba(122,139,111,0.15)]" />
               <div className="relative">
-                <span className="font-[family-name:var(--font-display)] text-[72px] md:text-[84px] font-bold text-ink leading-none">
+                <span className="font-[family-name:var(--font-display)] text-[56px] md:text-[84px] font-bold text-ink leading-none">
                   {report.score}
                 </span>
-                <span className="text-ink-tertiary text-xl">/10</span>
+                <span className="text-ink-tertiary text-lg md:text-xl">/10</span>
               </div>
             </div>
           </div>
@@ -174,16 +174,23 @@ function ReportView({ report }: { report: CareReport }) {
           <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-light text-sage mb-2">
             {scoreLabel}
           </h1>
-          <p className="text-ink-secondary text-sm md:text-base max-w-[440px] mx-auto mb-4">
+          <p className="text-ink-secondary text-sm md:text-base max-w-[440px] mx-auto">
             {isSharedView
               ? "Someone you know checked how prepared their family is. How about yours?"
               : scoreSubtext}
           </p>
-
-          <p className="text-ink-tertiary text-sm mb-5">{report.comparativeContext}</p>
         </section>
 
-        {/* ─── Owner-only: Things worth knowing — compact ─── */}
+        {/* ─── GATE: Signup gate (only when not authed AND not shared view) ─── */}
+        {!isSharedView && !authLoading && !isUnlocked && (
+          <SignupGate
+            reportId={report.id}
+            sessionId={report.sessionId}
+            onUnlocked={() => setJustUnlocked(true)}
+          />
+        )}
+
+        {/* ─── Owner-only: Things worth knowing ─── */}
         {!isSharedView && (
           <section className="mb-6">
             <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Things worth knowing</h2>
@@ -198,16 +205,7 @@ function ReportView({ report }: { report: CareReport }) {
           </section>
         )}
 
-        {/* ─── GATE: Signup gate (only when not authed AND not shared view) ─── */}
-        {!isSharedView && !authLoading && !isUnlocked && (
-          <SignupGate
-            reportId={report.id}
-            sessionId={report.sessionId}
-            onUnlocked={() => setJustUnlocked(true)}
-          />
-        )}
-
-        {/* ─── Owner-only: What we noticed (below gate) ─── */}
+        {/* ─── Owner-only: What we noticed ─── */}
         {!isSharedView && report.personalizedInsight && (
           <section className="mb-8">
             <p className="text-ink-secondary text-sm md:text-base italic leading-relaxed">
@@ -217,22 +215,25 @@ function ReportView({ report }: { report: CareReport }) {
           </section>
         )}
 
-        {/* ─── Owner-only: Share (after content, not before gate) ─── */}
+        {/* ─── Owner-only: Share ─── */}
         {!isSharedView && (
-          <section className="mb-8 flex gap-2 justify-center">
-            <button
-              onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
-              className="px-4 py-2.5 min-h-[44px] bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
-            >
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/></svg>
-              Share
-            </button>
-            <button
-              onClick={() => navigator.clipboard?.writeText(shareUrl)}
-              className="px-4 py-2.5 min-h-[44px] border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
-            >
-              Copy link
-            </button>
+          <section className="mb-8 text-center">
+            <p className="text-ink-secondary text-sm mb-3">Know someone thinking about their parents&apos; care? See how your families compare.</p>
+            <div className="flex gap-2 justify-center">
+              <button
+                onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
+                className="px-4 py-2.5 min-h-[44px] bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
+              >
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/></svg>
+                Share
+              </button>
+              <button
+                onClick={() => navigator.clipboard?.writeText(shareUrl)}
+                className="px-4 py-2.5 min-h-[44px] border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
+              >
+                Copy link
+              </button>
+            </div>
           </section>
         )}
 
