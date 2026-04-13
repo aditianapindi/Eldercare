@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { Card, Stat, Bar, Empty, PageShell } from "@/lib/ui";
 
-const ADMIN_EMAILS = ["aditianapindi@gmail.com", "aditi@test.com"];
+const ADMIN_EMAILS = ["aditianapindi@gmail.com", "aditi@test.com", "ramyashree1227@gmail.com", "jiddu.aditya@gmail.com"];
 
 interface InsightsData {
   signups: { total: number; byDay: Record<string, number>; emails: { email: string; date: string }[] };
