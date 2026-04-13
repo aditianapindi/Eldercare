@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     hasEmergencyContact: contacts.some((c) => c.role === "emergency"),
   };
 
-  const prompt = `You are a family care advisor for Indian families. The user previously took a care assessment and now has added more details to their Family Vault. Regenerate their care report with the enriched data.
+  const prompt = `You are a family care advisor. The user previously took a care assessment and now has added more details to their Family Vault. Regenerate their care report with the enriched data.
 
 ORIGINAL ASSESSMENT DATA:
 ${JSON.stringify(assessment || {}, null, 2)}
@@ -65,11 +65,11 @@ VAULT DATA (added by the user since the assessment):
 ${JSON.stringify(vaultContext, null, 2)}
 
 IMPORTANT CONTEXT (hardcode these stats where relevant):
-- Rs 1.84 lakh crore in unclaimed financial assets across India
+- Rs 1.84 lakh crore in unclaimed financial assets
 - 53% of LIC policies lapse before the 5th year
-- 66% of civil cases in India are property disputes
-- 85% of Indian families have no registered will
-- 83% of Indian seniors have no health insurance
+- 66% of civil cases are property disputes
+- 85% of families have no registered will
+- 83% of seniors have no health insurance
 - Section 80D allows up to Rs 50,000 tax deduction for senior parent medical expenses
 
 Generate a JSON response with this EXACT structure:

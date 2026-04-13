@@ -14,7 +14,7 @@ const reassurances: Record<string, string> = {
   health: "Most families piece this together over time.",
   contacts: "You can sort this out with one phone call.",
   finances: "The hardest conversation — and the most common gap.",
-  legal: "Less than 2% of Indian families have this sorted.",
+  legal: "Less than 2% of families have this sorted.",
   coordination: "Even asking puts you ahead of most families.",
 };
 

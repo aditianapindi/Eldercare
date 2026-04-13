@@ -90,18 +90,18 @@ export async function GET(req: NextRequest) {
 /* ─── Prompt builder ─── */
 
 function buildPrompt(assessment: Record<string, unknown>): string {
-  return `You are a family care advisor for Indian families. Analyze this assessment data and generate a care report.
+  return `You are a family care advisor. Analyze this assessment data and generate a care report.
 
 ASSESSMENT DATA:
 ${JSON.stringify(assessment, null, 2)}
 
 IMPORTANT CONTEXT (hardcode these stats in your analysis where relevant):
-- Rs 1.84 lakh crore in unclaimed financial assets across India
+- Rs 1.84 lakh crore in unclaimed financial assets
 - 53% of LIC policies lapse before the 5th year
-- 66% of civil cases in India are property disputes
-- 85% of Indian families have no registered will
+- 66% of civil cases are property disputes
+- 85% of families have no registered will
 - Average parent care costs: Rs 35,000 - Rs 1,50,000/month depending on city and health needs
-- 83% of Indian seniors have no health insurance
+- 83% of seniors have no health insurance
 - 11% of health insurance claims are rejected each year
 - Section 80D allows up to Rs 50,000 tax deduction for senior parent medical expenses
 
@@ -119,7 +119,7 @@ Generate a JSON response with this EXACT structure:
     { "title": "<action title>", "description": "<2-3 sentence explanation of what to do and why>", "urgency": "high|medium|low" }
   ],
   "personalizedInsight": "<2-3 sentences connecting their specific 'what keeps you up at night' concern to concrete findings in their assessment>",
-  "comparativeContext": "<one sentence putting their score in context, e.g. 'Most Indian families score between 3-5 on this assessment'>"
+  "comparativeContext": "<one sentence putting their score in context, e.g. 'Most families score between 3-5 on this assessment'>"
 }
 
 Rules:
@@ -177,7 +177,7 @@ function generateFallbackReport(
     },
     {
       title: "Having a will matters",
-      stat: "85% of Indian families have no will. 66% of civil cases are property disputes.",
+      stat: "85% of families have no will. 66% of civil cases are property disputes.",
       description:
         "A registered will is one of the most caring things a family can sort out together. It protects everyone and prevents misunderstandings down the road.",
     },

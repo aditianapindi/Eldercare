@@ -181,40 +181,11 @@ function ReportView({ report }: { report: CareReport }) {
           </p>
 
           <p className="text-ink-tertiary text-sm mb-5">{report.comparativeContext}</p>
-
-          {/* Share buttons — only for the person who took it */}
-          {!isSharedView && (
-            <div className="flex gap-2 justify-center">
-              <button
-                onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
-                className="px-4 py-2.5 min-h-[44px] bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
-              >
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/></svg>
-                Share
-              </button>
-              <button
-                onClick={() => navigator.clipboard?.writeText(shareUrl)}
-                className="px-4 py-2.5 min-h-[44px] border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
-              >
-                Copy link
-              </button>
-            </div>
-          )}
         </section>
-
-        {/* ─── Owner-only: What we noticed ─── */}
-        {!isSharedView && report.personalizedInsight && (
-          <section className="mb-8">
-            <p className="text-ink-secondary text-sm md:text-base italic leading-relaxed">
-              <span className="font-[family-name:var(--font-display)] text-ink not-italic font-medium">What we noticed — </span>
-              {report.personalizedInsight}
-            </p>
-          </section>
-        )}
 
         {/* ─── Owner-only: Things worth knowing — compact ─── */}
         {!isSharedView && (
-          <section className="mb-8">
+          <section className="mb-6">
             <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Things worth knowing</h2>
             <div className="grid gap-2">
               {report.riskAlerts.map((alert, i) => (
@@ -234,6 +205,35 @@ function ReportView({ report }: { report: CareReport }) {
             sessionId={report.sessionId}
             onUnlocked={() => setJustUnlocked(true)}
           />
+        )}
+
+        {/* ─── Owner-only: What we noticed (below gate) ─── */}
+        {!isSharedView && report.personalizedInsight && (
+          <section className="mb-8">
+            <p className="text-ink-secondary text-sm md:text-base italic leading-relaxed">
+              <span className="font-[family-name:var(--font-display)] text-ink not-italic font-medium">What we noticed — </span>
+              {report.personalizedInsight}
+            </p>
+          </section>
+        )}
+
+        {/* ─── Owner-only: Share (after content, not before gate) ─── */}
+        {!isSharedView && (
+          <section className="mb-8 flex gap-2 justify-center">
+            <button
+              onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
+              className="px-4 py-2.5 min-h-[44px] bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
+            >
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/></svg>
+              Share
+            </button>
+            <button
+              onClick={() => navigator.clipboard?.writeText(shareUrl)}
+              className="px-4 py-2.5 min-h-[44px] border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
+            >
+              Copy link
+            </button>
+          </section>
         )}
 
         {/* ─── GATED: Cost + Coordination + Actions (owner only, authed) ─── */}
@@ -416,10 +416,10 @@ function SignupGate({
   return (
     <section className="bg-sand rounded-[14px] p-5 md:p-6 mb-8">
       <p className="font-semibold text-ink text-base md:text-lg mb-1">
-        Your personalized care plan is ready
+        We&apos;ve mapped out what to do about this
       </p>
       <p className="text-ink-secondary text-sm mb-4">
-        Create a free account to unlock:
+        Create a free account to see your plan:
       </p>
 
       {/* Checklist preview of gated content */}
@@ -535,9 +535,9 @@ function generateClientReport(assessment: Record<string, unknown>, id: string): 
     monthlyCostEstimate: { low: 35000, high: 85000 },
     siblingSplitView: null,
     riskAlerts: [
-      { title: "Unclaimed assets", stat: "₹1.84 lakh crore unclaimed across India", description: "Without a record of your parents' financial accounts, some assets could become difficult to access over time. This is especially common with old FDs and dormant savings accounts." },
+      { title: "Unclaimed assets", stat: "₹1.84 lakh crore in assets go unclaimed", description: "Without a record of your parents' financial accounts, some assets could become difficult to access over time. This is especially common with old FDs and dormant savings accounts." },
       { title: "Insurance renewals", stat: "53% of LIC policies lapse before maturity", description: "If nobody is tracking premium due dates, years of paid premiums could be lost. Setting up a simple reminder system can prevent this." },
-      { title: "Having a will matters", stat: "85% of Indian families have no will", description: "A registered will is one of the most loving things a family can sort out together. Without one, property decisions can take years to resolve." },
+      { title: "Having a will matters", stat: "85% of families have no will", description: "A registered will is one of the most loving things a family can sort out together. Without one, property decisions can take years to resolve." },
     ],
     priorityActions: [
       { title: "Start the conversation", description: "Find a calm moment to ask your parents about their accounts, policies, and documents. You don't need exact amounts — just knowing what exists and where is a huge first step.", urgency: "high" },

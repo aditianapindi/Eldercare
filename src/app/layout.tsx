@@ -27,14 +27,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Inaya — How prepared is your family?",
     description:
-      "Most Indian families can't answer 5 basic questions about their parents' care. Take the free assessment.",
+      "Most families can't answer 5 basic questions about their parents' care. Take the free assessment.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Inaya — How prepared is your family?",
     description:
-      "Most Indian families can't answer 5 basic questions about their parents' care. Take the free assessment.",
+      "Most families can't answer 5 basic questions about their parents' care. Take the free assessment.",
   },
 };
 

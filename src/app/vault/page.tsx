@@ -196,7 +196,7 @@ function VaultDashboard() {
               href={`/report/${report.id}`}
               className="px-3 py-2 min-h-[36px] bg-sage text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity"
             >
-              Report
+              View report
             </a>
             <button
               onClick={handleRegenerate}
@@ -977,7 +977,7 @@ function SafetyCard({ hasUpcoming }: { hasUpcoming: boolean }) {
           <h3 className="font-semibold text-ink text-sm md:text-base">Family safety</h3>
         </div>
         <p className="text-ink-secondary text-xs md:text-[13px] leading-snug mb-3">
-          ₹22,495 Cr lost to scams in India in 2025. The 5 scams targeting Indian parents
+          ₹22,495 Cr lost to scams in 2025. The 5 scams targeting parents
           right now — and how to stop them.
         </p>
         <span className="inline-flex items-center gap-1 text-mustard text-xs md:text-sm font-medium group-hover:gap-1.5 transition-all">

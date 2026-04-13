@@ -82,8 +82,8 @@ export default function Home() {
             <p className="text-ink-tertiary text-sm uppercase tracking-wide mb-5">Why this matters</p>
             <div className="flex flex-row lg:flex-col gap-4 overflow-x-auto lg:overflow-visible">
               <StatCard number="6–12" label="institutions hold a typical parent's finances — with no single view" />
-              <StatCard number="75%" label="of Indian seniors manage at least one chronic condition" />
-              <StatCard number="83%" label="of Indian seniors have no health insurance" />
+              <StatCard number="75%" label="of seniors manage at least one chronic condition" />
+              <StatCard number="83%" label="of seniors have no health insurance" />
             </div>
             <p className="mt-4 text-xs text-ink-tertiary">
               Sources: RBI, LASI Wave 1, Outlook Money
