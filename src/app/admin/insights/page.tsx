@@ -10,6 +10,7 @@ interface InsightsData {
   signups: { total: number; byDay: Record<string, number>; emails: { email: string; date: string }[] };
   assessments: {
     total: number;
+    unique: number;
     byDay: Record<string, number>;
     bySource: Record<string, number>;
     avgScore: number;
@@ -17,6 +18,7 @@ interface InsightsData {
   };
   pageViews: {
     total: number;
+    uniqueVisitors: number;
     byPage: Record<string, number>;
     byDay: Record<string, number>;
     bySource: Record<string, number>;
@@ -152,9 +154,15 @@ export default function InsightsPage() {
       {/* Top-line stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Card title="Signups"><Stat label="Total users" value={data.signups.total} /></Card>
-        <Card title="Assessments"><Stat label="Total" value={data.assessments.total} /></Card>
+        <Card title="Assessments">
+          <Stat label="Total" value={data.assessments.total} />
+          <Stat label="Unique people" value={data.assessments.unique} />
+        </Card>
         <Card title="Avg Score"><Stat label="Diagnostic" value={data.assessments.avgScore} /></Card>
-        <Card title="Page Views"><Stat label="Total" value={data.pageViews.total} /></Card>
+        <Card title="Page Views">
+          <Stat label="Total" value={data.pageViews.total} />
+          <Stat label="Unique visitors" value={data.pageViews.uniqueVisitors} />
+        </Card>
       </div>
 
       {/* User emails */}

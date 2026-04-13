@@ -122,11 +122,12 @@ export async function GET(req: NextRequest) {
   const reportViewSessions = new Set(
     pageViews.filter((pv) => pv.page?.startsWith("/report")).map((pv) => pv.session_id)
   ).size;
+  const uniqueAssessors = new Set(assessments.map((a) => a.session_id)).size;
 
   const funnel = {
     pageVisits: uniquePageSessions,
     assessStarts: assessLandingSessions,
-    assessCompletes: assessments.length,
+    assessCompletes: uniqueAssessors,
     reportViews: reportViewSessions,
     signups: users.length,
     vaultActions:
@@ -184,6 +185,7 @@ export async function GET(req: NextRequest) {
     },
     assessments: {
       total: assessments.length,
+      unique: uniqueAssessors,
       byDay: assessmentsByDay,
       bySource: assessmentsBySource,
       avgScore: assessments.length ? Math.round(totalScore / assessments.length) : 0,
@@ -191,6 +193,7 @@ export async function GET(req: NextRequest) {
     },
     pageViews: {
       total: pageViews.length,
+      uniqueVisitors: uniquePageSessions,
       byPage: viewsByPage,
       byDay: viewsByDay,
       bySource: viewsBySource,

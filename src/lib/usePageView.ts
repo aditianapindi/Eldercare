@@ -5,10 +5,10 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 function getSessionId(): string {
   const key = "pv_sid";
-  let sid = sessionStorage.getItem(key);
+  let sid = localStorage.getItem(key);
   if (!sid) {
     sid = crypto.randomUUID();
-    sessionStorage.setItem(key, sid);
+    localStorage.setItem(key, sid);
   }
   return sid;
 }
