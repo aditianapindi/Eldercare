@@ -194,25 +194,25 @@ function VaultDashboard() {
           <div className="flex items-center gap-1.5 shrink-0">
             <a
               href={`/report/${report.id}`}
-              className="px-3 py-2 min-h-[36px] bg-sage text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity"
+              className="px-3 py-2 min-h-[36px] bg-sage text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity flex items-center"
             >
               View report
             </a>
             <button
               onClick={handleRegenerate}
               disabled={regenerating}
-              className="p-2 min-h-[36px] text-sage hover:bg-sage-light rounded-full transition-colors disabled:opacity-50"
-              title="Update report with vault data"
+              className="px-3 py-2 min-h-[36px] text-sage text-xs font-medium border border-sage/30 rounded-full hover:bg-sage-light transition-colors disabled:opacity-50 flex items-center gap-1"
             >
               {regenerating ? (
-                <div className="w-4 h-4 rounded-full border-2 border-sage border-t-transparent animate-spin" />
+                <div className="w-3.5 h-3.5 rounded-full border-2 border-sage border-t-transparent animate-spin" />
               ) : (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="shrink-0">
                   <path d="M2 8C2 4.68629 4.68629 2 8 2C10.2822 2 12.2542 3.32458 13.2 5.25M14 8C14 11.3137 11.3137 14 8 14C5.71776 14 3.74584 12.6754 2.8 10.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                   <path d="M13 2.5V5.5H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M3 13.5V10.5H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               )}
+              {regenerating ? "Updating..." : "Update"}
             </button>
           </div>
         </div>

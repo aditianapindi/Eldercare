@@ -10,6 +10,13 @@ export function FeedbackWidget() {
   const [comment, setComment] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [dismissed, setDismissed] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  // Delay appearance by 30s
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 30000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Hide on admin/auth pages
   const hidden = pathname.startsWith("/admin") || pathname.startsWith("/auth");
@@ -27,7 +34,7 @@ export function FeedbackWidget() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  if (hidden || dismissed) return null;
+  if (hidden || dismissed || !visible) return null;
 
   // Thank-you state after submit
   if (status === "done") {
@@ -51,14 +58,14 @@ export function FeedbackWidget() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className={`fixed ${bottomPos} right-6 z-50 inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-ink text-cream text-sm font-medium rounded-full shadow-lg hover:opacity-90 transition-opacity`}
+        className={`fixed ${bottomPos} right-6 z-50 inline-flex items-center justify-center gap-2 w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2.5 min-h-[44px] bg-ink text-cream text-sm font-medium rounded-full shadow-lg hover:opacity-90 transition-opacity`}
         aria-label="Send feedback"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
           <path d="M2 2.5h12A1.5 1.5 0 0 1 15.5 4v6a1.5 1.5 0 0 1-1.5 1.5H5L2 14V4A1.5 1.5 0 0 1 3.5 2.5H2z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
           <path d="M5 6h6M5 8.5h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
         </svg>
-        Feedback
+        <span className="hidden md:inline">Feedback</span>
       </button>
     );
   }
