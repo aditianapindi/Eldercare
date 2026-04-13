@@ -95,6 +95,7 @@ function ReportView({ report }: { report: CareReport }) {
   const { user, loading: authLoading, authFetch } = useAuth();
   const isUnlocked = !!user;
   const [justUnlocked, setJustUnlocked] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Detect shared view: visitor didn't take this assessment themselves
   const [isSharedView, setIsSharedView] = useState(false);
@@ -228,10 +229,14 @@ function ReportView({ report }: { report: CareReport }) {
                 Share
               </button>
               <button
-                onClick={() => navigator.clipboard?.writeText(shareUrl)}
+                onClick={() => {
+                  navigator.clipboard?.writeText(shareUrl);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
                 className="px-4 py-2.5 min-h-[44px] border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
               >
-                Copy link
+                {copied ? "Copied!" : "Copy link"}
               </button>
             </div>
           </section>
