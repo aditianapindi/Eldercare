@@ -499,6 +499,53 @@ function StreakBanner({
         ))}
       </div>
 
+      {/* Past weeks — compact 4-week heatmap */}
+      {(() => {
+        // Build 4 previous weeks (not including current week)
+        const pastWeeks: { label: string; days: { date: string; checked: boolean }[] }[] = [];
+        for (let w = 1; w <= 4; w++) {
+          const weekStart = new Date(monday);
+          weekStart.setDate(monday.getDate() - w * 7);
+          const days: { date: string; checked: boolean }[] = [];
+          for (let d = 0; d < 7; d++) {
+            const day = new Date(weekStart);
+            day.setDate(weekStart.getDate() + d);
+            const ds = localDate(day);
+            days.push({ date: ds, checked: allDates.includes(ds) });
+          }
+          const checkedCount = days.filter((d) => d.checked).length;
+          if (checkedCount === 0 && w > 1) continue; // skip empty old weeks
+          const startLabel = weekStart.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+          pastWeeks.push({ label: startLabel, days });
+        }
+        if (pastWeeks.length === 0) return null;
+        return (
+          <div className="mb-2.5">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-[10px] text-ink-tertiary font-medium">Previous weeks</span>
+            </div>
+            <div className="space-y-1">
+              {pastWeeks.map((week) => (
+                <div key={week.label} className="flex items-center gap-1.5">
+                  <span className="text-[9px] text-ink-tertiary w-[42px] shrink-0">{week.label}</span>
+                  <div className="flex gap-[3px]">
+                    {week.days.map((d, i) => (
+                      <div
+                        key={i}
+                        className={`w-3.5 h-3.5 rounded-sm ${
+                          d.checked ? "bg-sage/70" : "bg-border-subtle/60"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[9px] text-ink-tertiary ml-1">{week.days.filter((d) => d.checked).length}/7</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Check-in buttons per parent */}
       <div className="flex flex-wrap gap-2">
         {parents.map((parent) => {

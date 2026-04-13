@@ -12,7 +12,7 @@ export function FeedbackWidget() {
   const [dismissed, setDismissed] = useState(false);
 
   // Hide on vault pages (authed product) and admin
-  const hidden = pathname.startsWith("/vault") || pathname.startsWith("/admin") || pathname.startsWith("/auth");
+  const hidden = pathname.startsWith("/admin") || pathname.startsWith("/auth");
 
   // Reset when navigating to a new page
   useEffect(() => {
@@ -125,26 +125,23 @@ export function FeedbackWidget() {
           </div>
         </div>
 
-        {/* Comment — appears after score selection */}
-        {score !== null && (
-          <div className="mt-3 animate-[fadeIn_0.2s_ease]">
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder={score >= 7 ? "What do you like most?" : "What could we do better?"}
-              rows={3}
-              className="w-full px-3 py-2.5 bg-white border border-border rounded-[10px] text-ink text-sm resize-none focus:border-sage focus:outline-none placeholder:text-ink-tertiary/60"
-              autoFocus
-            />
-            <button
-              onClick={handleSubmit}
-              disabled={status === "sending"}
-              className="w-full mt-2 px-4 py-2.5 bg-sage text-white font-medium rounded-[10px] text-sm min-h-[40px] hover:opacity-90 transition-opacity disabled:opacity-60"
-            >
-              {status === "sending" ? "Sending..." : "Send feedback"}
-            </button>
-          </div>
-        )}
+        {/* Comment + submit */}
+        <div className="mt-3">
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="What's on your mind? Any feedback helps."
+            rows={3}
+            className="w-full px-3 py-2.5 bg-white border border-border rounded-[10px] text-ink text-sm resize-none focus:border-sage focus:outline-none placeholder:text-ink-tertiary/60"
+          />
+          <button
+            onClick={handleSubmit}
+            disabled={score === null || status === "sending"}
+            className="w-full mt-2 px-4 py-2.5 bg-sage text-white font-medium rounded-[10px] text-sm min-h-[40px] hover:opacity-90 transition-opacity disabled:opacity-60"
+          >
+            {status === "sending" ? "Sending..." : "Send feedback"}
+          </button>
+        </div>
       </div>
     </div>
   );
