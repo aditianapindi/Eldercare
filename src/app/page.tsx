@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/lib/logo";
 import { Watermark } from "@/lib/watermark";
 import { AuthHeaderLink } from "@/lib/auth-widgets";
+import { TrackedGitHubLink } from "@/lib/tracked-github-link";
 
 export default function Home() {
   return (
@@ -21,20 +22,7 @@ export default function Home() {
         {/* Header — auth-aware sign-in / back-to-vault affordance */}
         <header className="mb-12 flex items-center justify-between gap-4">
           <Logo />
-          <div className="flex items-center gap-3 md:gap-4">
-            <a
-              href="https://github.com/orangeaka/fraud-guard"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 min-h-[44px] text-sm font-medium text-ink border border-border rounded-full hover:border-ink-tertiary transition-colors"
-            >
-              <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-              </svg>
-              Star on GitHub
-            </a>
-            <AuthHeaderLink />
-          </div>
+          <AuthHeaderLink />
         </header>
 
         {/* Hero + Stats — side by side on desktop */}
@@ -59,28 +47,34 @@ export default function Home() {
               <span className="text-ink-tertiary text-base">Free · 2 minutes · No login</span>
             </div>
 
-            {/* Safety card — visual signpost */}
-            <Link href="/safety" className="block mt-10 max-w-[540px] group">
-              <div className="bg-sage-light/50 border border-sage/15 rounded-[14px] p-5 flex items-start gap-4 hover:border-sage/30 transition-colors">
-                <div className="shrink-0 w-10 h-10 rounded-full bg-sage/10 flex items-center justify-center mt-0.5">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-sage">
+            {/* Saaya — companion app card */}
+            <div className="mt-10 max-w-[540px] bg-surface border border-border-subtle rounded-[14px] p-5 md:p-6">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="shrink-0 w-10 h-10 rounded-full bg-terracotta-light flex items-center justify-center mt-0.5">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-terracotta">
                     <path d="M10 2L16 5V10C16 13.5 13 16.5 10 18C7 16.5 4 13.5 4 10V5L10 2Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.12" strokeLinejoin="round" />
                     <path d="M7.5 10L9 11.5L12.5 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-ink font-medium text-[15px] md:text-base mb-1">
-                    5 scams targeting Indian parents right now
+                  <p className="text-ink font-medium text-base md:text-lg mb-1">
+                    Saaya — scam call protection
                   </p>
                   <p className="text-ink-secondary text-sm leading-relaxed">
-                    A short guide — plus Saaya, a companion app for the parent&apos;s phone that catches them in real time.
+                    An open-source Android companion that catches scam calls the moment a banking app opens. On-device only. No cloud.
                   </p>
-                  <span className="inline-block mt-2 text-sage text-sm font-medium group-hover:underline">
-                    Read the safety guide →
-                  </span>
                 </div>
               </div>
-            </Link>
+              <div className="flex items-center gap-3 flex-wrap">
+                <TrackedGitHubLink />
+                <Link
+                  href="/fraudguard"
+                  className="text-ink-tertiary text-sm hover:text-ink transition-colors"
+                >
+                  Learn more →
+                </Link>
+              </div>
+            </div>
           </section>
 
           {/* Stats — stacked cards on the right on desktop */}

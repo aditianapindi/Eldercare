@@ -41,6 +41,16 @@ interface InsightsData {
     documents: number;
     assets: number;
   };
+  github: {
+    total: number;
+    bySource: Record<string, number>;
+  };
+  feedback: {
+    total: number;
+    avgScore: number;
+    byDay: Record<string, number>;
+    comments: { score: number; comment: string; page: string; date: string }[];
+  };
 }
 
 function DayTable({ data }: { data: Record<string, number> }) {
@@ -213,6 +223,47 @@ export default function InsightsPage() {
           <Stat label="Assets" value={data.vault.assets} />
         </div>
       </Card>
+
+      {/* GitHub clicks */}
+      <Card title={`GitHub Clicks (${data.github.total})`}>
+        {data.github.total === 0 ? (
+          <Empty />
+        ) : (
+          <SourceBars data={data.github.bySource} color="sage" />
+        )}
+      </Card>
+
+      {/* Feedback */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Card title="Feedback">
+          <div className="space-y-2">
+            <Stat label="Total responses" value={data.feedback.total} />
+            <Stat label="Avg NPS score" value={data.feedback.avgScore} />
+          </div>
+        </Card>
+        <Card title="Feedback / Day"><DayTable data={data.feedback.byDay} /></Card>
+      </div>
+
+      {data.feedback.comments.length > 0 && (
+        <Card title={`Feedback Comments (${data.feedback.comments.length})`}>
+          <div className="space-y-3 max-h-64 overflow-y-auto">
+            {data.feedback.comments.map((c, i) => (
+              <div key={i} className="border-b border-border-subtle pb-2 last:border-0 last:pb-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${
+                    c.score >= 9 ? "bg-sage-light text-sage" :
+                    c.score >= 7 ? "bg-mustard-light text-mustard" :
+                    "bg-terracotta-light text-terracotta"
+                  }`}>{c.score}</span>
+                  <span className="text-ink-tertiary text-xs">{c.page}</span>
+                  <span className="text-ink-tertiary text-xs ml-auto">{c.date}</span>
+                </div>
+                <p className="text-ink text-sm">{c.comment}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* Waitlist */}
       <Card title="Waitlist">

@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
     contactsRes,
     documentsRes,
     assetsRes,
+    feedbackRes,
   ] = await Promise.all([
     supabaseAdmin.auth.admin.listUsers({ perPage: 1000 }),
     supabaseAdmin.from("assessments").select("id, session_id, diagnostic_score, source, care_worries, user_id, created_at"),
@@ -43,6 +44,7 @@ export async function GET(req: NextRequest) {
     supabaseAdmin.from("family_contacts").select("id"),
     supabaseAdmin.from("documents").select("id"),
     supabaseAdmin.from("assets").select("id"),
+    supabaseAdmin.from("feedback").select("id, score, comment, page, user_id, created_at"),
   ]);
 
   const users = usersRes.data?.users ?? [];
@@ -53,6 +55,7 @@ export async function GET(req: NextRequest) {
   const abhaWaitlist = abhaWaitlistRes.data ?? [];
   const checkins = checkinsRes.data ?? [];
   const shares = sharesRes.data ?? [];
+  const feedbackItems = feedbackRes.data ?? [];
 
   // --- Signups by day ---
   const signupsByDay: Record<string, number> = {};
@@ -135,6 +138,32 @@ export async function GET(req: NextRequest) {
       (assetsRes.data?.length ?? 0),
   };
 
+  // --- GitHub clicks ---
+  const githubClicks = pageViews.filter((pv) => pv.page === "click:github");
+  const githubBySource: Record<string, number> = {};
+  for (const c of githubClicks) {
+    const src = c.source || "unknown";
+    githubBySource[src] = (githubBySource[src] || 0) + 1;
+  }
+
+  // --- Feedback ---
+  const feedbackByDay: Record<string, number> = {};
+  let feedbackTotalScore = 0;
+  const feedbackComments: { score: number; comment: string; page: string; date: string }[] = [];
+  for (const f of feedbackItems) {
+    const day = f.created_at?.slice(0, 10) ?? "unknown";
+    feedbackByDay[day] = (feedbackByDay[day] || 0) + 1;
+    feedbackTotalScore += f.score ?? 0;
+    if (f.comment) {
+      feedbackComments.push({
+        score: f.score,
+        comment: f.comment,
+        page: f.page,
+        date: day,
+      });
+    }
+  }
+
   // --- Vault ---
   const vault = {
     doctors: doctorsRes.data?.length ?? 0,
@@ -172,6 +201,16 @@ export async function GET(req: NextRequest) {
     waitlist: { waitlist: waitlist.length, abha: abhaWaitlist.length },
     funnel,
     vault,
+    github: {
+      total: githubClicks.length,
+      bySource: githubBySource,
+    },
+    feedback: {
+      total: feedbackItems.length,
+      avgScore: feedbackItems.length ? +(feedbackTotalScore / feedbackItems.length).toFixed(1) : 0,
+      byDay: feedbackByDay,
+      comments: feedbackComments.sort((a, b) => b.date.localeCompare(a.date)),
+    },
   });
   } catch (e) {
     console.error("Insights API error:", e);

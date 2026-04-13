@@ -144,10 +144,10 @@ function ReportView({ report }: { report: CareReport }) {
       {/* Centered content column */}
       <div className="relative max-w-[720px] mx-auto px-6 pt-8 pb-12 md:pt-10">
 
-        {/* ─── PUBLIC: Score hero ─── */}
+        {/* ─── Score hero ─── */}
         <section className="text-center mb-8 animate-[fadeIn_0.5s_ease]">
           <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-6">
-            Your family&apos;s care readiness
+            {isSharedView ? "Their care readiness score" : "Your family\u2019s care readiness"}
           </p>
 
           {/* Score with leaf behind it */}
@@ -175,42 +175,35 @@ function ReportView({ report }: { report: CareReport }) {
             {scoreLabel}
           </h1>
           <p className="text-ink-secondary text-sm md:text-base max-w-[440px] mx-auto mb-4">
-            {scoreSubtext}
+            {isSharedView
+              ? "Someone you know checked how prepared their family is. How about yours?"
+              : scoreSubtext}
           </p>
-
-          {/* Blind spot pills */}
-          {report.blindSpotCount > 0 && (
-            <div className="flex flex-wrap justify-center gap-1.5 mb-4">
-              {report.blindSpotAreas.map((area) => (
-                <span key={area} className="px-3 py-1 bg-sage-light/60 rounded-full text-xs text-sage font-medium border border-sage/10">
-                  {area}
-                </span>
-              ))}
-            </div>
-          )}
 
           <p className="text-ink-tertiary text-xs mb-5">{report.comparativeContext}</p>
 
-          {/* Share buttons */}
-          <div className="flex gap-2 justify-center">
-            <button
-              onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
-              className="px-4 py-2.5 min-h-[44px] bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
-            >
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/></svg>
-              Share
-            </button>
-            <button
-              onClick={() => navigator.clipboard?.writeText(shareUrl)}
-              className="px-4 py-2.5 min-h-[44px] border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
-            >
-              Copy link
-            </button>
-          </div>
+          {/* Share buttons — only for the person who took it */}
+          {!isSharedView && (
+            <div className="flex gap-2 justify-center">
+              <button
+                onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n\n" + shareUrl)}`, "_blank")}
+                className="px-4 py-2.5 min-h-[44px] bg-surface border border-border text-ink text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors flex items-center gap-1.5"
+              >
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10c0 1.5.4 2.9 1.1 4.2L1.5 18.5l4.4-1.1c1.2.7 2.6 1.1 4.1 1.1 4.7 0 8.5-3.8 8.5-8.5S14.7 1.5 10 1.5z" fill="#25D366"/></svg>
+                Share
+              </button>
+              <button
+                onClick={() => navigator.clipboard?.writeText(shareUrl)}
+                className="px-4 py-2.5 min-h-[44px] border border-border text-ink-tertiary text-sm font-medium rounded-full hover:border-ink-tertiary transition-colors"
+              >
+                Copy link
+              </button>
+            </div>
+          )}
         </section>
 
-        {/* ─── PUBLIC: What we noticed ─── */}
-        {report.personalizedInsight && (
+        {/* ─── Owner-only: What we noticed ─── */}
+        {!isSharedView && report.personalizedInsight && (
           <section className="mb-8">
             <p className="text-ink-secondary text-sm md:text-base italic leading-relaxed">
               <span className="font-[family-name:var(--font-display)] text-ink not-italic font-medium">What we noticed — </span>
@@ -219,22 +212,23 @@ function ReportView({ report }: { report: CareReport }) {
           </section>
         )}
 
-        {/* ─── PUBLIC: Things worth knowing ─── */}
-        <section className="mb-8">
-          <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Things worth knowing</h2>
-          <div className="bg-surface border border-border-subtle rounded-[14px] divide-y divide-border-subtle">
-            {report.riskAlerts.map((alert, i) => (
-              <div key={i} className="p-5">
-                <p className="font-semibold text-ink text-sm md:text-base mb-0.5">{alert.title}</p>
-                <p className="text-mustard text-xs md:text-sm font-medium mb-1.5">{alert.stat}</p>
-                <p className="text-ink-secondary text-sm leading-relaxed">{alert.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* ─── Owner-only: Things worth knowing — compact ─── */}
+        {!isSharedView && (
+          <section className="mb-8">
+            <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Things worth knowing</h2>
+            <div className="grid gap-2">
+              {report.riskAlerts.map((alert, i) => (
+                <div key={i} className="bg-surface border border-border-subtle rounded-[10px] px-4 py-3 flex items-baseline gap-2 flex-wrap">
+                  <p className="font-semibold text-ink text-sm">{alert.title}</p>
+                  <p className="text-mustard text-xs font-medium">{alert.stat}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
-        {/* ─── GATE: Signup gate (only when not authed) ─── */}
-        {!authLoading && !isUnlocked && (
+        {/* ─── GATE: Signup gate (only when not authed AND not shared view) ─── */}
+        {!isSharedView && !authLoading && !isUnlocked && (
           <SignupGate
             reportId={report.id}
             sessionId={report.sessionId}
@@ -242,8 +236,8 @@ function ReportView({ report }: { report: CareReport }) {
           />
         )}
 
-        {/* ─── GATED: Cost + Coordination + Actions (only when authed) ─── */}
-        {isUnlocked && (
+        {/* ─── GATED: Cost + Coordination + Actions (owner only, authed) ─── */}
+        {!isSharedView && isUnlocked && (
           <div className={justUnlocked ? "animate-[fadeIn_0.5s_ease]" : ""}>
             {/* Cost + Coordination (2 cols on desktop) */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -301,18 +295,16 @@ function ReportView({ report }: { report: CareReport }) {
           </div>
         )}
 
-        {/* ─── Nudge for shared-link visitors ─── */}
+        {/* ─── Shared view: primary CTA to take assessment ─── */}
         {isSharedView && (
           <section className="text-center mt-2 mb-4">
-            <p className="text-ink-secondary text-sm mb-3">
-              Curious about your own family&apos;s care readiness?
-            </p>
             <Link
               href="/assess"
-              className="inline-flex items-center justify-center px-6 py-3 border-2 border-sage text-sage font-medium rounded-[10px] text-sm min-h-[48px] hover:bg-sage hover:text-white transition-colors"
+              className="inline-flex items-center justify-center px-8 py-4 bg-sage text-white text-lg font-medium rounded-[10px] hover:opacity-90 transition-opacity min-h-[52px]"
             >
-              Take your 2-minute assessment →
+              Take your care assessment →
             </Link>
+            <p className="text-ink-tertiary text-sm mt-3">Free · 2 minutes · No login</p>
           </section>
         )}
       </div>
