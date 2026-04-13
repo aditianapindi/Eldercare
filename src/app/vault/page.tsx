@@ -109,16 +109,25 @@ function VaultDashboard() {
     if (res.ok) setParents((prev) => prev.filter((p) => p.id !== id));
   };
 
+  const [regenStatus, setRegenStatus] = useState<string | null>(null);
   const handleRegenerate = async () => {
     setRegenerating(true);
+    setRegenStatus(null);
     try {
       const res = await authFetch("/api/vault/report/regenerate", { method: "POST" });
       if (res.ok) {
         const updated = await res.json();
         setReport(updated);
+        setRegenStatus("Report updated!");
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setRegenStatus(`Failed: ${err.error || res.status}`);
       }
+    } catch (e) {
+      setRegenStatus(`Error: ${e}`);
     } finally {
       setRegenerating(false);
+      setTimeout(() => setRegenStatus(null), 4000);
     }
   };
 
@@ -211,6 +220,10 @@ function VaultDashboard() {
           </svg>
           <p className="text-sage text-sm font-medium">Take the care assessment — 2 min</p>
         </a>
+      )}
+
+      {regenStatus && (
+        <p className={`text-sm mb-3 ${regenStatus.startsWith("Report") ? "text-sage" : "text-terracotta"}`}>{regenStatus}</p>
       )}
 
       {/* 2b. Focus this week */}
