@@ -19,7 +19,20 @@ export default function ReportPage() {
 
   useEffect(() => {
     async function loadReport() {
-      // Try sessionStorage first (most reliable — survives HMR and server restarts)
+      // Try server API first (has latest data after regeneration)
+      try {
+        const res = await fetch(`/api/generate-report?id=${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setReport(data.report);
+          setLoading(false);
+          return;
+        }
+      } catch {
+        // Fall through to sessionStorage
+      }
+
+      // Fallback: sessionStorage (for fresh assessments not yet saved)
       if (typeof window !== "undefined") {
         try {
           const storedReport = sessionStorage.getItem(`report-${id}`);
@@ -36,23 +49,9 @@ export default function ReportPage() {
             return;
           }
         } catch {
-          // Corrupt sessionStorage — fall through to server API
           sessionStorage.removeItem(`report-${id}`);
           sessionStorage.removeItem(`assessment-${id}`);
         }
-      }
-
-      // Fallback: try server API
-      try {
-        const res = await fetch(`/api/generate-report?id=${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setReport(data.report);
-          setLoading(false);
-          return;
-        }
-      } catch {
-        // Fall through to error
       }
 
       setError("Report not found. It may have expired — try taking the assessment again.");
