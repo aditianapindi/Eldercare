@@ -91,6 +91,13 @@ export default function Home() {
           </section>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="relative text-center py-6 text-xs text-ink-tertiary">
+        <Link href="/privacy" className="hover:text-ink transition-colors underline underline-offset-2">
+          Privacy
+        </Link>
+      </footer>
     </main>
   );
 }

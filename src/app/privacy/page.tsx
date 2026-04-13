@@ -37,7 +37,7 @@ export default function PrivacyPage() {
 
             <Section title="How we store it">
               <ul className="list-disc list-outside ml-5 space-y-1.5 text-ink-secondary text-sm leading-relaxed">
-                <li>All data is stored on <strong className="text-ink font-medium">Supabase servers in Mumbai, India</strong>. Your data does not leave the country.</li>
+                <li>All data is stored on <strong className="text-ink font-medium">encrypted Supabase servers (Mumbai region)</strong>. Your data never leaves your control.</li>
                 <li>Encrypted in transit (TLS) and at rest (AES-256)</li>
                 <li>Row-level security (RLS) enforced at the database level — only you and family members you&apos;ve explicitly invited can access your vault</li>
                 <li>We don&apos;t have a &quot;view all users&apos; data&quot; admin panel. The database enforces access rules, not our app code.</li>
@@ -68,7 +68,7 @@ export default function PrivacyPage() {
                 We use a small number of services to run Inaya. Here&apos;s exactly what they are and what they can see:
               </p>
               <ul className="list-disc list-outside ml-5 space-y-1.5 text-ink-secondary text-sm leading-relaxed">
-                <li><strong className="text-ink font-medium">Supabase</strong> (Mumbai, India) — database and authentication. Stores your vault data with row-level security.</li>
+                <li><strong className="text-ink font-medium">Supabase</strong> (Mumbai region) — database and authentication. Stores your vault data with row-level security.</li>
                 <li><strong className="text-ink font-medium">Google OAuth</strong> — if you sign in with Google, Google knows you have an Inaya account. They don&apos;t see any vault data.</li>
                 <li><strong className="text-ink font-medium">Vercel</strong> — hosts the website. Sees web requests but not your stored data.</li>
               </ul>

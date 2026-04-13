@@ -8,7 +8,7 @@ export function PrivacyTrustLine({ className = "" }: { className?: string }) {
         <path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
       </svg>
       <span>
-        Data stays in India. Never sold.{" "}
+        Your data never leaves your control. Never sold.{" "}
         <Link href="/privacy" className="text-sage underline underline-offset-2 decoration-sage/40 hover:decoration-sage">
           Delete anytime.
         </Link>
