@@ -186,36 +186,20 @@ function VaultDashboard() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-ink text-sm font-medium">Care Score: {report.score}/10</p>
-            <p className="text-ink-tertiary text-xs truncate">
-              {report.priorityActions?.length > 0 && `${report.priorityActions.length} action items`}
-              {report.blindSpotCount > 0 && ` · ${report.blindSpotCount} areas to explore`}
-            </p>
           </div>
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0">
             <a
               href={`/report/${report.id}`}
-              className="w-9 h-9 bg-sage text-white rounded-full hover:opacity-90 transition-opacity inline-flex items-center justify-center"
-              title="View report"
+              className="px-3 h-[36px] bg-sage text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity inline-flex items-center justify-center"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M2 3h12M2 6.5h8M2 10h10M2 13.5h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
+              View report
             </a>
             <button
               onClick={handleRegenerate}
               disabled={regenerating}
-              className="w-9 h-9 text-sage border border-sage/30 rounded-full hover:bg-sage-light transition-colors disabled:opacity-50 inline-flex items-center justify-center"
-              title="Update report with vault data"
+              className="px-3 h-[36px] text-sage text-xs font-medium border border-sage/30 rounded-full hover:bg-sage-light transition-colors disabled:opacity-50 inline-flex items-center justify-center"
             >
-              {regenerating ? (
-                <div className="w-4 h-4 rounded-full border-2 border-sage border-t-transparent animate-spin" />
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M2 8C2 4.68629 4.68629 2 8 2C10.2822 2 12.2542 3.32458 13.2 5.25M14 8C14 11.3137 11.3137 14 8 14C5.71776 14 3.74584 12.6754 2.8 10.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M13 2.5V5.5H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M3 13.5V10.5H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
+              {regenerating ? "Updating..." : "Update"}
             </button>
           </div>
         </div>
