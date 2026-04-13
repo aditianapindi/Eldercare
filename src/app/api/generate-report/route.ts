@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { supabase } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -74,7 +75,8 @@ export async function GET(req: NextRequest) {
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  const { data, error } = await supabase
+  const adminClient = getSupabaseAdmin();
+  const { data, error } = await adminClient
     .from("reports")
     .select("report_data")
     .eq("id", id)
