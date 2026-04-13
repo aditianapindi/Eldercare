@@ -525,26 +525,17 @@ function GatedContent({ report, justUnlocked }: { report: CareReport; justUnlock
       <section className="mb-8">
         <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Steps you can take together</h2>
         <div className="space-y-3">
-          {report.priorityActions.map((action, i) => {
-            const urgencyLabel: Record<string, string> = { high: "Start here", medium: "When you're ready", low: "Good to know" };
-            const urgencyStyle: Record<string, string> = { high: "bg-sage text-white", medium: "bg-mustard-light text-mustard", low: "bg-sand text-ink-tertiary" };
-            return (
-              <div key={i} className="bg-surface border border-border-subtle rounded-[12px] p-4 md:p-5 flex items-start gap-3">
-                <span className="w-7 h-7 rounded-full bg-sage-light text-sage font-semibold text-sm flex items-center justify-center shrink-0">
-                  {i + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <p className="font-semibold text-ink text-sm md:text-base">{action.title}</p>
-                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${urgencyStyle[action.urgency]}`}>
-                      {urgencyLabel[action.urgency]}
-                    </span>
-                  </div>
-                  <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
-                </div>
+          {report.priorityActions.map((action, i) => (
+            <div key={i} className="bg-surface border border-border-subtle rounded-[12px] p-4 md:p-5 flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full bg-sage-light text-sage font-semibold text-sm flex items-center justify-center shrink-0">
+                {i + 1}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-ink text-sm md:text-base mb-1">{action.title}</p>
+                <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </section>
 
