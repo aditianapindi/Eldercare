@@ -226,24 +226,9 @@ function VaultDashboard() {
         </a>
       )}
 
-      {/* 2b. Suggested next steps from report */}
+      {/* 2b. Focus this week */}
       {report?.priorityActions?.length > 0 && (
-        <div className="mb-5">
-          <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Suggested next steps</p>
-          <div className="space-y-2">
-            {report.priorityActions.slice(0, 2).map((action: { title: string; description: string; urgency: string }, i: number) => (
-              <div key={i} className="bg-surface border border-border-subtle rounded-[10px] px-4 py-3 flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-sage-light text-sage font-semibold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
-                  {i + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-ink text-sm">{action.title}</p>
-                  <p className="text-ink-tertiary text-xs leading-snug mt-0.5 line-clamp-2">{action.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <WeeklyFocus actions={report.priorityActions} reportId={report.id} />
       )}
 
       {/* 3. Parent cards — 2-col on desktop */}
@@ -381,6 +366,69 @@ function VaultDashboard() {
 
       {/* Share vault modal */}
       {showShareModal && <ShareModal onClose={() => setShowShareModal(false)} />}
+    </div>
+  );
+}
+
+/* ─── Weekly focus ─── */
+
+function WeeklyFocus({ actions, reportId }: { actions: { title: string; description: string; urgency: string }[]; reportId: string }) {
+  const storageKey = `focus_done_${reportId}`;
+  const [completedIds, setCompletedIds] = useState<number[]>([]);
+  const [justCompleted, setJustCompleted] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) setCompletedIds(JSON.parse(stored));
+    } catch { /* ignore */ }
+  }, [storageKey]);
+
+  const remaining = actions.map((a, i) => ({ ...a, idx: i })).filter((a) => !completedIds.includes(a.idx));
+
+  if (remaining.length === 0) {
+    return (
+      <div className="mb-5 bg-sage-light/50 border border-sage/20 rounded-[12px] px-4 py-3 text-center">
+        <p className="text-sage text-sm font-medium">All steps completed — you&apos;re ahead of most families.</p>
+      </div>
+    );
+  }
+
+  // Pick based on week number, cycling through remaining
+  const weekNum = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+  const current = remaining[weekNum % remaining.length];
+
+  const handleDone = () => {
+    const updated = [...completedIds, current.idx];
+    setCompletedIds(updated);
+    localStorage.setItem(storageKey, JSON.stringify(updated));
+    setJustCompleted(true);
+    setTimeout(() => setJustCompleted(false), 2000);
+  };
+
+  return (
+    <div className="mb-5">
+      <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Your focus this week</p>
+      <div className="bg-surface border border-border-subtle rounded-[12px] p-4">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 rounded-full bg-sage text-white font-semibold text-sm flex items-center justify-center shrink-0 mt-0.5">
+            {current.idx + 1}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-ink text-sm md:text-base mb-1">{current.title}</p>
+            <p className="text-ink-secondary text-sm leading-relaxed">{current.description}</p>
+            <button
+              onClick={handleDone}
+              className="mt-3 px-4 py-2 min-h-[36px] text-sm font-medium rounded-full transition-colors bg-sage-light text-sage hover:bg-sage hover:text-white"
+            >
+              {justCompleted ? "Nice work!" : "Done"}
+            </button>
+            {remaining.length > 1 && (
+              <p className="text-ink-tertiary text-[11px] mt-2">{remaining.length - 1} more step{remaining.length - 1 > 1 ? "s" : ""} after this</p>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
