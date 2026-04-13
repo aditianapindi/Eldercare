@@ -80,7 +80,7 @@ export default function Home() {
           {/* Stats — stacked cards on the right on desktop */}
           <section className="mt-16 lg:mt-0 lg:w-[340px] xl:w-[380px] shrink-0">
             <p className="text-ink-tertiary text-sm uppercase tracking-wide mb-5">Why this matters</p>
-            <div className="flex flex-row lg:flex-col gap-4 overflow-x-auto lg:overflow-visible">
+            <div className="flex flex-col gap-4">
               <StatCard number="6–12" label="institutions hold a typical parent's finances — with no single view" />
               <StatCard number="75%" label="of seniors manage at least one chronic condition" />
               <StatCard number="83%" label="of seniors have no health insurance" />
