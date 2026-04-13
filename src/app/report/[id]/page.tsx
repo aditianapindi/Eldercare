@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { CareReport } from "@/lib/types";
@@ -242,63 +242,9 @@ function ReportView({ report }: { report: CareReport }) {
           </section>
         )}
 
-        {/* ─── GATED: Cost + Coordination + Actions (owner only, authed) ─── */}
+        {/* ─── GATED: Cost + Insights + Actions (owner only, authed) ─── */}
         {!isSharedView && isUnlocked && (
-          <div className={justUnlocked ? "animate-[fadeIn_0.5s_ease]" : ""}>
-            {/* Cost + Coordination (2 cols on desktop) */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-              <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
-                <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Monthly cost estimate</p>
-                <p className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-ink mb-1">
-                  ₹{(report.monthlyCostEstimate.low / 1000).toFixed(0)}K – ₹{(report.monthlyCostEstimate.high / 1000).toFixed(0)}K
-                </p>
-                <p className="text-xs text-ink-tertiary">Per month · grows 10-15% yearly</p>
-              </div>
-              {report.siblingSplitView && (
-                <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
-                  <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Family coordination</p>
-                  <p className="text-ink-secondary text-sm leading-relaxed">{report.siblingSplitView}</p>
-                </div>
-              )}
-            </section>
-
-            {/* Steps you can take together */}
-            <section className="mb-8">
-              <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Steps you can take together</h2>
-              <div className="space-y-3">
-                {report.priorityActions.map((action, i) => {
-                  const urgencyLabel: Record<string, string> = { high: "Start here", medium: "When you're ready", low: "Good to know" };
-                  const urgencyStyle: Record<string, string> = { high: "bg-sage text-white", medium: "bg-mustard-light text-mustard", low: "bg-sand text-ink-tertiary" };
-                  return (
-                    <div key={i} className="bg-surface border border-border-subtle rounded-[12px] p-4 md:p-5 flex items-start gap-3">
-                      <span className="w-7 h-7 rounded-full bg-sage-light text-sage font-semibold text-sm flex items-center justify-center shrink-0">
-                        {i + 1}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <p className="font-semibold text-ink text-sm md:text-base">{action.title}</p>
-                          <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${urgencyStyle[action.urgency]}`}>
-                            {urgencyLabel[action.urgency]}
-                          </span>
-                        </div>
-                        <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-
-            {/* Go to your vault CTA */}
-            <section className="text-center">
-              <Link
-                href="/vault"
-                className="inline-flex items-center justify-center px-8 py-3.5 bg-sage text-white font-medium rounded-[10px] text-base min-h-[52px] hover:opacity-90 transition-opacity"
-              >
-                Go to your vault →
-              </Link>
-            </section>
-          </div>
+          <GatedContent report={report} justUnlocked={justUnlocked} />
         )}
 
         {/* ─── Shared view: primary CTA to take assessment ─── */}
@@ -525,6 +471,109 @@ function SignupGate({
   );
 }
 
+/* ─── Gated content — shows after signup, auto-redirects to vault ─── */
+
+function GatedContent({ report, justUnlocked }: { report: CareReport; justUnlocked: boolean }) {
+  const [countdown, setCountdown] = useState(justUnlocked ? 5 : null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown <= 0) {
+      router.push("/vault");
+      return;
+    }
+    const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown, router]);
+
+  return (
+    <div className={justUnlocked ? "animate-[fadeIn_0.5s_ease]" : ""}>
+      {/* Deep insights */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        {report.careTimeline && (
+          <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
+            <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Your care timeline</p>
+            <p className="text-ink-secondary text-sm leading-relaxed">{report.careTimeline}</p>
+          </div>
+        )}
+        {report.biggestExposure && (
+          <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
+            <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Your biggest financial risk</p>
+            <p className="text-ink-secondary text-sm leading-relaxed">{report.biggestExposure}</p>
+          </div>
+        )}
+      </section>
+
+      {/* Cost + Coordination */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
+          <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Monthly cost estimate</p>
+          <p className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-bold text-ink mb-1">
+            ₹{(report.monthlyCostEstimate.low / 1000).toFixed(0)}K – ₹{(report.monthlyCostEstimate.high / 1000).toFixed(0)}K
+          </p>
+          <p className="text-xs text-ink-tertiary">Per month · grows 10-15% yearly</p>
+        </div>
+        {report.siblingSplitView && (
+          <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
+            <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Family coordination</p>
+            <p className="text-ink-secondary text-sm leading-relaxed">{report.siblingSplitView}</p>
+          </div>
+        )}
+      </section>
+
+      {/* Steps you can take together */}
+      <section className="mb-8">
+        <h2 className="text-base md:text-lg font-semibold text-ink mb-3">Steps you can take together</h2>
+        <div className="space-y-3">
+          {report.priorityActions.map((action, i) => {
+            const urgencyLabel: Record<string, string> = { high: "Start here", medium: "When you're ready", low: "Good to know" };
+            const urgencyStyle: Record<string, string> = { high: "bg-sage text-white", medium: "bg-mustard-light text-mustard", low: "bg-sand text-ink-tertiary" };
+            return (
+              <div key={i} className="bg-surface border border-border-subtle rounded-[12px] p-4 md:p-5 flex items-start gap-3">
+                <span className="w-7 h-7 rounded-full bg-sage-light text-sage font-semibold text-sm flex items-center justify-center shrink-0">
+                  {i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <p className="font-semibold text-ink text-sm md:text-base">{action.title}</p>
+                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${urgencyStyle[action.urgency]}`}>
+                      {urgencyLabel[action.urgency]}
+                    </span>
+                  </div>
+                  <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Auto-redirect or manual CTA */}
+      <section className="text-center">
+        {countdown !== null && countdown > 0 ? (
+          <div>
+            <p className="text-ink-secondary text-sm mb-3">Taking you to your vault in {countdown}s...</p>
+            <Link
+              href="/vault"
+              className="inline-flex items-center justify-center px-8 py-3.5 bg-sage text-white font-medium rounded-[10px] text-base min-h-[52px] hover:opacity-90 transition-opacity"
+            >
+              Go now →
+            </Link>
+          </div>
+        ) : (
+          <Link
+            href="/vault"
+            className="inline-flex items-center justify-center px-8 py-3.5 bg-sage text-white font-medium rounded-[10px] text-base min-h-[52px] hover:opacity-90 transition-opacity"
+          >
+            Go to your vault →
+          </Link>
+        )}
+      </section>
+    </div>
+  );
+}
+
 /* ─── Client-side fallback report generator ─── */
 
 function generateClientReport(assessment: Record<string, unknown>, id: string): CareReport {
@@ -551,6 +600,8 @@ function generateClientReport(assessment: Record<string, unknown>, id: string): 
       { title: "Map out the costs together", description: "Sit down with your family and list monthly expenses — known and estimated. Having a shared picture, even a rough one, reduces anxiety for everyone.", urgency: "medium" },
     ],
     personalizedInsight: "By taking this assessment, you've already done what most families put off. The areas above aren't things to worry about — they're things you can work through together, one at a time.",
+    careTimeline: `Based on your parents' situation, care needs typically increase over the next 3-5 years. Starting to organize finances, health records, and legal documents now gives your family a meaningful head start.`,
+    biggestExposure: `Your biggest financial risk is likely an uninsured hospital stay or lapsed insurance policy. An average hospitalization costs ₹2-5 lakh without coverage. Confirming your parents' insurance status is the single highest-impact step you can take.`,
     comparativeContext: `Most families score between 3 and 5. ${diagnosticScore <= 3 ? "You're at the start of an important journey." : "You've got a foundation to build on."}`,
     createdAt: new Date().toISOString(),
   };

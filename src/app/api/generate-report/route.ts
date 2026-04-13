@@ -119,6 +119,8 @@ Generate a JSON response with this EXACT structure:
     { "title": "<action title>", "description": "<2-3 sentence explanation of what to do and why>", "urgency": "high|medium|low" }
   ],
   "personalizedInsight": "<2-3 sentences connecting their specific 'what keeps you up at night' concern to concrete findings in their assessment>",
+  "careTimeline": "<2-3 sentences projecting what the next 3-5 years likely look like based on parents' ages, conditions, and city. Be specific — reference their ages and conditions. Frame as 'starting now gives you a head start' not doom.>",
+  "biggestExposure": "<2-3 sentences identifying their single biggest financial risk based on their blind spots, insurance gaps, and conditions. Reference a specific rupee amount or stat. End with what they can do about it.>",
   "comparativeContext": "<one sentence putting their score in context, e.g. 'Most families score between 3-5 on this assessment'>"
 }
 
@@ -231,6 +233,12 @@ function generateFallbackReport(
       (assessment.concern as Record<string, string>)?.openText
         ? `You mentioned "${(assessment.concern as Record<string, string>).openText.slice(0, 100)}..." — this is something many families share, and it shows how much you care. The steps below are designed to help with exactly this kind of concern.`
         : "By taking this assessment, you've already done what most families put off. The areas above aren't things to worry about — they're things you can work through together, one at a time.",
+    careTimeline: `Based on your parents' ages${conditions.length > 0 && !conditions.includes("none") ? ` and ${conditions.length} health condition${conditions.length > 1 ? "s" : ""}` : ""}, care needs typically increase over the next 3-5 years. Organizing finances, health records, and legal documents now gives your family a meaningful head start — most families wish they'd started sooner.`,
+    biggestExposure: unknownSpots.some((bs) => bs.id === "health-insurance")
+      ? `Your biggest financial risk is an uninsured hospital stay. Without confirmed health coverage, an average hospitalization in ${parentCity} costs ₹2-5 lakh out of pocket. Confirming your parents' insurance status is the single highest-impact step you can take this week.`
+      : unknownSpots.some((bs) => bs.id === "will")
+        ? `Without a registered will, property decisions can take 5-10 years to resolve in court. With ${unknownSpots.length} financial blind spots, getting a will in place protects your family from the most expensive outcome.`
+        : `With ${unknownSpots.length} areas where you're not sure what exists, there's a real chance some assets or policies go untracked. The first conversation about what exists and where can close most of these gaps in a single sitting.`,
     comparativeContext: `Most families score between 3 and 5 on this assessment. ${fullScore <= 3 ? "You're at the beginning of an important journey — and you've already taken the hardest step by starting." : fullScore <= 6 ? "You've got a solid foundation. A few focused conversations can make a big difference." : "Your family is further along than most. The remaining steps are smaller but still meaningful."}`,
     createdAt: new Date().toISOString(),
   };

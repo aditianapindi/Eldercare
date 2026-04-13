@@ -108,6 +108,8 @@ export interface CareReport {
   riskAlerts: { title: string; stat: string; description: string }[];
   priorityActions: { title: string; description: string; urgency: "high" | "medium" | "low" }[];
   personalizedInsight: string;
+  careTimeline: string;
+  biggestExposure: string;
   comparativeContext: string;
   createdAt: string;
 }

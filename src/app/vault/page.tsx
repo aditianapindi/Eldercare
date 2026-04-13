@@ -226,6 +226,26 @@ function VaultDashboard() {
         </a>
       )}
 
+      {/* 2b. Suggested next steps from report */}
+      {report?.priorityActions?.length > 0 && (
+        <div className="mb-5">
+          <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Suggested next steps</p>
+          <div className="space-y-2">
+            {report.priorityActions.slice(0, 2).map((action: { title: string; description: string; urgency: string }, i: number) => (
+              <div key={i} className="bg-surface border border-border-subtle rounded-[10px] px-4 py-3 flex items-start gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-sage-light text-sage font-semibold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                  {i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-ink text-sm">{action.title}</p>
+                  <p className="text-ink-tertiary text-xs leading-snug mt-0.5 line-clamp-2">{action.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 3. Parent cards — 2-col on desktop */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {parents.map((parent) => {
