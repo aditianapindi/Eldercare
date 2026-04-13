@@ -52,3 +52,18 @@ When something breaks unexpectedly, record the pattern here so it doesn't happen
 **What:** Added a "Safety" tab to the vault sidebar that links to the public `/safety` page. Flagged a minor UX wrinkle ("signed-in user clicking logo on /safety returns them to / not /vault") but missed the larger issue: the ENTIRE `/safety` page is auth-blind. Both CTAs ("Start your free vault" + sticky "Get started") funnel a signed-in user into `/assess?source=safety` — which starts a brand-new anonymous assessment session, telling an existing user to "start a free vault" they already have. User walked it and reported: *"the flow seems wrong — when clicking on safety from the vault, it goes back to the safety page where it is asking to take the assessment again — this is broken."*
 **Pattern:** Public lead-magnet pages that are ALSO reachable from inside the authenticated surface MUST be auth-aware. The moment you make a page reachable from both anonymous LinkedIn traffic AND a tab in the authenticated vault, you have two distinct audiences and the CTAs need to branch on `useAuth()`. This is the same mistake as writing an "upgrade to pro" banner that shows to pro users — audience-aware copy has to follow audience-aware reachability.
 **Fix (pending at time of writing):** Extract the auth-dependent bits of `/safety` and `/fraudguard` into client subcomponents that call `useAuth()`. Anonymous path: current "Start your free vault → /assess" CTAs. Authenticated path: "Back to my vault → /vault" CTA. Also applies to the header logo link, the sticky bar, and any "get started" affordance. Flagged separately in the backlog as a real bug + tracked as the fix blocking tonight's walk-through.
+
+## 2026-04-13 (session 16) — sessionStorage caching served stale report data
+**What:** Report page loaded from sessionStorage first, which had old report data without new `careTimeline`/`biggestExposure` fields. Even after regenerating via vault, report page showed stale version.
+**Pattern:** Any time you add new fields to a cached object, the cache layer will serve the old shape. Browser caching (sessionStorage, localStorage) must be invalidated or deprioritized when a server-side source of truth exists.
+**Fix:** Reversed load order — server API first, sessionStorage fallback only for fresh assessments not yet in DB.
+
+## 2026-04-13 (session 16) — Anon Supabase client blocked by RLS on user-owned reports
+**What:** Report GET endpoint used anon `supabase` client. After user signed up and report got linked to their `user_id`, RLS blocked anon reads. Server fetch returned 404 silently, fell back to stale sessionStorage.
+**Pattern:** When an anonymous resource gets claimed by a user, public read endpoints need admin client or a permissive RLS policy for reading.
+**Fix:** Switched GET endpoint to `getSupabaseAdmin()`.
+
+## 2026-04-13 (session 16) — Frontend truncation of LLM output strips personalization
+**What:** Used `firstSentence()` on frontend to truncate verbose Gemini output. Stripped parent ages, conditions, city, ₹ amounts — the exact personalization that makes insights valuable.
+**Pattern:** Never truncate LLM output on the rendering layer. Post-process server-side before saving to DB. The stored data should already be the right length.
+**Fix:** Moved to server-side `twoSentences()` post-processing before DB save.
