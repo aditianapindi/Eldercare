@@ -180,7 +180,7 @@ function ReportView({ report }: { report: CareReport }) {
               : scoreSubtext}
           </p>
 
-          <p className="text-ink-tertiary text-xs mb-5">{report.comparativeContext}</p>
+          <p className="text-ink-tertiary text-sm mb-5">{report.comparativeContext}</p>
 
           {/* Share buttons — only for the person who took it */}
           {!isSharedView && (
@@ -305,6 +305,11 @@ function ReportView({ report }: { report: CareReport }) {
               Take your care assessment →
             </Link>
             <p className="text-ink-tertiary text-sm mt-3">Free · 2 minutes · No login</p>
+            <p className="mt-4">
+              <Link href="/join" className="text-ink-tertiary text-sm hover:text-ink transition-colors underline underline-offset-2">
+                Already have an account? Sign in
+              </Link>
+            </p>
           </section>
         )}
       </div>
