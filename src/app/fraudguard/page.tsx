@@ -28,36 +28,6 @@ const RESPONSES = [
   },
 ];
 
-const SETUP_STEPS = [
-  {
-    title: "Grant runtime permissions",
-    detail: "Phone, call log, contacts, SMS, notifications. The app walks you through each one.",
-  },
-  {
-    title: "Enable Usage Access",
-    detail: "Settings → Special app access → Usage access → Saaya. This lets it see which app is open during a call.",
-  },
-  {
-    title: "Enable Overlay permission",
-    detail: "Settings → Special app access → Display over other apps → Saaya. Needed for the warning screen.",
-  },
-  {
-    title: "Disable battery restrictions",
-    detail: "Varies by phone maker — Xiaomi, Samsung and Oppo each have extra steps. See the repo for OEM guides.",
-  },
-  {
-    title: "Enable Notification Access",
-    detail: "Settings → Special app access → Notification access → Saaya. Needed for WhatsApp call detection.",
-  },
-  {
-    title: "Enter your phone number as the guardian",
-    detail: "This is the number that receives the SMS alert when a scam pattern is detected.",
-  },
-  {
-    title: "Tap Start Protection",
-    detail: "The app runs quietly in the background from here. There's nothing else to do.",
-  },
-];
 
 export default function SaayaPage() {
   return (
@@ -172,66 +142,24 @@ export default function SaayaPage() {
           </div>
         </section>
 
-        {/* How to get it — honest about dev-beta state */}
+        {/* Get the app + setup — combined compact */}
         <section className="max-w-[760px] mb-16 md:mb-24">
           <div className="bg-mustard-light/40 border border-mustard/20 rounded-[16px] p-6 md:p-8">
             <p className="text-mustard text-xs font-bold uppercase tracking-wide mb-2">
-              Developer beta
+              Developer beta · Open source
             </p>
             <h2 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-light text-ink leading-tight mb-3">
-              Getting the app.
+              Get Saaya.
             </h2>
-            <p className="text-ink-secondary text-base md:text-lg leading-relaxed mb-5">
-              Saaya is open source and currently in developer beta. The source
-              and build instructions are on GitHub. A signed APK release for
-              non-technical users is on the way.
+            <p className="text-ink-secondary text-base leading-relaxed mb-2">
+              Build from source on GitHub. Signed APK for non-technical users coming soon.
             </p>
-            <a
-              href="https://github.com/orangeaka/fraud-guard"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-6 py-3 bg-ink text-cream text-base font-medium rounded-[10px] hover:opacity-90 transition-opacity min-h-[48px]"
-            >
-              View the source on GitHub →
-            </a>
+            <p className="text-ink-tertiary text-sm mb-5">
+              Setup takes 5 minutes — grant permissions, enter your number, tap Start.
+              Requires Android 8.0+.
+            </p>
+            <TrackedGitHubLink />
           </div>
-        </section>
-
-        {/* Setup steps — extracted from README first-time setup */}
-        <section className="max-w-[760px] mb-16 md:mb-24">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-light text-ink leading-tight mb-2">
-            First-time setup.
-          </h2>
-          <p className="text-ink-secondary text-base md:text-lg leading-relaxed mb-6">
-            After you install, the app walks you through each of these. It takes
-            about 5 minutes.
-          </p>
-
-          <div className="bg-surface border border-border-subtle rounded-[16px] divide-y divide-border-subtle overflow-hidden">
-            {SETUP_STEPS.map((step, idx) => (
-              <div
-                key={step.title}
-                className="flex gap-4 p-5 md:p-6"
-              >
-                <span className="shrink-0 w-7 h-7 rounded-full bg-sage-light text-sage flex items-center justify-center font-semibold text-xs font-[family-name:var(--font-display)] mt-0.5">
-                  {idx + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-ink text-base md:text-[17px] mb-1">
-                    {step.title}
-                  </p>
-                  <p className="text-ink-secondary text-[15px] md:text-base leading-relaxed">
-                    {step.detail}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p className="mt-4 text-ink-tertiary text-xs md:text-sm">
-            Requires Android 8.0 (API 26) or later. Physical device only — emulators
-            don&apos;t support phone call state.
-          </p>
         </section>
 
         {/* Back to safety guide */}
