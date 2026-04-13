@@ -5,6 +5,13 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
+/** Keep only the first sentence of a string */
+function oneSentence(s: string | undefined): string {
+  if (!s) return "";
+  const m = s.match(/^[^.!?]*[.!?]/);
+  return m ? m[0].trim() : s.trim();
+}
+
 export async function POST(req: NextRequest) {
   const assessment = await req.json();
   const reportId = assessment.sessionId?.slice(0, 8) || crypto.randomUUID().slice(0, 8);
@@ -41,6 +48,15 @@ export async function POST(req: NextRequest) {
       if (!jsonMatch) throw new Error("Failed to parse Gemini response");
 
       const reportData = JSON.parse(jsonMatch[0]);
+      // Enforce concise insights regardless of Gemini verbosity
+      if (reportData.careTimeline) reportData.careTimeline = oneSentence(reportData.careTimeline);
+      if (reportData.biggestExposure) reportData.biggestExposure = oneSentence(reportData.biggestExposure);
+      if (reportData.priorityActions) {
+        reportData.priorityActions = reportData.priorityActions.map((a: { title: string; description: string; urgency: string }) => ({
+          ...a,
+          description: oneSentence(a.description),
+        }));
+      }
       report = {
         id: reportId,
         sessionId: assessment.sessionId,

@@ -470,13 +470,6 @@ function SignupGate({
   );
 }
 
-/* ─── Helpers ─── */
-
-function firstSentence(text: string): string {
-  const match = text.match(/^[^.!?]*[.!?]/);
-  return match ? match[0] : text;
-}
-
 /* ─── Gated content — shows after signup, auto-redirects to vault ─── */
 
 function GatedContent({ report, justUnlocked }: { report: CareReport; justUnlocked: boolean }) {
@@ -500,13 +493,13 @@ function GatedContent({ report, justUnlocked }: { report: CareReport; justUnlock
         {report.careTimeline && (
           <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
             <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Your care timeline</p>
-            <p className="text-ink-secondary text-sm leading-relaxed">{firstSentence(report.careTimeline)}</p>
+            <p className="text-ink-secondary text-sm leading-relaxed">{report.careTimeline}</p>
           </div>
         )}
         {report.biggestExposure && (
           <div className="bg-surface border border-border-subtle rounded-[12px] p-5">
             <p className="text-xs text-ink-tertiary uppercase tracking-wide mb-2">Your biggest financial risk</p>
-            <p className="text-ink-secondary text-sm leading-relaxed">{firstSentence(report.biggestExposure)}</p>
+            <p className="text-ink-secondary text-sm leading-relaxed">{report.biggestExposure}</p>
           </div>
         )}
       </section>
@@ -547,7 +540,7 @@ function GatedContent({ report, justUnlocked }: { report: CareReport; justUnlock
                       {urgencyLabel[action.urgency]}
                     </span>
                   </div>
-                  <p className="text-ink-secondary text-sm leading-relaxed line-clamp-2">{action.description}</p>
+                  <p className="text-ink-secondary text-sm leading-relaxed">{action.description}</p>
                 </div>
               </div>
             );

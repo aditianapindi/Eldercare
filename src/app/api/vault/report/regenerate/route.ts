@@ -4,6 +4,12 @@ import { getAuthUser, getVaultOwnerId } from "@/lib/supabase-server";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
+function oneSentence(s: string | undefined): string {
+  if (!s) return "";
+  const m = s.match(/^[^.!?]*[.!?]/);
+  return m ? m[0].trim() : s.trim();
+}
+
 export async function POST(req: NextRequest) {
   const auth = await getAuthUser(req);
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -110,6 +116,14 @@ Return ONLY the JSON, no markdown.`;
     if (!jsonMatch) throw new Error("Failed to parse Gemini response");
 
     const reportData = JSON.parse(jsonMatch[0]);
+    if (reportData.careTimeline) reportData.careTimeline = oneSentence(reportData.careTimeline);
+    if (reportData.biggestExposure) reportData.biggestExposure = oneSentence(reportData.biggestExposure);
+    if (reportData.priorityActions) {
+      reportData.priorityActions = reportData.priorityActions.map((a: { title: string; description: string; urgency: string }) => ({
+        ...a,
+        description: oneSentence(a.description),
+      }));
+    }
     const updatedReport = {
       ...reportData,
       id: existingReport.id,
