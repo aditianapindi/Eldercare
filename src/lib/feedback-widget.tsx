@@ -11,8 +11,10 @@ export function FeedbackWidget() {
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [dismissed, setDismissed] = useState(false);
 
-  // Hide on vault pages (authed product) and admin
+  // Hide on admin/auth pages
   const hidden = pathname.startsWith("/admin") || pathname.startsWith("/auth");
+  const isVault = pathname.startsWith("/vault");
+  const bottomPos = isVault ? "bottom-[calc(1.5rem+72px)]" : "bottom-6";
 
   // Reset when navigating to a new page
   useEffect(() => {
@@ -30,7 +32,7 @@ export function FeedbackWidget() {
   // Thank-you state after submit
   if (status === "done") {
     return (
-      <div className="fixed bottom-6 right-6 z-50 bg-surface border border-border-subtle rounded-[16px] shadow-lg p-5 w-[320px] animate-[fadeIn_0.2s_ease]">
+      <div className={`fixed ${bottomPos} right-6 z-50 bg-surface border border-border-subtle rounded-[16px] shadow-lg p-5 w-[320px] animate-[fadeIn_0.2s_ease]`}>
         <div className="text-center">
           <div className="w-10 h-10 rounded-full bg-sage-light flex items-center justify-center mx-auto mb-3">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -49,7 +51,7 @@ export function FeedbackWidget() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-ink text-cream text-sm font-medium rounded-full shadow-lg hover:opacity-90 transition-opacity"
+        className={`fixed ${bottomPos} right-6 z-50 inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-ink text-cream text-sm font-medium rounded-full shadow-lg hover:opacity-90 transition-opacity`}
         aria-label="Send feedback"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
@@ -82,7 +84,7 @@ export function FeedbackWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 bg-surface border border-border-subtle rounded-[16px] shadow-lg w-[320px] animate-[fadeIn_0.2s_ease]">
+    <div className={`fixed ${bottomPos} right-6 z-50 bg-surface border border-border-subtle rounded-[16px] shadow-lg w-[320px] animate-[fadeIn_0.2s_ease]`}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-4 pb-2">
         <p className="text-ink font-medium text-sm">How likely are you to recommend Inaya?</p>

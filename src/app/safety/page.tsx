@@ -1,6 +1,7 @@
 import { Watermark } from "@/lib/watermark";
 import { AuthHeaderLink, LogoWithAuthLink } from "@/lib/auth-widgets";
 import { SafetyHeroCTAs, SafetyStickyBar } from "./safety-client";
+import { TrackedGitHubLink } from "@/lib/tracked-github-link";
 
 export const metadata = {
   title: "Family Safety — Protect your parents from scams | Inaya",
@@ -165,14 +166,7 @@ export default function SafetyPage() {
                 Open source. Signed APK on the way.
               </p>
             </div>
-            <a
-              href="https://github.com/orangeaka/fraud-guard"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 px-4 py-2 bg-ink text-cream text-sm font-medium rounded-[8px] hover:opacity-90 transition-opacity min-h-[40px] flex items-center"
-            >
-              GitHub →
-            </a>
+            <TrackedGitHubLink className="shrink-0 !bg-ink !text-cream !border-0 !rounded-[8px] !min-h-[40px]" />
           </div>
 
           {/* Setup — inline 3 steps */}

@@ -85,11 +85,11 @@ export default function PrivacyPage() {
 
             <Section title="How to delete your data">
               <p className="text-ink-secondary text-sm leading-relaxed">
-                You own your data. If you want everything deleted, email us at{" "}
-                <a href="mailto:hello@inaya.info" className="text-sage underline underline-offset-2 decoration-sage/40 hover:decoration-sage">
-                  hello@inaya.info
-                </a>{" "}
-                and we&apos;ll wipe your account and all associated data within 48 hours. No questions, no retention period, no &quot;we&apos;ll keep it for 30 days just in case.&quot;
+                You own your data. If you want everything deleted, tap the{" "}
+                <strong className="text-ink font-medium">Feedback</strong> button
+                on any page and tell us — we&apos;ll wipe your account and all
+                associated data within 48 hours. No questions, no retention
+                period, no &quot;we&apos;ll keep it for 30 days just in case.&quot;
               </p>
             </Section>
 
