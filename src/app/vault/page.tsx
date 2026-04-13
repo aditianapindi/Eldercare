@@ -194,7 +194,7 @@ function VaultDashboard() {
           <div className="flex items-center gap-1.5 shrink-0">
             <a
               href={`/report/${report.id}`}
-              className="px-3 py-2 min-h-[36px] bg-sage text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity flex items-center"
+              className="px-3 h-[36px] bg-sage text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity inline-flex items-center justify-center"
             >
               View report
             </a>
