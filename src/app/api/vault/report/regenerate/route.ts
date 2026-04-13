@@ -82,8 +82,8 @@ Generate a JSON response with this EXACT structure:
   "riskAlerts": [{ "title": "<short>", "stat": "<stat>", "description": "<2-3 sentences>" }],
   "priorityActions": [{ "title": "<action>", "description": "<2-3 sentences>", "urgency": "high|medium|low" }],
   "personalizedInsight": "<2-3 sentences>",
-  "careTimeline": "<2-3 sentences projecting what the next 3-5 years likely look like based on parents' ages, conditions, and vault data. Be specific — reference their ages and conditions. Frame as 'starting now gives you a head start' not doom.>",
-  "biggestExposure": "<2-3 sentences identifying their single biggest financial risk based on blind spots, insurance gaps, and conditions. Reference a specific rupee amount or stat. End with what they can do about it.>",
+  "careTimeline": "<ONE sentence max. Format: '[Specific change] typically happens by [age/timeframe]. Starting now gives you [X] years.' Reference their parents' ages and conditions.>",
+  "biggestExposure": "<ONE sentence max. Format: '[Specific risk] could cost ₹[amount]. [One action to fix it].' Be concrete, not generic.>",
   "comparativeContext": "<one sentence>"
 }
 

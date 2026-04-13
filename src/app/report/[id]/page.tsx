@@ -599,8 +599,8 @@ function generateClientReport(assessment: Record<string, unknown>, id: string): 
       { title: "Map out the costs together", description: "Sit down with your family and list monthly expenses — known and estimated. Having a shared picture, even a rough one, reduces anxiety for everyone.", urgency: "medium" },
     ],
     personalizedInsight: "By taking this assessment, you've already done what most families put off. The areas above aren't things to worry about — they're things you can work through together, one at a time.",
-    careTimeline: `Based on your parents' situation, care needs typically increase over the next 3-5 years. Starting to organize finances, health records, and legal documents now gives your family a meaningful head start.`,
-    biggestExposure: `Your biggest financial risk is likely an uninsured hospital stay or lapsed insurance policy. An average hospitalization costs ₹2-5 lakh without coverage. Confirming your parents' insurance status is the single highest-impact step you can take.`,
+    careTimeline: `Care needs typically increase in the next 3-5 years. Starting now gives your family a real head start.`,
+    biggestExposure: `An uninsured hospital stay averages ₹2-5 lakh. Confirm your parents' insurance status this week.`,
     comparativeContext: `Most families score between 3 and 5. ${diagnosticScore <= 3 ? "You're at the start of an important journey." : "You've got a foundation to build on."}`,
     createdAt: new Date().toISOString(),
   };
