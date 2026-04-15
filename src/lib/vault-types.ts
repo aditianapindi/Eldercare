@@ -124,3 +124,39 @@ export interface UpcomingItem {
   parent_id: string | null;
   parent_label: string;
 }
+
+export interface PassportCode {
+  id: string;
+  owner_user_id: string;
+  code: string;
+  parent_id: string | null;
+  label: string | null;
+  created_at: string;
+  expires_at: string;
+  claimed_at: string | null;
+  claimed_by_device: string | null;
+  revoked_at: string | null;
+}
+
+export interface DeviceRegistration {
+  id: string;
+  passport_code: string;
+  device_token: string;
+  device_info: string | null;
+  registered_at: string;
+  last_seen_at: string;
+}
+
+export interface SaayaEvent {
+  id: string;
+  passport_code: string;
+  device_token: string;
+  client_event_id: string | null;
+  timestamp_millis: number;
+  call_type: string;
+  caller_classification: string;
+  caller_label: string | null;
+  sensitive_app_name: string;
+  is_overlay_trigger: boolean;
+  synced_at: string;
+}

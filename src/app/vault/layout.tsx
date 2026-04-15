@@ -35,6 +35,7 @@ export default function VaultLayout({ children }: { children: React.ReactNode })
     { href: "/vault/expenses", label: "Expenses", icon: ExpenseIcon },
     { href: "/vault/assets", label: "Assets", icon: AssetIcon },
     { href: "/vault/contacts", label: "Contacts", icon: ContactIcon },
+    { href: "/vault/saaya", label: "Safety", icon: SafetyIcon },
   ];
 
   return (
