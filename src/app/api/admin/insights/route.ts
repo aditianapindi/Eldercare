@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/supabase-server";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
-const ADMIN_EMAILS = ["aditianapindi@gmail.com", "aditi@test.com"];
+const ADMIN_EMAILS = ["aditianapindi@gmail.com", "aditi@test.com", "ramyashree1227@gmail.com", "jiddu.aditya@gmail.com"];
 
 export async function GET(req: NextRequest) {
   const auth = await getAuthUser(req);
