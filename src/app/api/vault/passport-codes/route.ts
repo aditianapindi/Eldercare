@@ -41,9 +41,18 @@ export async function POST(req: NextRequest) {
   const label = typeof body.label === "string" ? body.label.trim().slice(0, 60) : null;
   const parent_id = typeof body.parent_id === "string" ? body.parent_id : null;
 
-  // Generate 8-char code from safe charset
-  const bytes = randomBytes(8);
-  const code = Array.from(bytes).map(b => CHARSET[b % CHARSET.length]).join("");
+  // Generate unique 8-char code with retry
+  let code = "";
+  for (let i = 0; i < 5; i++) {
+    const bytes = randomBytes(8);
+    code = Array.from(bytes).map(b => CHARSET[b % CHARSET.length]).join("");
+    const { data: existing } = await auth.supabase
+      .from("passport_codes")
+      .select("id")
+      .eq("code", code)
+      .maybeSingle();
+    if (!existing) break;
+  }
 
   const { data, error } = await auth.supabase
     .from("passport_codes")

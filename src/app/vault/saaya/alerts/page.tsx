@@ -4,22 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { Card, Stat, Badge, Empty } from "@/lib/ui";
 import Link from "next/link";
-
-/* ─── Types (mirroring vault-types.ts) ─── */
-
-interface SaayaEvent {
-  id: string;
-  passport_code: string;
-  device_token: string;
-  client_event_id: string | null;
-  timestamp_millis: number;
-  call_type: string;
-  caller_classification: string;
-  caller_label: string | null;
-  sensitive_app_name: string;
-  is_overlay_trigger: boolean;
-  synced_at: string;
-}
+import type { SaayaEvent } from "@/lib/vault-types";
 
 /* ─── Helpers ─── */
 

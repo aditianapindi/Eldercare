@@ -4,30 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { Card, Badge, Empty, Button } from "@/lib/ui";
 import Link from "next/link";
-
-/* ─── Types (mirroring vault-types.ts) ─── */
-
-interface PassportCode {
-  id: string;
-  owner_user_id: string;
-  code: string;
-  parent_id: string | null;
-  label: string | null;
-  created_at: string;
-  expires_at: string;
-  claimed_at: string | null;
-  claimed_by_device: string | null;
-  revoked_at: string | null;
-}
-
-interface DeviceRegistration {
-  id: string;
-  passport_code: string;
-  device_token: string;
-  device_info: string | null;
-  registered_at: string;
-  last_seen_at: string;
-}
+import type { PassportCode, DeviceRegistration } from "@/lib/vault-types";
 
 /* ─── Helpers ─── */
 
