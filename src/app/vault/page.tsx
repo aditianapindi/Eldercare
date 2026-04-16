@@ -152,8 +152,19 @@ function VaultDashboard() {
     );
   }
 
+  const displayName =
+    (user?.user_metadata?.full_name as string | undefined) ||
+    (user?.user_metadata?.name as string | undefined) ||
+    user?.email ||
+    "";
+
   return (
     <div className="animate-[fadeIn_0.3s_ease]">
+      {displayName && (
+        <p className="text-ink-tertiary text-xs mb-1">
+          Signed in as <span className="text-ink-secondary font-medium">{displayName}</span>
+        </p>
+      )}
       <div className="flex items-start justify-between gap-4 mb-1">
         <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-medium text-ink">
           Your Family
@@ -161,15 +172,15 @@ function VaultDashboard() {
         <button
           onClick={() => setShowShareModal(true)}
           className="shrink-0 mt-1 inline-flex items-center gap-1.5 px-3 py-2 min-h-[36px] bg-surface border border-border-subtle hover:border-sage hover:text-sage text-ink-secondary text-xs md:text-sm font-medium rounded-full transition-colors"
-          title="Share vault"
+          title="Invite a sibling or family member to co-manage"
         >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <circle cx="4" cy="8" r="1.8" stroke="currentColor" strokeWidth="1.5" />
-            <circle cx="12" cy="4" r="1.8" stroke="currentColor" strokeWidth="1.5" />
-            <circle cx="12" cy="12" r="1.8" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M5.5 7L10.5 4.5M5.5 9L10.5 11.5" stroke="currentColor" strokeWidth="1.5" />
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+            <circle cx="8" cy="7" r="3" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M2 17C2 13.5 4.5 11.5 8 11.5C11.5 11.5 14 13.5 14 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="14.5" cy="7.5" r="2.3" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M14 12C16.2 12 18 13.2 18 15.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
-          Share
+          Invite family
         </button>
       </div>
       <p className="text-ink-secondary text-sm md:text-base mb-4">
