@@ -357,7 +357,13 @@ function EditContactCard({
             </div>
           </div>
         )}
-        <div className="flex gap-2">
+        <div className="flex items-center justify-end gap-4 pt-4 mt-2 border-t border-border-subtle">
+          <button
+            onClick={onCancel}
+            className="text-ink-tertiary text-sm font-medium hover:text-ink transition-colors px-2 py-2 min-h-[40px]"
+          >
+            Cancel
+          </button>
           <button
             onClick={() => onSave({
               name: name.trim() || contact.name,
@@ -366,15 +372,9 @@ function EditContactCard({
               relationship: relationship.trim() || null,
               parent_id: parentId || null,
             })}
-            className="px-5 py-2.5 bg-sage text-white font-medium rounded-[8px] text-sm min-h-[40px] hover:opacity-90 transition-opacity"
+            className="px-5 py-2.5 bg-sage text-white font-medium rounded-[8px] text-sm min-h-[40px] hover:opacity-90 transition-opacity shadow-[0_2px_8px_rgba(122,139,111,0.25)]"
           >
             Save
-          </button>
-          <button
-            onClick={onCancel}
-            className="px-4 py-2.5 text-ink-secondary font-medium rounded-[8px] text-sm min-h-[40px] hover:bg-sand transition-colors"
-          >
-            Cancel
           </button>
         </div>
       </div>
@@ -476,7 +476,13 @@ function ContactForm({
             </div>
           </div>
         )}
-        <div className="flex gap-3 pt-2">
+        <div className="flex items-center justify-end gap-4 pt-4 mt-2 border-t border-border-subtle">
+          <button
+            onClick={onCancel}
+            className="text-ink-tertiary text-sm md:text-base font-medium hover:text-ink transition-colors px-2 py-3 min-h-[48px] md:min-h-[52px]"
+          >
+            Cancel
+          </button>
           <button
             onClick={() => {
               if (!name.trim() || !role) return;
@@ -489,15 +495,9 @@ function ContactForm({
               });
             }}
             disabled={!name.trim() || !role}
-            className="px-6 py-3 bg-sage text-white font-medium rounded-[10px] text-base min-h-[48px] md:min-h-[52px] hover:opacity-90 transition-opacity disabled:opacity-40"
+            className="px-6 py-3 bg-sage text-white font-medium rounded-[10px] text-base min-h-[48px] md:min-h-[52px] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:shadow-none shadow-[0_2px_10px_rgba(122,139,111,0.3)]"
           >
             Save contact
-          </button>
-          <button
-            onClick={onCancel}
-            className="px-4 py-3 text-ink-secondary font-medium rounded-[10px] text-base min-h-[48px] md:min-h-[52px] hover:bg-sand transition-colors"
-          >
-            Cancel
           </button>
         </div>
       </div>
