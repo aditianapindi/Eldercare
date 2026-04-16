@@ -17,7 +17,54 @@ export function SaayaDownload({ source, variant = "default" }: SaayaDownloadProp
   const [email, setEmail] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleDownload = async () => {
+  const triggerDownload = (url: string) => {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "saaya.apk";
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  // Authenticated user: skip email form, use their email from session
+  const handleAuthDownload = async () => {
+    setState("loading");
+    setErrorMsg("");
+
+    try {
+      const sessionId = typeof window !== "undefined"
+        ? sessionStorage.getItem("pv_sid") || "unknown"
+        : "unknown";
+
+      const res = await fetch("/api/download/saaya", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user?.email || "",
+          session_id: sessionId,
+          source,
+        }),
+      });
+
+      if (!res.ok) {
+        setErrorMsg("Something went wrong. Please try again.");
+        setState("idle");
+        return;
+      }
+
+      const { url } = await res.json();
+      triggerDownload(url);
+      setState("success");
+    } catch {
+      setErrorMsg("Network error. Please check your connection.");
+      setState("idle");
+    }
+  };
+
+  // Anonymous user: submit email form
+  const handleEmailDownload = async () => {
     if (!email.trim()) return;
 
     setState("loading");
@@ -52,17 +99,7 @@ export function SaayaDownload({ source, variant = "default" }: SaayaDownloadProp
       }
 
       const { url } = await res.json();
-
-      // Trigger download
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "saaya.apk";
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
+      triggerDownload(url);
       setState("success");
     } catch {
       setErrorMsg("Network error. Please check your connection.");
@@ -71,33 +108,45 @@ export function SaayaDownload({ source, variant = "default" }: SaayaDownloadProp
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleDownload();
+    if (e.key === "Enter") handleEmailDownload();
   };
 
   // Idle state — show the download button
-  if (state === "idle") {
+  if (state === "idle" || (state === "loading" && !authLoading && user)) {
+    const isLoading = state === "loading";
     return (
-      <button
-        onClick={() => setState("form")}
-        className={`inline-flex items-center gap-2 font-medium rounded-[10px] hover:opacity-90 transition-opacity ${
-          variant === "compact"
-            ? "px-4 py-2.5 text-sm bg-terracotta text-white min-h-[44px]"
-            : "px-6 py-3.5 text-base bg-terracotta text-white min-h-[52px]"
-        }`}
-        aria-label="Download Saaya APK"
-      >
-        <DownloadIcon />
-        Download Saaya
-      </button>
+      <div>
+        <button
+          onClick={!authLoading && user ? handleAuthDownload : () => setState("form")}
+          disabled={isLoading}
+          className={`inline-flex items-center gap-2 font-medium rounded-[10px] hover:opacity-90 transition-opacity disabled:opacity-70 ${
+            variant === "compact"
+              ? "px-4 py-2.5 text-sm bg-terracotta text-white min-h-[44px]"
+              : "px-6 py-3.5 text-base bg-terracotta text-white min-h-[52px]"
+          }`}
+          aria-label="Download Saaya APK"
+        >
+          {isLoading ? (
+            <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+          ) : (
+            <DownloadIcon />
+          )}
+          Download Saaya
+        </button>
+        {errorMsg && (
+          <p className="text-xs text-terracotta mt-2">{errorMsg}</p>
+        )}
+      </div>
     );
   }
 
-  // Form state — email input
-  if (state === "form" || state === "loading") {
+  // Form state — email input (anonymous users only)
+  if (state === "form" || (state === "loading" && !user)) {
+    const isLoading = state === "loading";
     return (
       <div className={`${variant === "compact" ? "space-y-2" : "space-y-3"}`}>
         <p className="text-sm text-ink-secondary">
-          Enter your email to get the download + setup instructions.
+          Enter your email to download.
         </p>
         <div className="flex items-stretch gap-2">
           <input
@@ -112,11 +161,11 @@ export function SaayaDownload({ source, variant = "default" }: SaayaDownloadProp
             className="flex-1 px-3 py-2.5 bg-white border-2 border-border rounded-[10px] text-ink text-sm focus:border-sage focus:outline-none min-h-[44px] min-w-0"
           />
           <button
-            onClick={handleDownload}
-            disabled={state === "loading" || !email.trim()}
+            onClick={handleEmailDownload}
+            disabled={isLoading || !email.trim()}
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-terracotta text-white font-medium rounded-[10px] text-sm min-h-[44px] hover:opacity-90 transition-opacity disabled:opacity-50"
           >
-            {state === "loading" ? (
+            {isLoading ? (
               <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
             ) : (
               <>
@@ -150,7 +199,6 @@ export function SaayaDownload({ source, variant = "default" }: SaayaDownloadProp
           <p className="text-sm font-medium text-ink">Download started</p>
         </div>
         {!authLoading && user ? (
-          // Logged-in user
           <div>
             <p className="text-sm text-ink-secondary mb-3">
               Install the APK on your parent&apos;s phone, then generate a passport code to link it.
@@ -163,7 +211,6 @@ export function SaayaDownload({ source, variant = "default" }: SaayaDownloadProp
             </Link>
           </div>
         ) : (
-          // Anonymous user
           <div>
             <p className="text-sm text-ink-secondary mb-3">
               Install the APK on your parent&apos;s phone, then create an Inaya account to link it and see fraud alerts.
