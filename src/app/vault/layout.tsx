@@ -113,17 +113,33 @@ function UserMenu() {
   const { user, signOut } = useAuth();
   const router = useRouter();
 
+  const displayName =
+    (user?.user_metadata?.full_name as string | undefined) ||
+    (user?.user_metadata?.name as string | undefined) ||
+    user?.email ||
+    "";
+
   return (
-    <button
-      onClick={async () => {
-        await signOut();
-        router.replace("/");
-      }}
-      className="inline-flex items-center justify-center px-4 py-2 min-h-[44px] text-sm font-medium text-ink border border-border rounded-full hover:border-ink-tertiary transition-colors"
-      title={user?.email || ""}
-    >
-      Sign out
-    </button>
+    <div className="flex items-center gap-3">
+      {displayName && (
+        <span
+          className="hidden md:inline-block max-w-[220px] truncate text-ink-secondary text-sm"
+          title={user?.email || ""}
+        >
+          {displayName}
+        </span>
+      )}
+      <button
+        onClick={async () => {
+          await signOut();
+          router.replace("/");
+        }}
+        className="inline-flex items-center justify-center px-4 py-2 min-h-[44px] text-sm font-medium text-ink border border-border rounded-full hover:border-ink-tertiary transition-colors"
+        title={user?.email || ""}
+      >
+        Sign out
+      </button>
+    </div>
   );
 }
 

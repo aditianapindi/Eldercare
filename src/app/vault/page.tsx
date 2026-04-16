@@ -152,19 +152,8 @@ function VaultDashboard() {
     );
   }
 
-  const displayName =
-    (user?.user_metadata?.full_name as string | undefined) ||
-    (user?.user_metadata?.name as string | undefined) ||
-    user?.email ||
-    "";
-
   return (
     <div className="animate-[fadeIn_0.3s_ease]">
-      {displayName && (
-        <p className="text-ink-tertiary text-xs mb-1">
-          Signed in as <span className="text-ink-secondary font-medium">{displayName}</span>
-        </p>
-      )}
       <div className="flex items-start justify-between gap-4 mb-1">
         <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-medium text-ink">
           Your Family
