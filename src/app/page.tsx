@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/lib/logo";
 import { Watermark } from "@/lib/watermark";
 import { AuthHeaderLink } from "@/lib/auth-widgets";
-import { TrackedGitHubLink } from "@/lib/tracked-github-link";
+import { SaayaDownload } from "@/lib/saaya-download";
 
 export default function Home() {
   return (
@@ -47,7 +47,7 @@ export default function Home() {
               <span className="text-ink-tertiary text-base">Free · 2 minutes · No login</span>
             </div>
 
-            {/* Saaya — companion app card */}
+            {/* Saaya — companion app card with download */}
             <div className="mt-10 max-w-[540px] bg-surface border border-border-subtle rounded-[14px] p-5 md:p-6">
               <div className="flex items-start gap-4 mb-4">
                 <div className="shrink-0 w-10 h-10 rounded-full bg-terracotta-light flex items-center justify-center mt-0.5">
@@ -65,11 +65,11 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 flex-wrap">
-                <TrackedGitHubLink />
+              <div className="space-y-3">
+                <SaayaDownload source="homepage" variant="compact" />
                 <Link
                   href="/fraudguard"
-                  className="text-ink-tertiary text-sm hover:text-ink transition-colors"
+                  className="text-ink-tertiary text-sm hover:text-ink transition-colors inline-block"
                 >
                   Learn more →
                 </Link>

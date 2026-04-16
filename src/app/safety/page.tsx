@@ -1,7 +1,7 @@
 import { Watermark } from "@/lib/watermark";
 import { AuthHeaderLink, LogoWithAuthLink } from "@/lib/auth-widgets";
 import { SafetyHeroCTAs, SafetyStickyBar } from "./safety-client";
-import { TrackedGitHubLink } from "@/lib/tracked-github-link";
+import { SaayaDownload } from "@/lib/saaya-download";
 
 export const metadata = {
   title: "Family Safety — Protect your parents from scams | Inaya",
@@ -158,15 +158,15 @@ export default function SafetyPage() {
             ))}
           </div>
 
-          {/* Dev beta + setup — combined compact row */}
-          <div className="bg-mustard-light/40 border border-mustard/20 rounded-[12px] px-4 py-3 flex items-center gap-3 flex-wrap mb-5">
-            <div className="flex-1 min-w-0">
-              <span className="text-mustard text-[9px] font-bold uppercase tracking-wide">Developer beta</span>
-              <p className="text-ink-secondary text-xs leading-relaxed">
-                Open source. Signed APK on the way.
+          {/* Download Saaya */}
+          <div className="bg-mustard-light/40 border border-mustard/20 rounded-[12px] px-4 py-3 mb-5">
+            <div className="mb-3">
+              <span className="text-mustard text-[9px] font-bold uppercase tracking-wide">Free · Open source · Android 8.0+</span>
+              <p className="text-ink-secondary text-xs leading-relaxed mt-0.5">
+                Download Saaya and install it on your parent&apos;s phone.
               </p>
             </div>
-            <TrackedGitHubLink className="shrink-0 !bg-ink !text-cream !border-0 !rounded-[8px] !min-h-[40px]" />
+            <SaayaDownload source="safety-page" variant="compact" />
           </div>
 
           {/* Setup — inline 3 steps */}

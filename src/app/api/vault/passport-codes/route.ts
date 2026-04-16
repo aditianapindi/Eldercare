@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/supabase-server";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { randomBytes } from "crypto";
 
 const CHARSET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ"; // 30 chars, no 0/O/1/I/L
@@ -26,9 +27,32 @@ export async function GET(req: NextRequest) {
   if (codesRes.error) return NextResponse.json({ error: codesRes.error.message }, { status: 500 });
   if (devicesRes.error) return NextResponse.json({ error: devicesRes.error.message }, { status: 500 });
 
+  // Check if user previously downloaded Saaya (by email match)
+  let isKnownDownloader = false;
+  try {
+    const admin = getSupabaseAdmin();
+    const { data: downloads } = await admin
+      .from("saaya_downloads")
+      .select("id")
+      .eq("email", user.email?.toLowerCase() || "")
+      .limit(1);
+    isKnownDownloader = (downloads?.length ?? 0) > 0;
+
+    // Link downloads to user if not already linked
+    if (isKnownDownloader && user.email) {
+      await admin.rpc("link_saaya_downloads", {
+        p_email: user.email.toLowerCase(),
+        p_user_id: user.id,
+      }); // Non-critical, errors caught by outer try/catch
+    }
+  } catch {
+    // saaya_downloads table may not exist yet — ignore
+  }
+
   return NextResponse.json({
     codes: codesRes.data || [],
     devices: devicesRes.data || [],
+    is_known_downloader: isKnownDownloader,
   });
 }
 
