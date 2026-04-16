@@ -161,13 +161,13 @@ export default function SaayaPage() {
             <p className="text-ink-tertiary text-sm mb-5">
               Setup takes 5 minutes — grant permissions, enter your number, tap Start.
             </p>
-            <div className="space-y-3">
+            <div className="flex items-center gap-4 flex-wrap">
               <SaayaDownload source="saaya-page" />
               <a
                 href="https://github.com/OrangeAKA/saaya"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block text-ink-tertiary text-sm hover:text-ink transition-colors"
+                className="text-ink-tertiary text-sm hover:text-ink transition-colors"
               >
                 View on GitHub →
               </a>
@@ -179,13 +179,13 @@ export default function SaayaPage() {
         <section className="max-w-[760px] mb-12 md:mb-16 flex items-center justify-between gap-4 flex-wrap">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sage font-medium text-base hover:gap-3 transition-all"
+            className="inline-flex items-center gap-2 text-sage font-medium text-sm hover:gap-3 transition-all"
           >
             ← Back to Inaya
           </Link>
           <Link
             href="/safety"
-            className="inline-flex items-center gap-2 text-ink-tertiary text-sm hover:text-ink transition-colors"
+            className="inline-flex items-center gap-2 text-ink-tertiary text-sm font-medium hover:text-ink transition-colors"
           >
             Read the safety guide →
           </Link>
