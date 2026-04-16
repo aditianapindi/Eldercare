@@ -175,7 +175,7 @@ export default function SafetyPage() {
           </div>
           <div className="grid gap-2 md:grid-cols-3">
             {[
-              { icon: "📲", title: "Install from source", detail: "Build APK from GitHub. Signed APK coming soon." },
+              { icon: "📲", title: "Download the APK", detail: "Install on your parent's Android phone." },
               { icon: "⚙️", title: "Grant 5 permissions", detail: "App walks you through each one." },
               { icon: "▶️", title: "Enter number, tap Start", detail: "Runs quietly in the background." },
             ].map((s) => (
