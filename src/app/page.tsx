@@ -10,13 +10,19 @@ export default function Home() {
       <div className="bg-ink text-cream">
         <Link
           href="/saaya"
-          className="block px-6 py-2.5 md:py-2 text-center text-sm hover:opacity-80 transition-opacity"
+          className="flex items-center justify-center gap-1.5 px-6 py-2.5 md:py-2 text-center text-sm hover:opacity-80 transition-opacity"
         >
-          <span className="font-medium">Saaya</span>
-          <span className="text-cream/70 mx-1.5">—</span>
-          <span className="text-cream/80">catches scam calls before money moves.</span>
-          <span className="text-cream/60 ml-1.5 hidden sm:inline">Get the app →</span>
-          <span className="text-cream/60 ml-1.5 sm:hidden">→</span>
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="shrink-0 text-terracotta" aria-hidden="true">
+            <path d="M10 2L16 5V10C16 13.5 13 16.5 10 18C7 16.5 4 13.5 4 10V5L10 2Z" stroke="currentColor" strokeWidth="1.3" fill="currentColor" fillOpacity="0.25" strokeLinejoin="round" />
+            <path d="M7.5 10L9 11.5L12.5 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span>
+            <span className="font-medium">Saaya</span>
+            <span className="text-cream/70 mx-1">—</span>
+            <span className="text-cream/80">catches scam calls before money moves.</span>
+            <span className="text-cream/60 ml-1.5 hidden sm:inline">Get the app →</span>
+            <span className="text-cream/60 ml-1.5 sm:hidden">→</span>
+          </span>
         </Link>
       </div>
 
