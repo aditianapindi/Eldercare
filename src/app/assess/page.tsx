@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { diagnosticQuestions } from "@/lib/questions";
 import { calculateDiagnosticScore } from "@/lib/scoring";
@@ -99,6 +99,9 @@ function AssessInner() {
           <Logo />
         </header>
 
+        {submitting ? (
+          <CarePlanLoader />
+        ) : (<>
         <div className="max-w-[720px]">
           <h1 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl leading-[1.2] font-light text-ink mb-2">
             Five questions most families never discuss
@@ -324,7 +327,84 @@ function AssessInner() {
             </p>
           </div>
         )}
+        </>)}
       </div>
     </main>
+  );
+}
+
+/* ─── Care plan loader (shown while /api/generate-report is running) ─── */
+
+function CarePlanLoader() {
+  const messages = [
+    "Reading your answers…",
+    "Drawing your care map…",
+    "Finding your priorities…",
+    "Almost there…",
+  ];
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [takingLong, setTakingLong] = useState(false);
+
+  useEffect(() => {
+    const start = Date.now();
+
+    // Cycle messages every 2.5s, stop at the last one
+    const msgInterval = setInterval(() => {
+      setMessageIndex((i) => Math.min(i + 1, messages.length - 1));
+    }, 2500);
+
+    // Progress: asymptotic curve that approaches ~90% but never finishes
+    // — matches how real generation feels (quick start, slow tail)
+    const progressInterval = setInterval(() => {
+      const elapsed = (Date.now() - start) / 1000;
+      setProgress(90 * (1 - Math.exp(-elapsed / 7)));
+      if (elapsed > 25) setTakingLong(true);
+    }, 120);
+
+    return () => {
+      clearInterval(msgInterval);
+      clearInterval(progressInterval);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[60dvh] px-6 text-center animate-[fadeIn_0.4s_ease]">
+      {/* Pulsing sage dot */}
+      <div className="relative w-12 h-12 mb-8">
+        <div className="absolute inset-0 rounded-full bg-sage/25 animate-ping" />
+        <div className="absolute inset-3 rounded-full bg-sage" />
+      </div>
+
+      {/* Rotating message — keyed so each new message fades in */}
+      <p
+        key={messageIndex}
+        className="font-[family-name:var(--font-display)] text-xl md:text-2xl text-ink font-light mb-3 min-h-[1.5em] animate-[fadeIn_0.4s_ease]"
+      >
+        {messages[messageIndex]}
+      </p>
+
+      {/* Honest estimate */}
+      <p className="text-ink-tertiary text-sm mb-8">
+        {takingLong
+          ? "Still working — just a moment more…"
+          : "Taking a moment to personalize this for your family"}
+      </p>
+
+      {/* Subtle progress bar */}
+      <div
+        className="w-full max-w-[280px] h-[3px] bg-border-subtle rounded-full overflow-hidden"
+        role="progressbar"
+        aria-valuenow={Math.round(progress)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <div
+          className="h-full bg-sage rounded-full transition-[width] duration-200 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
   );
 }
