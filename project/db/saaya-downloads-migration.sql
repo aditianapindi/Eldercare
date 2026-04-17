@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS saaya_downloads (
   session_id text,
   source text,          -- 'homepage', 'saaya-page', 'safety-page', 'report'
   user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
-  created_at timestamptz NOT NULL DEFAULT now()
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(email, source)
 );
 
 -- -----------------------------------------
@@ -35,14 +36,15 @@ DROP POLICY IF EXISTS "Public insert saaya downloads" ON saaya_downloads;
 CREATE POLICY "Public insert saaya downloads" ON saaya_downloads FOR INSERT
   WITH CHECK (true);
 
--- Authenticated users can read their own downloads (matched by email)
+-- Authenticated users can read their own downloads (matched by user_id)
 DROP POLICY IF EXISTS "Users read own downloads" ON saaya_downloads;
 CREATE POLICY "Users read own downloads" ON saaya_downloads FOR SELECT
   USING (auth.uid() = user_id);
 
 -- -----------------------------------------
--- 4. Function: link_saaya_download(p_email, p_user_id)
+-- 4. Function: link_saaya_downloads(p_email, p_user_id)
 --    Called after signup to link existing downloads to the new user.
+--    Restricted: caller can only link downloads to their own account.
 -- -----------------------------------------
 CREATE OR REPLACE FUNCTION link_saaya_downloads(p_email text, p_user_id uuid)
 RETURNS integer
@@ -53,6 +55,11 @@ AS $$
 DECLARE
   updated_count integer;
 BEGIN
+  -- Prevent email hijacking: caller can only claim their own user_id
+  IF p_user_id != auth.uid() THEN
+    RAISE EXCEPTION 'unauthorized: can only link downloads to your own account';
+  END IF;
+
   UPDATE saaya_downloads
   SET user_id = p_user_id
   WHERE lower(email) = lower(p_email)
