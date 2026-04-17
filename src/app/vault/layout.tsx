@@ -1,15 +1,29 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import Link from "next/link";
 import { Logo } from "@/lib/logo";
 
 export default function VaultLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={
+      <main className="min-h-dvh flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full border-4 border-sage border-t-transparent animate-spin" />
+      </main>
+    }>
+      <VaultLayoutInner>{children}</VaultLayoutInner>
+    </Suspense>
+  );
+}
+
+function VaultLayoutInner({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const fromCarePlan = pathname !== "/vault" && searchParams.get("from") === "care-plan";
 
   useEffect(() => {
     if (!loading && !user) {
@@ -83,6 +97,17 @@ export default function VaultLayout({ children }: { children: React.ReactNode })
 
         {/* Main content */}
         <main className="flex-1 px-6 py-6 md:px-12 lg:px-16 max-w-[900px] mx-auto">
+          {fromCarePlan && (
+            <Link
+              href="/vault"
+              className="inline-flex items-center gap-1.5 text-sage text-sm font-medium mb-4 hover:opacity-80 transition-opacity"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Back to your care plan
+            </Link>
+          )}
           {children}
         </main>
       </div>

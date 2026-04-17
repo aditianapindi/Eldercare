@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     supabase.from("medicines").select("id, parent_id").eq("active", true),
     supabase.from("doctors").select("id, parent_id"),
     supabase.from("expenses").select("parent_id, amount, is_recurring"),
-    supabase.from("family_contacts").select("id, role"),
+    supabase.from("family_contacts").select("id, role, is_emergency"),
     supabase.from("financial_assets").select("id"),
   ]);
 
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const meta = stats["_meta"] as any;
-  meta.emergencyContacts = contactRows.filter((c) => c.role === "emergency").length;
+  meta.emergencyContacts = contactRows.filter((c: { is_emergency?: boolean; role?: string }) => c.is_emergency || c.role === "emergency").length;
   meta.totalContacts = contactRows.length;
   meta.totalAssets = assetRows.length;
 

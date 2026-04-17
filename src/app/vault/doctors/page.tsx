@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import type { Doctor, Parent } from "@/lib/vault-types";
+import { NextActionCard } from "@/lib/next-action-card";
 
 export default function DoctorsPage() {
   const { authFetch } = useAuth();
@@ -11,6 +12,7 @@ export default function DoctorsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
+  const [showNextAction, setShowNextAction] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -32,6 +34,7 @@ export default function DoctorsPage() {
       const newDoctor = await res.json();
       setDoctors((prev) => [newDoctor, ...prev]);
       setShowForm(false);
+      setShowNextAction(true);
     } else {
       alert("Couldn't save. Please try again.");
     }
@@ -135,6 +138,7 @@ export default function DoctorsPage() {
           }}
         />
       )}
+      {showNextAction && <NextActionCard currentKey="doctors" />}
     </div>
   );
 }

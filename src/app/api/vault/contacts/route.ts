@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await auth.supabase
     .from("family_contacts")
-    .select("id, parent_id, name, role, phone, relationship, notes, created_at")
+    .select("id, parent_id, name, role, is_emergency, phone, relationship, notes, created_at")
     .order("created_at", { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
       parent_id: body.parent_id || null,
       name: body.name,
       role: body.role,
+      is_emergency: body.is_emergency ?? false,
       phone: body.phone || null,
       relationship: body.relationship || null,
       notes: body.notes || null,

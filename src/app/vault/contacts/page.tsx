@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import type { FamilyContact, Parent } from "@/lib/vault-types";
+import { NextActionCard } from "@/lib/next-action-card";
 
 const ROLES = [
   { value: "family", label: "Family", icon: "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67" },
   { value: "neighbor", label: "Neighbor", icon: "\uD83C\uDFE0" },
   { value: "driver", label: "Driver", icon: "\uD83D\uDE97" },
   { value: "maid", label: "Maid / Help", icon: "\uD83C\uDFE1" },
-  { value: "emergency", label: "Emergency", icon: "\uD83D\uDEA8" },
   { value: "doctor", label: "Doctor", icon: "\uD83C\uDFE5" },
   { value: "other", label: "Other", icon: "\uD83D\uDC64" },
 ];
@@ -25,6 +25,7 @@ export default function ContactsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [showNextAction, setShowNextAction] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -46,6 +47,7 @@ export default function ContactsPage() {
       const c = await res.json();
       setContacts((prev) => [c, ...prev]);
       setShowForm(false);
+      setShowNextAction(true);
     } else {
       alert("Couldn't save. Please try again.");
     }
@@ -92,7 +94,7 @@ export default function ContactsPage() {
   });
 
   // Summary counts
-  const emergencyCount = contacts.filter((c) => c.role === "emergency").length;
+  const emergencyCount = contacts.filter((c) => c.is_emergency).length;
   const withPhone = contacts.filter((c) => c.phone).length;
 
   if (loading) {
@@ -190,6 +192,7 @@ export default function ContactsPage() {
         </div>
       )}
 
+      {showNextAction && <NextActionCard currentKey="contacts" />}
       <EmergencyHelplines />
     </div>
   );
@@ -212,8 +215,15 @@ function ContactCard({
     <div className="bg-surface border border-border-subtle rounded-[14px] p-4 md:p-5">
       <div className="flex items-center gap-3">
         {/* Avatar */}
-        <div className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-sage-light flex items-center justify-center shrink-0 text-base">
-          {roleInfo.icon}
+        <div className="relative shrink-0">
+          <div className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-sage-light flex items-center justify-center text-base">
+            {roleInfo.icon}
+          </div>
+          {contact.is_emergency && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-terracotta rounded-full flex items-center justify-center text-[10px]" title="Emergency contact">
+              🚨
+            </span>
+          )}
         </div>
 
         {/* Info */}
@@ -278,6 +288,7 @@ function EditContactCard({
 }) {
   const [name, setName] = useState(contact.name);
   const [role, setRole] = useState(contact.role);
+  const [isEmergency, setIsEmergency] = useState(contact.is_emergency ?? false);
   const [phone, setPhone] = useState(contact.phone || "");
   const [relationship, setRelationship] = useState(contact.relationship || "");
   const [parentId, setParentId] = useState(contact.parent_id || "");
@@ -308,6 +319,15 @@ function EditContactCard({
             </button>
           ))}
         </div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={isEmergency}
+            onChange={(e) => setIsEmergency(e.target.checked)}
+            className="w-4 h-4 accent-terracotta rounded"
+          />
+          <span className="text-sm text-ink-secondary">🚨 Call this person in an emergency</span>
+        </label>
         <div className="grid grid-cols-2 gap-3">
           <input
             value={phone}
@@ -368,6 +388,7 @@ function EditContactCard({
             onClick={() => onSave({
               name: name.trim() || contact.name,
               role,
+              is_emergency: isEmergency,
               phone: phone.trim() || null,
               relationship: relationship.trim() || null,
               parent_id: parentId || null,
@@ -395,6 +416,7 @@ function ContactForm({
 }) {
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
+  const [isEmergency, setIsEmergency] = useState(false);
   const [phone, setPhone] = useState("");
   const [relationship, setRelationship] = useState("");
   const [parentId, setParentId] = useState(parents.length === 1 ? parents[0].id : "");
@@ -429,6 +451,15 @@ function ContactForm({
             ))}
           </div>
         </div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={isEmergency}
+            onChange={(e) => setIsEmergency(e.target.checked)}
+            className="w-4 h-4 accent-terracotta rounded"
+          />
+          <span className="text-sm text-ink-secondary">🚨 Call this person in an emergency</span>
+        </label>
         <input
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
@@ -489,6 +520,7 @@ function ContactForm({
               onSubmit({
                 name: name.trim(),
                 role,
+                is_emergency: isEmergency,
                 phone: phone.trim() || null,
                 relationship: relationship.trim() || null,
                 parent_id: parentId || null,

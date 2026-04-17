@@ -836,22 +836,22 @@ function GettingStarted({
     {
       label: "Add their first doctor",
       done: (meta.doctors || 0) > 0,
-      href: "/vault/doctors",
+      href: "/vault/doctors?from=care-plan",
     },
     {
       label: "Add one medicine",
       done: (meta.medicines || 0) > 0,
-      href: "/vault/medicines",
+      href: "/vault/medicines?from=care-plan",
     },
     {
       label: "Add an emergency contact",
       done: (meta.emergencyContacts || 0) > 0,
-      href: "/vault/contacts",
+      href: "/vault/contacts?from=care-plan",
     },
     {
       label: "List one financial asset",
       done: (meta.totalAssets || 0) > 0,
-      href: "/vault/assets",
+      href: "/vault/assets?from=care-plan",
     },
   ];
 

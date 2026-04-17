@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/lib/auth";
 import type { Medicine, Parent, Doctor, MedicalEvent } from "@/lib/vault-types";
+import { NextActionCard } from "@/lib/next-action-card";
 
 const CONDITIONS = [
   "Diabetes",
@@ -40,6 +41,7 @@ export default function HealthPage() {
 
   const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
   const [showMedicineForm, setShowMedicineForm] = useState(false);
+  const [showNextAction, setShowNextAction] = useState(false);
   const [showEventForm, setShowEventForm] = useState(false);
 
   // Collapsible sections
@@ -97,6 +99,7 @@ export default function HealthPage() {
       const newMed = await res.json();
       setMedicines((prev) => [newMed, ...prev]);
       setShowMedicineForm(false);
+      setShowNextAction(true);
     } else {
       alert("Couldn't save. Please try again.");
     }
@@ -381,6 +384,7 @@ export default function HealthPage() {
           )}
         </div>
       )}
+      {showNextAction && <NextActionCard currentKey="medicines" />}
     </div>
   );
 }

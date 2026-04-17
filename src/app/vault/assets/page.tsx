@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import type { FinancialAsset, Parent } from "@/lib/vault-types";
+import { NextActionCard } from "@/lib/next-action-card";
 
 const ASSET_TYPES = [
   "Bank Account",
@@ -39,6 +40,7 @@ export default function AssetsPage() {
   const [parents, setParents] = useState<Parent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showNextAction, setShowNextAction] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -60,6 +62,7 @@ export default function AssetsPage() {
       const newAsset = await res.json();
       setAssets((prev) => [newAsset, ...prev]);
       setShowForm(false);
+      setShowNextAction(true);
     } else {
       alert("Couldn't save. Please try again.");
     }
@@ -173,6 +176,7 @@ export default function AssetsPage() {
           })}
         </div>
       )}
+      {showNextAction && <NextActionCard currentKey="assets" />}
     </div>
   );
 }

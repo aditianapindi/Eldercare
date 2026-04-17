@@ -59,6 +59,7 @@ export interface FamilyContact {
   parent_id: string | null;
   name: string;
   role: string;
+  is_emergency: boolean;
   phone: string | null;
   relationship: string | null;
   notes: string | null;
