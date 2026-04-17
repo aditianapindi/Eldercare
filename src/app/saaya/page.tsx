@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Watermark } from "@/lib/watermark";
 import { AuthHeaderLink, LogoWithAuthLink } from "@/lib/auth-widgets";
-import { TrackedGitHubLink } from "@/lib/tracked-github-link";
-import { FraudguardStickyBar } from "./fraudguard-client";
+import { SaayaDownload } from "@/lib/saaya-download";
+import { SaayaStickyBar } from "./saaya-client";
 
 export const metadata = {
   title: "Saaya — A companion app for scam calls | Inaya",
@@ -44,13 +44,17 @@ export default function SaayaPage() {
         <header className="mb-12 flex items-center justify-between gap-4">
           <LogoWithAuthLink />
           <div className="flex items-center gap-3 md:gap-4">
-            <Link
-              href="/safety"
-              className="text-ink-tertiary text-sm hover:text-ink transition-colors hidden sm:block"
+            <a
+              href="https://github.com/OrangeAKA/saaya"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ink-tertiary border border-border rounded-full hover:border-ink-tertiary transition-colors min-h-[36px]"
             >
-              ← Safety guide
-            </Link>
-            <TrackedGitHubLink />
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+              </svg>
+              GitHub
+            </a>
             <AuthHeaderLink />
           </div>
         </header>
@@ -142,39 +146,54 @@ export default function SaayaPage() {
           </div>
         </section>
 
-        {/* Get the app + setup — combined compact */}
+        {/* Download section */}
         <section className="max-w-[760px] mb-16 md:mb-24">
           <div className="bg-mustard-light/40 border border-mustard/20 rounded-[16px] p-6 md:p-8">
             <p className="text-mustard text-xs font-bold uppercase tracking-wide mb-2">
-              Developer beta · Open source
+              Free · Open source · Android 8.0+
             </p>
             <h2 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-light text-ink leading-tight mb-3">
               Get Saaya.
             </h2>
             <p className="text-ink-secondary text-base leading-relaxed mb-2">
-              Build from source on GitHub. Signed APK for non-technical users coming soon.
+              Download the APK and install it on your parent&apos;s phone.
             </p>
             <p className="text-ink-tertiary text-sm mb-5">
               Setup takes 5 minutes — grant permissions, enter your number, tap Start.
-              Requires Android 8.0+.
             </p>
-            <TrackedGitHubLink />
+            <div className="flex items-center gap-4 flex-wrap">
+              <SaayaDownload source="saaya-page" />
+              <a
+                href="https://github.com/OrangeAKA/saaya"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink-tertiary text-sm hover:text-ink transition-colors"
+              >
+                View on GitHub →
+              </a>
+            </div>
           </div>
         </section>
 
-        {/* Back to safety guide */}
-        <section className="max-w-[760px] mb-12 md:mb-16">
+        {/* Contextual navigation */}
+        <section className="max-w-[760px] mb-12 md:mb-16 flex items-center justify-between gap-4 flex-wrap">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sage font-medium text-sm hover:gap-3 transition-all"
+          >
+            ← Back to Inaya
+          </Link>
           <Link
             href="/safety"
-            className="inline-flex items-center gap-2 text-sage font-medium text-base md:text-lg hover:gap-3 transition-all"
+            className="inline-flex items-center gap-2 text-ink-tertiary text-sm font-medium hover:text-ink transition-colors"
           >
-            ← Back to the safety guide
+            Read the safety guide →
           </Link>
         </section>
       </div>
 
-      {/* Sticky bottom CTA bar — auth-aware */}
-      <FraudguardStickyBar />
+      {/* Sticky bottom CTA — stays in the Saaya flow */}
+      <SaayaStickyBar />
     </main>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { Card, Badge, Empty, Button } from "@/lib/ui";
+import { WhatsAppShare } from "@/lib/whatsapp-share";
 import Link from "next/link";
 import type { PassportCode, DeviceRegistration } from "@/lib/vault-types";
 
@@ -40,6 +41,7 @@ export default function SaayaPage() {
   const [newLabel, setNewLabel] = useState("");
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [freshCode, setFreshCode] = useState<PassportCode | null>(null);
+  const [isKnownDownloader, setIsKnownDownloader] = useState(false);
 
   const load = async () => {
     try {
@@ -47,6 +49,7 @@ export default function SaayaPage() {
       const data = await res.json();
       setCodes(Array.isArray(data.codes) ? data.codes : []);
       setDevices(Array.isArray(data.devices) ? data.devices : []);
+      if (data.is_known_downloader) setIsKnownDownloader(true);
     } finally {
       setLoading(false);
     }
@@ -56,6 +59,13 @@ export default function SaayaPage() {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Auto-open code generation for known Saaya downloaders with no existing codes
+  useEffect(() => {
+    if (!loading && isKnownDownloader && codes.length === 0 && !showForm && !freshCode) {
+      setShowForm(true);
+    }
+  }, [loading, isKnownDownloader, codes.length, showForm, freshCode]);
 
   const handleGenerate = async () => {
     setCreating(true);
@@ -130,6 +140,25 @@ export default function SaayaPage() {
         </Link>
       </div>
 
+      {/* Known downloader welcome */}
+      {isKnownDownloader && codes.length === 0 && !freshCode && (
+        <Card>
+          <div className="flex items-start gap-3">
+            <div className="shrink-0 w-8 h-8 rounded-full bg-sage/15 flex items-center justify-center mt-0.5">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-sage">
+                <path d="M4 8L7 11L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-ink">You downloaded Saaya. Let&apos;s link it.</p>
+              <p className="text-xs text-ink-tertiary mt-0.5">
+                Generate a passport code below, then enter it in the Saaya app on your parent&apos;s phone.
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* Generate code section */}
       {!showForm && !freshCode && (
         <Button onClick={() => setShowForm(true)}>Generate passport code</Button>
@@ -193,6 +222,7 @@ export default function SaayaPage() {
                 </>
               )}
             </button>
+            <WhatsAppShare passportCode={freshCode.code} label={freshCode.label} />
             <p className="text-xs text-ink-tertiary">{formatExpiry(freshCode.expires_at)}</p>
             <button
               onClick={() => { setFreshCode(null); setShowForm(false); }}
