@@ -17,9 +17,9 @@ const RESPONSES = [
       "Hard to miss, with a 30-second countdown before it can be dismissed — so there's time to think.",
   },
   {
-    title: "A Hindi voice alert on the speaker",
+    title: "Voice alert in your language",
     detail:
-      "Spoken out loud, audible to whoever is in the room, so the parent snaps out of the call.",
+      "On speaker. Everyone in the room hears it.",
   },
   {
     title: "An SMS to the guardian — you",
@@ -150,7 +150,7 @@ export default function SaayaPage() {
         <section className="max-w-[760px] mb-16 md:mb-24">
           <div className="bg-mustard-light/40 border border-mustard/20 rounded-[16px] p-6 md:p-8">
             <p className="text-mustard text-xs font-bold uppercase tracking-wide mb-2">
-              Free · Open source · Android 8.0+
+              Open source · Android 8.0+
             </p>
             <h2 className="font-[family-name:var(--font-display)] text-2xl md:text-3xl font-light text-ink leading-tight mb-3">
               Get Saaya.
